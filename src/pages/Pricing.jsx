@@ -157,16 +157,14 @@ export default function Pricing() {
         </div>
 
         {/* Self-Hosted Callout Section (Below the grid) */}
-        <div className="w-full max-w-6xl bg-white/[0.02] border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-start gap-4">
-            <div className="h-12 w-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0 mt-1">
+        <div className="w-full max-w-6xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4 w-full">
+            <div className="hidden md:flex h-12 w-12 rounded-xl bg-purple-500/10 border border-purple-500/20 items-center justify-center text-purple-400 shrink-0 mt-1">
               <Server size={22} />
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-bold text-white">Need absolute database isolation?</h3>
-                <span className="text-[10px] bg-amber-500/15 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Beta Onboarding</span>
-              </div>
+            <div className="w-full">
+              <span className="inline-block text-[10px] bg-amber-500/15 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider mb-2">Beta Onboarding</span>
+              <h3 className="text-lg font-bold text-white mb-2 md:mb-1">Need absolute database isolation?</h3>
               <p className="text-slate-400 text-xs leading-relaxed max-w-xl">
                 <strong>Self-Hosted Enterprise Pass (₹28,600 one-time):</strong> Run the platform on your own cloud database. Includes a lifetime usage license and setup assistance. <strong>Only 5 setup slots remaining</strong> for early bird onboarding. Google sandbox unverified app limits (max 100 member accounts) apply.
               </p>
@@ -174,7 +172,7 @@ export default function Pricing() {
           </div>
           <button 
             onClick={() => setShowInquiryModal(true)}
-            className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl text-sm font-semibold transition-colors shrink-0 cursor-pointer"
+            className="w-full md:w-auto px-6 py-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl text-sm font-semibold transition-colors shrink-0 cursor-pointer text-center"
           >
             Request Self-Hosted Setup
           </button>
