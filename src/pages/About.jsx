@@ -138,6 +138,14 @@ export default function About() {
             </p>
           </div>
 
+          {/* Roadmap 5: Expanded Ecosystem Scopes */}
+          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:col-span-2">
+            <h4 className="text-white font-bold mb-2">Expanded Google Ecosystem (YouTube, Blogger)</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              The roadmap includes integrations for auditing YouTube watch histories, Blogger posts, Google Photos, and other critical Google services to detect broader signs of account compromise. However, these APIs have been intentionally left out of this current prototype version to keep the system simple, focused, and secure while we test the core architecture.
+            </p>
+          </div>
+
         </div>
       </main>
 

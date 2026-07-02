@@ -104,3 +104,10 @@ A planned anti-abuse measure to prevent rapid exploitation by bad actors.
 * When a Member authenticates with an Auditor's Auth ID, the connection will enter a mandatory **24-hour verification cooldown**.
 * During this cooldown, no data (emails, drive files) will be fetched or synchronized.
 * This ensures the Member has ample time to review the connection and revoke it if they were coerced or tricked into connecting.
+
+### Expanded Google Ecosystem (YouTube, Blogger, Photos)
+The long-term roadmap includes deep integrations for auditing additional Google services:
+* **YouTube:** Auditing watch histories and comments for radicalization or malicious links.
+* **Blogger:** Monitoring published content for unauthorized posts.
+* **Google Photos:** Scanning metadata for location anomalies.
+> *Note: These APIs have been intentionally left out of the current prototype version to keep the system simple, focused, and highly secure while the core architecture is tested.*
