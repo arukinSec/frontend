@@ -68,10 +68,13 @@ export default function About() {
           <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
             <h3 className="text-xl font-bold text-white mb-3">Why We Built This</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              Scammers have modernized. They use sophisticated social engineering, fake Google Drive invoices, and hidden Gmail forwarding rules to drain bank accounts and steal identities. 
+              With the advent of AI tools and cheap internet, almost everyone now has a massive digital footprint. We are more connected than ever. But while most people know how to navigate YouTube, scroll Instagram, or perform a Google search, not everyone has the digital literacy to spot a sophisticated threat.
+            </p>
+            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+              It is incredibly easy for an older family member—or even someone who considers themselves tech-savvy—to click a malicious link in a WhatsApp message or a disguised Gmail attachment without realizing the danger. 
             </p>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Legitimate security auditing tools to detect these threats are exclusively designed for massive enterprises with dedicated IT budgets. Everyday consumers are left completely blind. We built Arukin to democratize enterprise-grade API threat hunting, putting powerful diagnostic tools directly into the hands of everyday people.
+              While we understand the power a tool like Arukin holds, we realized that right now, consumers have absolutely no tools to fight back. Malicious actors have enterprise-grade technology to launch attacks, and everyday families need a way to protect their loved ones.
             </p>
           </div>
 
