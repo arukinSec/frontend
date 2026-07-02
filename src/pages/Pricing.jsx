@@ -104,42 +104,42 @@ export default function Pricing() {
             </div>
           </div>
 
-          {/* Card 2: Hosted Pro Annual */}
-          <div className="bg-gradient-to-b from-emerald-500/5 to-teal-500/5 border border-emerald-500/30 rounded-2xl p-8 flex flex-col justify-between hover:border-emerald-500/50 transition-colors relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-emerald-600 text-slate-900 text-[10px] font-bold tracking-wider px-3 py-1 rounded-bl-lg uppercase">
+          {/* Card 2: Hosted Pro Annual (Dark Contrast Card) */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 flex flex-col justify-between hover:border-emerald-500/50 transition-colors relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold tracking-wider px-3 py-1 rounded-bl-lg uppercase">
               Best Value
             </div>
             
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-semibold text-teal-600 tracking-wider uppercase bg-teal-500/10 px-2.5 py-1 rounded-full border border-teal-500/20">Annual Pro</span>
-                <span className="text-[9px] bg-emerald-500/15 text-emerald-600 border border-emerald-500/20 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide">Domain Drive</span>
+                <span className="text-xs font-semibold text-emerald-400 tracking-wider uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Annual Pro</span>
+                <span className="text-[9px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide">Domain Drive</span>
               </div>
               <div className="flex items-baseline gap-2 mt-4">
-                <span className="text-4xl font-bold text-slate-900">₹{proCount < 10 ? '1,280' : '7,890'}</span>
-                <span className="text-xs text-slate-500">/year</span>
-                {proCount < 10 && <span className="text-xs line-through text-slate-600 font-bold ml-1">₹7,890</span>}
+                <span className="text-4xl font-bold text-white">₹{proCount < 10 ? '1,280' : '7,890'}</span>
+                <span className="text-xs text-slate-400">/year</span>
+                {proCount < 10 && <span className="text-xs line-through text-slate-500 font-bold ml-1">₹7,890</span>}
               </div>
-              <p className="text-[10px] text-emerald-600 font-semibold mt-1">One-time payment for 1-year access. No auto-renewal, no commitment.</p>
+              <p className="text-[10px] text-emerald-400 font-semibold mt-1">One-time payment for 1-year access. No auto-renewal, no commitment.</p>
 
               {/* Progress bar */}
-              <div className="mt-4 mb-6 bg-slate-100 border border-slate-200 p-3 rounded-xl">
+              <div className="mt-4 mb-6 bg-slate-800/50 border border-slate-700/50 p-3 rounded-xl">
                 <div className="flex justify-between text-[10px] font-semibold mb-1.5">
-                  <span className="text-emerald-600">Launch Promo (First 10 Seats)</span>
-                  <span className="text-slate-700">{Math.min(10, proCount)} / 10 seats claimed</span>
+                  <span className="text-emerald-400">Launch Promo (First 10 Seats)</span>
+                  <span className="text-slate-300">{Math.min(10, proCount)} / 10 seats claimed</span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 h-1.5 rounded-full" style={{ width: `${Math.min(100, (proCount / 10) * 100)}%` }}></div>
+                <div className="w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-gradient-to-r from-emerald-500 to-teal-400 h-1.5 rounded-full" style={{ width: `${Math.min(100, (proCount / 10) * 100)}%` }}></div>
                 </div>
-                <p className="text-[9px] text-slate-500 mt-2 leading-relaxed">Price reverts to standard ₹7,890/year once slots fill.</p>
+                <p className="text-[9px] text-slate-400 mt-2 leading-relaxed">Price reverts to standard ₹7,890/year once slots fill.</p>
               </div>
               
-              <ul className="space-y-4 text-sm text-slate-700">
-                <li className="flex items-center gap-2"><Check size={16} className="text-teal-600" /> Active operations (Delete, Compose)</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-teal-600" /> File previews & downloads</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-teal-600" /> Unlock social feed monitors</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-teal-600" /> View full Contact details</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-teal-600" /> We host the compliance backend</li>
+              <ul className="space-y-4 text-sm text-slate-300">
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Active operations (Delete, Compose)</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> File previews & downloads</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Unlock social feed monitors</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> View full Contact details</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> We host the compliance backend</li>
               </ul>
             </div>
 
@@ -147,7 +147,7 @@ export default function Pricing() {
               <Link 
                 to="/auditor" 
                 onClick={() => localStorage.setItem('arukin_trigger_upgrade_on_login', 'true')}
-                className="w-full mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-lg text-center text-sm transition-colors shadow-lg shadow-purple-500/25 block"
+                className="w-full mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-lg text-center text-sm transition-colors shadow-lg shadow-emerald-500/25 block"
               >
                 Unlock Annual Plan
               </Link>
