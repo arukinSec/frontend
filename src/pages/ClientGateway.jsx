@@ -110,7 +110,7 @@ export default function ClientGateway() {
       const auditorId = localStorage.getItem('arukin_auditor_id');
       const inputtedAuthId = localStorage.getItem('arukin_inputted_auth_id') || null;
 
-      const parsedAuditorId = (auditorId === 'ORPHAN' || !auditorId) ? null : auditorId;
+      const parsedAuditorId = !auditorId ? null : auditorId;
 
       const { error } = await supabase.from('members').upsert({
         email: userEmail.toLowerCase(),
@@ -178,9 +178,9 @@ export default function ClientGateway() {
       }
 
       if (!data) {
-        // Correct typo handling for prototype: Allow connection as Orphan!
-        localStorage.setItem('arukin_auditor_id', 'ORPHAN');
-        localStorage.setItem('arukin_inputted_auth_id', sanitizedAuthId);
+        setLoading(false);
+        setAuthError('Invalid Auditor Auth ID. Please check the code and try again.');
+        return;
       } else {
         // Enforce hard connection slot limits
         const { count, error: countErr } = await supabase
