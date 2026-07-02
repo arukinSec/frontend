@@ -384,27 +384,29 @@ export default function DriveUI({ member }) {
       return;
     }
     try {
-      // 1. Light validation call to ensure credentials/tokens are fresh (uses negligible metadata bandwidth)
-      const verify = await fetchWithAuth(`https://www.googleapis.com/drive/v3/files/${file.id}?fields=id`);
-      if (!verify.ok) throw new Error('Token verification failed');
+      window.showToast(`Downloading "${file.name}"...`, 'success');
 
-      // 2. Build direct Google Drive download link with active token parameter
       const isGws = file.mimeType?.startsWith('application/vnd.google-apps.');
       const url = isGws
-        ? `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=application/pdf&access_token=${member.access_token}`
-        : `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&access_token=${member.access_token}`;
+        ? `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=application/pdf`
+        : `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`;
 
-      // 3. Navigate window to direct download stream link
-      // This routes file bytes directly from Google to client (0 Supabase bandwidth consumed)
-      const win = window.open(url, '_blank');
-      if (!win) {
-        window.location.href = url;
-      }
+      const response = await fetchWithAuth(url);
+      if (!response.ok) throw new Error('Download failed');
 
-      window.showToast(`"${file.name}" download started.`, 'success');
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = isGws ? `${file.name}.pdf` : file.name;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(a);
+      
     } catch (err) {
       console.error('Download failed:', err);
-      window.showToast('Download failed. Ensure the connection is valid.', 'error');
+      window.showToast('Download failed. Ensure the connection is valid and file is accessible.', 'error');
     }
   };
 
