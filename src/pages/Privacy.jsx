@@ -12,9 +12,7 @@ export default function Privacy() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <ShieldAlert size={18} className="text-white" />
-            </div>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
             <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
               Arukin <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>

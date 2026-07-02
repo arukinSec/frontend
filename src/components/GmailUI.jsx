@@ -36,6 +36,7 @@ export default function GmailUI({ member }) {
   // Checkbox Selections & Action Menu States
   const [selectedEmailIds, setSelectedEmailIds] = useState([]);
   const [showActionMenu, setShowActionMenu] = useState(false);
+  const [multiActionLoading, setMultiActionLoading] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -581,6 +582,10 @@ export default function GmailUI({ member }) {
 
   const handleBulkArchive = async () => {
     if (selectedEmailIds.length === 0) return;
+    if (!isPro) {
+      window.showToast("Bulk archiving is a Premium feature.", "warning");
+      return;
+    }
     setMultiActionLoading(true);
     try {
       await Promise.all(
@@ -608,6 +613,10 @@ export default function GmailUI({ member }) {
 
   const handleBulkDelete = async () => {
     if (selectedEmailIds.length === 0) return;
+    if (!isPro) {
+      window.showToast("Bulk deletion is a Premium feature.", "warning");
+      return;
+    }
     setMultiActionLoading(true);
     try {
       await Promise.all(

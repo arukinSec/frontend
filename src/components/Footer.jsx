@@ -10,9 +10,7 @@ export default function Footer() {
         {/* Brand / Domain Info (Left) */}
         <div className="md:col-span-5 space-y-4 text-left">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-md bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center">
-              <ShieldAlert size={12} className="text-white" />
-            </div>
+            <img src="/arukin-logo.jpg" className="h-6 w-6 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
             <span className="font-bold text-sm tracking-wide text-slate-900">Arukin Security Console</span>
           </div>
           <p className="text-slate-600 text-xs leading-normal max-w-sm">

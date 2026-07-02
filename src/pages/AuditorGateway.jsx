@@ -90,9 +90,7 @@ export default function AuditorGateway() {
         
         {/* Branding header */}
         <div className="text-center mb-8">
-          <div className="h-12 w-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 mx-auto mb-4">
-            <ShieldAlert size={24} className="text-white" />
-          </div>
+          <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
           <h2 className="text-2xl font-black text-white tracking-tight leading-tight">Auditor Access</h2>
           <p className="text-slate-400 text-xs mt-2">
             {showReviewerLogin 

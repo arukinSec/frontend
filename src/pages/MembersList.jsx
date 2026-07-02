@@ -8,6 +8,7 @@ import AuditorOnboarding from '../components/AuditorOnboarding';
 
 export default function MembersList() {
   const [members, setMembers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -253,6 +254,10 @@ export default function MembersList() {
     window.location.reload();
   };
 
+  const filteredMembers = members.filter(member => 
+    member.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    member.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-slate-200 font-sans selection:bg-indigo-500/30">
@@ -370,9 +375,7 @@ export default function MembersList() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <ShieldAlert size={18} className="text-white" />
-            </div>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
             <span className="font-bold text-lg tracking-wide text-white">Arukin <span className="text-indigo-400 font-medium">Security Console</span></span>
           </div>
 
@@ -494,6 +497,8 @@ export default function MembersList() {
             <input 
               type="text" 
               placeholder="Search members..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all w-full md:w-64 placeholder:text-slate-600"
             />
           </div>
@@ -514,8 +519,13 @@ export default function MembersList() {
                 <p className="text-xs text-slate-600 mt-1">Provide your Auth ID (<strong>{auditorAuthId}</strong>) to your clients to connect their account.</p>
               </div>
             </div>
+          ) : filteredMembers.length === 0 ? (
+            <div className="col-span-full py-12 text-center text-slate-500 bg-white/[0.02] border border-white/10 rounded-2xl">
+              <Search size={24} className="mx-auto mb-3 opacity-20" />
+              <p className="font-semibold text-slate-400">No members match your search.</p>
+            </div>
           ) : (
-            members.map((member, idx) => {
+            filteredMembers.map((member, idx) => {
               const maxAllowed = (auditorTier === 'PRO' ? 3 : 1) + additionalSlots;
               const isLocked = idx >= maxAllowed;
 
