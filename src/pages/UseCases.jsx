@@ -86,7 +86,7 @@ export default function UseCases() {
             <div>
               <h3 className="text-2xl font-bold text-slate-900 mb-3">The Privacy Advocate: Inbox Zero & Cloud Cleanse</h3>
               <p className="text-slate-600 leading-relaxed mb-4">
-                Want to deeply audit your own digital footprint? Use Arukin’s batch processing capabilities to reclaim your cloud hygiene.
+                Want to clean up your own digital life? Use Arukin’s bulk tools to get your accounts organized.
               </p>
               <ul className="space-y-2 text-sm text-slate-700">
                 <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Use the <strong>Batch Threat Cleaner</strong> to instantly delete or trash entire thousands of spam emails at once.</li>
@@ -105,11 +105,11 @@ export default function UseCases() {
             <div>
               <h3 className="text-2xl font-bold text-slate-900 mb-3">The Guardian: Family Protection</h3>
               <p className="text-slate-600 leading-relaxed mb-4">
-                Built to democratize API threat hunting, giving tech-savvy family members the ability to protect vulnerable or elderly relatives from financial phishing and social engineering.
+                Built to give you the tools you need to protect vulnerable or elderly relatives from online scams and financial fraud.
               </p>
               <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-teal-600" /> Neutralize digital phishing attempts before they escalate by identifying scam signatures.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-teal-600" /> Ensure absolute data privacy with our strict dual-identity role separation and API sandboxing.</li>
+                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-teal-600" /> Find and remove scam emails before your family members accidentally click on them.</li>
+                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-teal-600" /> Keep their passwords safe. You get access to help them, but you never need to ask for their login details.</li>
               </ul>
             </div>
           </div>

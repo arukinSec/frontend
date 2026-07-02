@@ -58,7 +58,7 @@ export default function HowItWorks() {
           </span>
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">How Arukin Works</h1>
           <p className="text-slate-600 text-sm mt-2 max-w-md mx-auto">
-            A secure compliance workflow designed to protect users while guaranteeing role separation and absolute privacy consent.
+            A simple, transparent process to help you secure your family's accounts while always respecting their privacy and consent.
           </p>
         </div>
 
@@ -71,10 +71,10 @@ export default function HowItWorks() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
               <UserPlus size={18} className="text-emerald-600" />
-              Auditor Sign-Up
+              Your Setup
             </h3>
             <p className="text-slate-600 text-sm leading-relaxed max-w-2xl">
-              Register instantly using your standard Google account. Once logged in, your profile generates a public <strong>Auditor Auth ID</strong> (e.g. <code>123-456</code>). This key acts as your secure invite token.
+              Sign in with your Google account. You'll instantly get a 6-digit <strong>Connection ID</strong> (e.g. <code>123-456</code>) to share with your family.
             </p>
           </div>
 
@@ -85,10 +85,10 @@ export default function HowItWorks() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
               <CheckCircle2 size={18} className="text-emerald-600" />
-              Member Links Account
+              They Connect Their Account
             </h3>
             <p className="text-slate-600 text-sm leading-relaxed max-w-2xl">
-              Share your <strong>Auditor Auth ID</strong> with your family members or corporate clients. During their onboarding on the Arukin Client, they input your Auth ID to designate you as their remote auditor.
+              Your family member goes to the Member Portal and enters your 6-digit <strong>Connection ID</strong> to safely link their account to your dashboard.
             </p>
           </div>
 
@@ -99,10 +99,10 @@ export default function HowItWorks() {
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
               <Eye size={18} className="text-emerald-600" />
-              Start Audit & Protection
+              Start Protecting Them
             </h3>
             <p className="text-slate-600 text-sm leading-relaxed max-w-2xl">
-              Once consent is granted, the member populates on your <strong>Auditor Dashboard</strong>. You can now scan folders, read Gmail alerts, audit contacts, and manage threats.
+              That's it! They will appear on your dashboard. You can now easily check their inbox for phishing scams, review their contacts, and ensure their Drive is safe.
             </p>
           </div>
         </div>
