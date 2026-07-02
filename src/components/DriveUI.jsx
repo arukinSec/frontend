@@ -408,43 +408,7 @@ export default function DriveUI({ member }) {
     }
   };
 
-  // ── Trash ─────────────────────────────────────────────────────────────────────
-  const handleTrash = (file, e) => {
-    if (e) e.stopPropagation();
-    if (!isPro && !isSandbox) {
-      showConfirm({
-        icon: <Shield size={18} className="text-indigo-500 animate-pulse" />,
-        title: 'Upgrade to PRO?',
-        message: `Moving files to trash is restricted under the free trial plan to mitigate data extraction risks. Upgrade to PRO to unlock deleting.`,
-        confirmLabel: 'Upgrade Now', danger: false,
-        onConfirm: () => { hideConfirm(); handleUpgrade(); }
-      });
-      return;
-    }
-    showConfirm({
-      icon: <Trash2 size={18} className="text-red-500" />,
-      title: 'Move to trash?',
-      message: `"${file.name}" will be moved to Google Drive trash.`,
-      confirmLabel: 'Move to trash', danger: true,
-      onConfirm: () => { hideConfirm(); executeTrash(file); }
-    });
-  };
 
-  const executeTrash = async (file) => {
-    if (isSandbox) {
-      setFiles(p => p.filter(f => f.id !== file.id));
-      window.showToast(`"${file.name}" moved to trash. (Simulation)`, 'success');
-      return;
-    }
-    try {
-      const res = await fetchWithAuth(`https://www.googleapis.com/drive/v3/files/${file.id}`, {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ trashed: true })
-      });
-      if (!res.ok) throw new Error();
-      setFiles(p => p.filter(f => f.id !== file.id));
-      window.showToast(`"${file.name}" moved to trash.`, 'success');
-    } catch { window.showToast('Failed to move file to trash.', 'error'); }
-  };
 
   // ── Derived data ──────────────────────────────────────────────────────────────
   const folders = files.filter(f => f.mimeType === 'application/vnd.google-apps.folder');
