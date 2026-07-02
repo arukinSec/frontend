@@ -134,25 +134,25 @@ export default function Home({ session }) {
               </p>
             </div>
 
-            {/* Client Card */}
-            <div className="bg-white shadow-sm border border-emerald-500/10 rounded-2xl p-5 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
-              <div className="absolute -inset-px bg-gradient-to-tr from-emerald-500/0 via-emerald-500/0 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
+            {/* Client Card (Green Inverted Card) */}
+            <div className="bg-emerald-600 border border-emerald-500 rounded-2xl p-5 shadow-2xl relative overflow-hidden group">
+              <div className="absolute -inset-px bg-gradient-to-tr from-emerald-400/0 via-emerald-400/0 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
               
-              <h2 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+              <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-1.5 relative z-10">
                 <span>Member Connection</span>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-200 animate-pulse"></span>
               </h2>
-              <p className="text-slate-600 text-xs mb-4">Received an Auditor Auth ID? Link your account to authorize threat protection.</p>
+              <p className="text-emerald-50 text-xs mb-4 relative z-10">Received an Auditor Auth ID? Link your account to authorize threat protection.</p>
 
               <Link 
                 to="/client"
-                className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all border border-emerald-500/20 text-center"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-slate-900/20 text-center relative z-10"
               >
                 <span>Connect Account</span>
                 <ArrowRight size={14} />
               </Link>
 
-              <p className="text-center text-slate-500 text-[9px] mt-3 leading-relaxed">
+              <p className="text-center text-emerald-100/70 text-[9px] mt-3 leading-relaxed relative z-10">
                 Requires advanced access scopes for Gmail and Google Drive. You can withdraw access at any time.
               </p>
             </div>
