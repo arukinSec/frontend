@@ -89,11 +89,10 @@ export default function Pricing() {
               </div>
               
               <ul className="space-y-4 text-sm text-slate-300">
-                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Read-only Inbox & Sent</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> View Drive files list</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> View Contact names</li>
-                <li className="flex items-center gap-2 text-slate-500"><X size={16} className="text-red-400/50" /> No active actions (Delete/Compose)</li>
-                <li className="flex items-center gap-2 text-slate-500"><X size={16} className="text-red-400/50" /> No file previews or downloads</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Read-only Inbox & Drive list</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Contact names only (numbers hidden)</li>
+                <li className="flex items-center gap-2 text-slate-500"><X size={16} className="text-red-400/50" /> Drive & Gmail strictly non-interactive</li>
+                <li className="flex items-center gap-2 text-slate-500"><X size={16} className="text-red-400/50" /> Social & Financial audit labels locked</li>
               </ul>
             </div>
 
