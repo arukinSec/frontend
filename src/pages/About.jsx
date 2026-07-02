@@ -63,9 +63,49 @@ export default function About() {
           </div>
         </div>
 
-        <p className="text-slate-400 text-lg leading-relaxed mb-12">
-          Legitimate security auditing tools are usually designed exclusively for enterprises with large IT budgets. Meanwhile, scammers exploit these same cloud APIs to target vulnerable family members. Arukin bridges this gap by providing consumers with standard-grade tools to safeguard their families.
-        </p>
+        {/* Why & Who Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
+            <h3 className="text-xl font-bold text-white mb-3">Why We Built This</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+              Scammers have modernized. They use sophisticated social engineering, fake Google Drive invoices, and hidden Gmail forwarding rules to drain bank accounts and steal identities. 
+            </p>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Legitimate security auditing tools to detect these threats are exclusively designed for massive enterprises with dedicated IT budgets. Everyday consumers are left completely blind. We built Arukin to democratize enterprise-grade API threat hunting, putting powerful diagnostic tools directly into the hands of everyday people.
+            </p>
+          </div>
+
+          <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
+            <h3 className="text-xl font-bold text-white mb-3">Who It Is For</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <div className="mt-0.5 text-indigo-400"><Heart size={16} /></div>
+                <div>
+                  <h4 className="text-white text-sm font-bold">Guardians & Caretakers</h4>
+                  <p className="text-slate-400 text-xs leading-relaxed">Tech-savvy family members actively protecting elderly parents or vulnerable relatives from financial phishing and social scams.</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="mt-0.5 text-emerald-400"><ShieldCheck size={16} /></div>
+                <div>
+                  <h4 className="text-white text-sm font-bold">Independent Security Auditors</h4>
+                  <p className="text-slate-400 text-xs leading-relaxed">Professionals hired to run digital forensic sweeps for high-risk individuals (e.g., victims of cyber-stalking or identity theft).</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <div className="mt-0.5 text-purple-400"><Users size={16} /></div>
+                <div>
+                  <h4 className="text-white text-sm font-bold">Privacy-Conscious Individuals</h4>
+                  <p className="text-slate-400 text-xs leading-relaxed">Users who want to deeply audit their own digital footprints, revoke rogue third-party apps, and manage their cloud hygiene.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="my-16 border-t border-white/10"></div>
+        
+        <h2 className="text-3xl font-extrabold text-white tracking-tight mb-8">Core Architectural Principles</h2>
 
         <div className="space-y-12">
           {/* Core Philosophy 1 */}
