@@ -56,9 +56,6 @@ function FileViewerModal({ viewer, onClose, onDownload }) {
             <span className="text-sm font-medium text-slate-700 truncate">{file?.name}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0 ml-3">
-            <button onClick={onDownload} className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-medium">
-              <Download size={12} /> Download
-            </button>
             <button onClick={onClose} className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 transition-colors"><X size={15} /></button>
           </div>
         </div>
@@ -81,11 +78,7 @@ function FileViewerModal({ viewer, onClose, onDownload }) {
               <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono leading-relaxed">{textContent}</pre>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center gap-3 text-slate-400 py-16">
-              <File size={44} className="opacity-20" />
-              <p className="text-sm">No preview available for this file type.</p>
-              <button onClick={onDownload} className="text-blue-500 text-sm hover:underline">Download to view locally</button>
-            </div>
+            <p className="text-slate-400 text-xs">Previewing this file format is not supported yet.</p>
           )}
         </div>
       </div>
@@ -335,72 +328,6 @@ export default function DriveUI({ member }) {
     } catch (e) { console.error('Preview error:', e); setViewer(v => ({ ...v, loading: false })); }
   };
 
-  // ── Download ──────────────────────────────────────────────────────────────────
-  const handleDownload = (file, e) => {
-    if (e) e.stopPropagation();
-    if (!isPro) {
-      showConfirm({
-        icon: <Shield size={18} className="text-indigo-500 animate-pulse" />,
-        title: 'Upgrade to PRO?',
-        message: `Direct exporting and downloading is restricted under the free trial plan to mitigate data extraction risks. Upgrade to PRO to unlock downloading.`,
-        confirmLabel: 'Upgrade Now', danger: false,
-        onConfirm: () => { hideConfirm(); handleUpgrade(); }
-      });
-      return;
-    }
-    showConfirm({
-      icon: <Download size={18} className="text-blue-500" />,
-      title: 'Download file?',
-      message: `"${file.name}" will be downloaded to your device.`,
-      confirmLabel: 'Download', danger: false,
-      onConfirm: () => { hideConfirm(); executeDownload(file); }
-    });
-  };
-
-  const executeDownload = async (file) => {
-    try {
-      window.showToast(`Starting download for "${file.name}"...`, 'info');
-
-      const isGws = file.mimeType?.startsWith('application/vnd.google-apps.');
-      
-      if (isGws) {
-        // Workspace files lack CORS on export endpoint. Use synchronous popup with URL token.
-        const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=application/pdf&access_token=${member.access_token}`;
-        const win = window.open(url, '_blank');
-        if (!win) {
-          // Fallback if strict popup blocker
-          const a = document.createElement('a');
-          a.href = url;
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
-        window.showToast(`"${file.name}" opened for export.`, 'success');
-      } else {
-        // Normal files support CORS. Fetch blob to force true download (preventing inline iframe rendering)
-        const url = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`;
-        const response = await fetchWithAuth(url);
-        if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
-        
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(downloadUrl);
-        document.body.removeChild(a);
-      }
-    } catch (err) {
-      console.error('Download failed:', err);
-      window.showToast('Download failed. Ensure the connection is valid.', 'error');
-    }
-  };
-
-
-
   // ── Derived data ──────────────────────────────────────────────────────────────
   const folders = files.filter(f => f.mimeType === 'application/vnd.google-apps.folder');
   const regularFiles = files.filter(f => f.mimeType !== 'application/vnd.google-apps.folder');
@@ -418,7 +345,7 @@ export default function DriveUI({ member }) {
   return (
     <>
       <ConfirmModal {...confirm} onCancel={hideConfirm} />
-      <FileViewerModal viewer={viewer} onClose={closeViewer} onDownload={() => { closeViewer(); handleDownload(viewer.file); }} />
+      <FileViewerModal viewer={viewer} onClose={closeViewer} />
 
       {/* Root container — matches GmailUI structure but styled like modern GDrive */}
       <div className="h-full bg-[#f8f9fa] text-slate-800 flex flex-col font-sans relative overflow-hidden rounded-lg shadow-2xl border border-slate-200">
@@ -469,9 +396,9 @@ export default function DriveUI({ member }) {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[9px] font-extrabold text-white bg-indigo-600 px-1.5 py-0.5 rounded uppercase tracking-wider">PRO Feature Locked</span>
                   </div>
-                  <h5 className="font-bold text-xs text-slate-800">Direct downloading is not available on the free plan</h5>
-                  <p className="text-[10px] text-slate-500 mt-1 leading-normal">
-                    Upgrade to PRO to download and preview files.
+                  <h5 className="font-bold text-xs text-slate-800">Advanced features are not available on the free plan</h5>
+                  <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                    Upgrade to PRO to unlock advanced file access.
                   </p>
                 </div>
                 <button 
@@ -581,7 +508,7 @@ export default function DriveUI({ member }) {
                               key={file.id}
                               className={`group grid items-center px-4 py-3 hover:bg-[#f0f4f9]/50 transition-colors cursor-pointer ${idx < regularFiles.length - 1 ? 'border-b border-slate-100' : ''}`}
                               style={{ gridTemplateColumns: '40px 1fr 150px 120px' }}
-                              onClick={() => isPreviewable(file.mimeType) ? openViewer(file) : handleDownload(file)}
+                              onClick={() => isPreviewable(file.mimeType) ? openViewer(file) : window.showToast('Downloading files is coming in a future update!', 'info')}
                             >
                               <FileIcon mimeType={file.mimeType} size={18} />
 
@@ -602,9 +529,7 @@ export default function DriveUI({ member }) {
                                       <Eye size={13} />
                                     </button>
                                   )}
-                                  <button onClick={(e) => handleDownload(file, e)} className="p-1 hover:bg-slate-200 rounded-full text-slate-500 hover:text-blue-600 transition-colors" title="Download">
-                                    <Download size={13} />
-                                  </button>
+
                                 </div>
                               </div>
 
