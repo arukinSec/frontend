@@ -111,3 +111,5 @@ The long-term roadmap includes deep integrations for auditing additional Google 
 * **Blogger:** Monitoring published content for unauthorized posts.
 * **Google Photos:** Scanning metadata for location anomalies.
 > *Note: These APIs have been intentionally left out of the current prototype version to keep the system simple, focused, and highly secure while the core architecture is tested.*
+
+*Triggering CF deployment rebuild...*
