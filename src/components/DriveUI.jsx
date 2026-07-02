@@ -603,13 +603,6 @@ export default function DriveUI({ member }) {
                             >
                               <FolderIcon size={24} />
                               <span className="text-sm text-slate-700 font-medium truncate flex-1">{folder.name}</span>
-                              <button
-                                className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-300/50 rounded-full transition-all shrink-0"
-                                onClick={(e) => { e.stopPropagation(); handleTrash(folder, e); }}
-                                title="Move to trash"
-                              >
-                                <Trash2 size={12} className="text-slate-400 hover:text-red-500" />
-                              </button>
                             </div>
                           ))}
                         </div>
