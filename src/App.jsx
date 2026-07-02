@@ -17,27 +17,28 @@ import Disclaimer from './pages/Disclaimer';
 export default function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isAuthProcessing = React.useRef(false);
 
   useEffect(() => {
     const handleAuthChange = async () => {
+      if (isAuthProcessing.current) return;
+      isAuthProcessing.current = true;
+      
       try {
         const { data: { session: activeSession }, error } = await supabase.auth.getSession();
         if (error) throw error;
 
         if (activeSession && activeSession.user) {
-          // Strict security check: do not map or auto-register if this login 
-          // originated from a member connection client flow rather than the auditor portal!
           const isAdminSession = localStorage.getItem('admin_session') === 'true';
           if (!isAdminSession) {
-            // Unset session and block auto-creation
             setSession(false);
             setLoading(false);
+            isAuthProcessing.current = false;
             return;
           }
 
           const userEmail = activeSession.user.email;
 
-          // Check if auditor profile exists in database
           let { data: auditorData, error: fetchErr } = await supabase
             .from('auditors')
             .select('*')
@@ -46,28 +47,37 @@ export default function App() {
 
           if (fetchErr) throw fetchErr;
 
-            // If no auditor profile, automatically create one on first login
-            if (!auditorData) {
-              // Generate a random 6-digit numeric code
-              const proposedAuthId = String(Math.floor(100000 + Math.random() * 900000));
+          if (!auditorData) {
+            const proposedAuthId = String(Math.floor(100000 + Math.random() * 900000));
+            const { data: inserted, error: insertErr } = await supabase
+              .from('auditors')
+              .insert({
+                email: userEmail.toLowerCase(),
+                auth_id: proposedAuthId,
+                tier: 'FREE'
+              })
+              .select()
+              .single();
 
-              const { data: inserted, error: insertErr } = await supabase
-                .from('auditors')
-                .insert({
-                  email: userEmail.toLowerCase(),
-                  auth_id: proposedAuthId,
-                  tier: 'FREE'
-                })
-                .select()
-                .single();
-
-              if (insertErr) throw insertErr;
+            if (insertErr) {
+              // If race condition caused duplicate insert, fetch again
+              if (insertErr.code === '23505' || insertErr.message.includes('duplicate')) {
+                const { data: retryData } = await supabase
+                  .from('auditors')
+                  .select('*')
+                  .eq('email', userEmail.toLowerCase())
+                  .single();
+                auditorData = retryData;
+              } else {
+                throw insertErr;
+              }
+            } else {
               auditorData = inserted;
             }
+          }
 
           const auditorAvatarUrl = activeSession.user.user_metadata?.avatar_url || '';
 
-          // Sync metadata to localStorage for easy retrieval in pages
           localStorage.setItem('admin_session', 'true');
           localStorage.setItem('auditor_id', auditorData.id);
           localStorage.setItem('auditor_tier', auditorData.tier);
@@ -79,7 +89,6 @@ export default function App() {
 
           setSession(true);
         } else {
-          // If no supabase session, make sure local storage is cleaned up
           localStorage.removeItem('admin_session');
           localStorage.removeItem('auditor_id');
           localStorage.removeItem('auditor_tier');
@@ -94,14 +103,17 @@ export default function App() {
         setSession(false);
       } finally {
         setLoading(false);
+        isAuthProcessing.current = false;
       }
     };
 
     handleAuthChange();
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
-      handleAuthChange();
+      // Only re-run if it's a substantive change to avoid redundant overlapping fetches
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        handleAuthChange();
+      }
     });
 
     return () => {
