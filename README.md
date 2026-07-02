@@ -85,3 +85,5 @@ npm install
 npm run dev
 ```
 *Note: Ensure the local Supabase Edge Functions are running (`npx supabase functions serve`) in the backend repository for the token refresh system to work!*
+
+<!-- Trigger Cloudflare Redeploy -->
