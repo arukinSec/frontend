@@ -66,7 +66,7 @@ export default function HowItWorks() {
         <div className="relative border-l border-slate-200 ml-6 pl-10 space-y-16">
           {/* Step 1 */}
           <div className="relative">
-            <div className="absolute -left-[54px] top-0 h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-4 border-[#0A0A0B] flex items-center justify-center text-xs font-bold text-slate-900 shadow-lg">
+            <div className="absolute -left-[54px] top-0 h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-4 border-slate-50 flex items-center justify-center text-xs font-bold text-slate-900 shadow-lg">
               1
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
@@ -80,7 +80,7 @@ export default function HowItWorks() {
 
           {/* Step 2 */}
           <div className="relative">
-            <div className="absolute -left-[54px] top-0 h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-4 border-[#0A0A0B] flex items-center justify-center text-xs font-bold text-slate-900 shadow-lg">
+            <div className="absolute -left-[54px] top-0 h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-4 border-slate-50 flex items-center justify-center text-xs font-bold text-slate-900 shadow-lg">
               2
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function HowItWorks() {
 
           {/* Step 3 */}
           <div className="relative">
-            <div className="absolute -left-[54px] top-0 h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-4 border-[#0A0A0B] flex items-center justify-center text-xs font-bold text-slate-900 shadow-lg">
+            <div className="absolute -left-[54px] top-0 h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-4 border-slate-50 flex items-center justify-center text-xs font-bold text-slate-900 shadow-lg">
               3
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">
