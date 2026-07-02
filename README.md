@@ -1,5 +1,8 @@
 # Statera Admin (Prototype)
 
+> **Experimental R&D Phase:**
+> Arukin is currently a highly experimental prototype. None of the beta features listed below are fixed. The purpose of this prototype is to determine which features are actually used, requested, and which ones can be removed. The architecture, feature set, and roadmap are entirely fluid and subject to major pivots.
+
 Statera Admin is the internal auditing dashboard used to securely monitor and manage connected user accounts (Gmail, Google Drive, Google Contacts) for threat protection and security auditing.
 
 ## Architecture & Security
@@ -90,3 +93,14 @@ CONNECTED ACCOUNTS
 ```
 
 **Future:** Exportable as PDF / JSON report for offline audit records.
+
+### Trust & Safety: Decentralization & Google CASA
+To protect privacy without submitting to expensive, centralized third-party Google CASA (Cloud Application Security Assessment) audits, Arukin relies on the Google Cloud 100-user Sandbox limit.
+* By deploying custom **Self-Hosted** enterprise nodes, customers retain total ownership of their API connections and database.
+* Self-hosted environments stay well under the 100-user limit, bypassing the need for corporate CASA intermediaries while maintaining full, unrestricted Google API access for their family/clients.
+
+### Trust & Safety: 24-Hour Connection Cooldown
+A planned anti-abuse measure to prevent rapid exploitation by bad actors.
+* When a Member authenticates with an Auditor's Auth ID, the connection will enter a mandatory **24-hour verification cooldown**.
+* During this cooldown, no data (emails, drive files) will be fetched or synchronized.
+* This ensures the Member has ample time to review the connection and revoke it if they were coerced or tricked into connecting.

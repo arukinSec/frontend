@@ -51,6 +51,18 @@ export default function About() {
       {/* Main Content */}
       <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-16 animate-fade-in">
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-4">Our Mission</h1>
+        
+        {/* Prototype Banner */}
+        <div className="mb-10 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 flex items-start gap-4">
+          <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={20} />
+          <div>
+            <h4 className="text-amber-400 font-bold text-xs mb-1 uppercase tracking-wider">Experimental Prototype Notice</h4>
+            <p className="text-amber-500/80 text-xs leading-relaxed">
+              Arukin is currently in a highly experimental R&D beta phase. None of the features listed on this platform are fixed. We are actively testing which features are used, requested, and which ones can be removed. Our roadmap is fluid and subject to major architectural pivots.
+            </p>
+          </div>
+        </div>
+
         <p className="text-slate-400 text-lg leading-relaxed mb-12">
           Legitimate security auditing tools are usually designed exclusively for enterprises with large IT budgets. Meanwhile, scammers exploit these same cloud APIs to target vulnerable family members. Arukin bridges this gap by providing consumers with standard-grade tools to safeguard their families.
         </p>
@@ -81,19 +93,51 @@ export default function About() {
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Core Philosophy 3 */}
-          <div className="flex gap-6 items-start">
-            <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-              <Heart size={24} />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2">A Safe Haven for Families</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Arukin is built as a personal safety suite. Whether you are assisting an elderly relative, auditing corporate client footprints, or reviewing your own accounts, our read-only layers and actionable tools keep security accessible.
-              </p>
-            </div>
+        {/* Divider */}
+        <div className="my-16 border-t border-white/10"></div>
+
+        {/* The Manifesto / Roadmap */}
+        <h2 className="text-3xl font-extrabold text-white tracking-tight mb-4">Trust & Safety Roadmap</h2>
+        <p className="text-slate-400 text-base leading-relaxed mb-10">
+          Arukin is built as a compliance engine. As we actively develop this platform, we are prioritizing rigorous security frameworks over rapid expansion. Below is our ongoing roadmap for ensuring ethical usage:
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* Roadmap 1: CASA & Decentralization */}
+          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6">
+            <h4 className="text-white font-bold mb-2">Decentralizing Data Audits</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              We refuse to centralize your family's data honeypot. To protect privacy without submitting to centralized third-party Google CASA audits, we rely on the <strong>Google Cloud 100-user Sandbox limit</strong>. By deploying custom Self-Hosted enterprise nodes, our users retain total ownership of their API connections and bypass the need for a corporate middleman.
+            </p>
           </div>
+
+          {/* Roadmap 2: 24h Cooldown */}
+          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6">
+            <h4 className="text-white font-bold mb-2">24-Hour Connection Cooldowns</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              We build tools to stop hackers, not empower them. Soon, Arukin will enforce a mandatory <strong>24-hour verification cooldown</strong> on all new Auditor pairings. Even if an Auth ID is accepted, data synchronization will be artificially delayed to ensure members have ample time to verify and consent to the connection.
+            </p>
+          </div>
+
+          {/* Roadmap 3: OTP Interception */}
+          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6">
+            <h4 className="text-white font-bold mb-2">Secure OTP Relay</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              To assist vulnerable or elderly relatives who struggle with Two-Factor Authentication, our upcoming update will allow Auditors to instantly intercept and relay time-sensitive OTP codes (e.g., from bank alerts) straight to their dashboard, avoiding risky forwarding workflows.
+            </p>
+          </div>
+
+          {/* Roadmap 4: Automated Audit Reports */}
+          <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-6">
+            <h4 className="text-white font-bold mb-2">Automated Threat Reports</h4>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Rather than manually hunting for phishing, Arukin will soon run automated, background API queries to compile PDF threat reports. It will automatically sniff out connected social accounts, suspicious password resets, and unusual logins spanning the last 12 months.
+            </p>
+          </div>
+
         </div>
       </main>
 
