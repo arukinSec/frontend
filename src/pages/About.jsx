@@ -71,7 +71,7 @@ export default function About() {
               With the advent of AI tools and cheap internet, almost everyone now has a massive digital footprint. We are more connected than ever. But while most people know how to navigate YouTube, scroll Instagram, or perform a Google search, not everyone has the digital literacy to spot a sophisticated threat.
             </p>
             <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              It is incredibly easy for an older family member—or even someone who considers themselves tech-savvy—to click a malicious link in a WhatsApp message or a disguised Gmail attachment without realizing the danger. 
+              It is incredibly easy for an older family member, or even someone who considers themselves tech-savvy, to click a malicious link in a WhatsApp message or a disguised Gmail attachment without realizing the danger. 
             </p>
             <p className="text-slate-400 text-sm leading-relaxed">
               While we understand the power a tool like Arukin holds, we realized that right now, consumers have absolutely no tools to fight back. Malicious actors have enterprise-grade technology to launch attacks, and everyday families need a way to protect their loved ones.
