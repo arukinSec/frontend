@@ -373,7 +373,6 @@ export default function DriveUI({ member }) {
 
   const executeDownload = async (file) => {
     if (isSandbox) {
-      // Sandbox: generate a realistic dummy blob
       const isGws = file.mimeType?.startsWith('application/vnd.google-apps.');
       const isPdf = file.mimeType?.includes('pdf') || isGws;
       const type = isPdf ? 'application/pdf' : (file.mimeType || 'text/plain');
@@ -384,29 +383,36 @@ export default function DriveUI({ member }) {
       return;
     }
     try {
-      window.showToast(`Downloading "${file.name}"...`, 'success');
+      window.showToast(`Starting download for "${file.name}"...`, 'info');
 
+      // 1. Light validation call to ensure credentials/tokens are fresh
+      const verify = await fetchWithAuth(`https://www.googleapis.com/drive/v3/files/${file.id}?fields=id`);
+      if (!verify.ok) throw new Error('Token verification failed');
+
+      // 2. Build direct Google Drive download link with active token parameter
+      // Google allows access_token query param specifically for media downloads to bypass CORS
       const isGws = file.mimeType?.startsWith('application/vnd.google-apps.');
       const url = isGws
-        ? `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=application/pdf`
-        : `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`;
+        ? `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=application/pdf&access_token=${member.access_token}`
+        : `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&access_token=${member.access_token}`;
 
-      const response = await fetchWithAuth(url);
-      if (!response.ok) throw new Error('Download failed');
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = isGws ? `${file.name}.pdf` : file.name;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(downloadUrl);
-      document.body.removeChild(a);
+      // 3. Trigger download via hidden iframe to avoid popup blockers and page reloads
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      document.body.appendChild(iframe);
       
+      // Cleanup iframe after a delay
+      setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 10000);
+
+      window.showToast(`"${file.name}" download initiated.`, 'success');
     } catch (err) {
       console.error('Download failed:', err);
-      window.showToast('Download failed. Ensure the connection is valid and file is accessible.', 'error');
+      window.showToast('Download failed. Ensure the connection is valid.', 'error');
     }
   };
 
