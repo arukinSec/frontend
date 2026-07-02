@@ -36,11 +36,11 @@ export default function Pricing() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Home</Link>
-            <Link to="/how-it-works" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">How it works</Link>
-            <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Use Cases</Link>
-            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">About</Link>
-            <Link to="/pricing" className="text-sm font-semibold text-slate-900 hover:text-emerald-600 transition-colors">Pricing</Link>
+            <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Home</Link>
+            <Link to="/how-it-works" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">How it works</Link>
+            <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Use Cases</Link>
+            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">About</Link>
+            <Link to="/pricing" className="text-sm font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">Pricing</Link>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -97,7 +97,7 @@ export default function Pricing() {
             </div>
 
             <div>
-              <Link to="/auditor" className="w-full bg-slate-100 hover:bg-slate-200 text-white font-medium py-3 rounded-lg text-center text-sm transition-colors border border-slate-200 block">
+              <Link to="/auditor" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">
                 Start Free Scan
               </Link>
               <span className="block text-center text-[10px] text-slate-500 mt-3">* Limit: 1 connected member. Terms apply.</span>

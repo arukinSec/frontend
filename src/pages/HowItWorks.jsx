@@ -20,11 +20,11 @@ export default function HowItWorks() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Home</Link>
-            <Link to="/how-it-works" className="text-sm font-semibold text-slate-900 hover:text-emerald-600 transition-colors">How it works</Link>
-            <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Use Cases</Link>
-            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">About</Link>
-            <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Pricing</Link>
+            <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Home</Link>
+            <Link to="/how-it-works" className="text-sm font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">How it works</Link>
+            <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Use Cases</Link>
+            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">About</Link>
+            <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Pricing</Link>
           </div>
 
           {/* Mobile Menu Toggle */}
