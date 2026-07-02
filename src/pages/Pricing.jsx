@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Check, X, Server, Mail } from 'lucide-react';
+import { ShieldAlert, Check, X, Server, Mail, Menu, X as XIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Footer from '../components/Footer';
@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 export default function Pricing() {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [proCount, setProCount] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchProCount = async () => {
@@ -30,16 +31,37 @@ export default function Pricing() {
             <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <ShieldAlert size={18} className="text-white" />
             </div>
-            <span className="font-bold text-lg tracking-wide text-white">Arukin <span className="text-indigo-400 font-medium">Security Console</span></span>
+            <span className="font-bold text-lg tracking-wide text-white">Arukin <span className="text-indigo-400 font-medium hidden sm:inline">Security Console</span></span>
           </div>
 
-          <div className="flex items-center gap-6">
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">Home</Link>
             <Link to="/how-it-works" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">How it works</Link>
             <Link to="/about" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">About</Link>
             <Link to="/pricing" className="text-sm font-semibold text-white hover:text-indigo-400 transition-colors">Pricing</Link>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden flex items-center">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              className="text-slate-400 hover:text-white focus:outline-none"
+            >
+              {isMobileMenuOpen ? <XIcon size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Nav Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-[#0A0A0B] border-b border-white/10 px-6 py-4 space-y-4 shadow-2xl animate-fade-in">
+            <Link to="/" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+            <Link to="/how-it-works" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>How it works</Link>
+            <Link to="/about" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+            <Link to="/pricing" className="block text-sm font-semibold text-white hover:text-indigo-400 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+          </div>
+        )}
       </nav>
 
       {/* Main Content */}

@@ -105,10 +105,11 @@ export default function MemberDashboard() {
       </header>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         
-        {/* Left Vertical App Switcher */}
-        <div className="w-20 border-r border-white/10 bg-black/20 flex flex-col items-center py-6 gap-6 shrink-0">
+        {/* App Switcher (Horizontal on mobile, Vertical on md+) */}
+        <div className="w-full md:w-20 border-b md:border-r border-white/10 bg-black/20 flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 gap-4 md:gap-6 shrink-0 overflow-x-auto">
           <button
             onClick={() => setActiveTab('profile')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${

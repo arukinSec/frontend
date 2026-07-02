@@ -484,17 +484,17 @@ export default function MembersList() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
         
-        <header className="mb-10 flex items-end justify-between">
+        <header className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
           <div>
             <h1 className="text-3xl font-semibold text-white mb-2">Connected Members</h1>
-            <p className="text-slate-400">Select an authenticated member to view their interactive dashboard.</p>
+            <p className="text-slate-400 text-sm md:text-base">Select an authenticated member to view their interactive dashboard.</p>
           </div>
-          <div className="relative group">
+          <div className="relative group w-full md:w-auto">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
             <input 
               type="text" 
               placeholder="Search members..." 
-              className="bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all w-64 placeholder:text-slate-600"
+              className="bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all w-full md:w-64 placeholder:text-slate-600"
             />
           </div>
         </header>

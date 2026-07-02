@@ -484,10 +484,10 @@ export default function DriveUI({ member }) {
         </div>
 
         {/* ── Body: sidebar + content ── */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
 
           {/* Sidebar */}
-          <div className="w-52 bg-[#f8f9fa] flex flex-col shrink-0 overflow-y-auto">
+          <div className="w-full md:w-52 border-b md:border-b-0 border-slate-200 bg-[#f8f9fa] flex flex-col shrink-0 overflow-y-auto max-h-40 md:max-h-none">
             <nav className="py-2 px-1.5 space-y-0.5">
               {navItems.map(({ id, label, icon: Icon }) => (
                 <button

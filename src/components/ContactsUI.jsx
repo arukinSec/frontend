@@ -204,14 +204,14 @@ export default function ContactsUI({ member }) {
             Contacts
           </div>
           {activeTab === 'contacts' && (
-            <div className="relative ml-8">
+            <div className="relative ml-4 md:ml-8 flex-1 max-w-[12rem] md:max-w-xs">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search contacts"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-80 bg-white border border-slate-200 rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                className="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
               />
             </div>
           )}
@@ -223,9 +223,9 @@ export default function ContactsUI({ member }) {
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-56 border-r border-slate-200 bg-slate-50 flex flex-col py-4 pb-6 shrink-0 overflow-y-auto">
+        <div className="w-full md:w-56 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50 flex flex-col py-4 pb-6 shrink-0 overflow-y-auto max-h-48 md:max-h-none">
           <nav className="px-2 space-y-0.5 mb-6">
             {navBtn('contacts', <Users />, 'Contacts', total)}
             {navBtn('companies', <Building2 />, 'Companies', withCompany > 0 ? companyGroups.filter(([k]) => k !== '__none__').length : undefined)}

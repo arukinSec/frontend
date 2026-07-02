@@ -86,7 +86,7 @@ export default function AuditorGateway() {
       </div>
 
       {/* Login Card */}
-      <div className="w-full max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-8 backdrop-blur-xl shadow-2xl relative z-10">
+      <div className="w-full max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl relative z-10">
         
         {/* Branding header */}
         <div className="text-center mb-8">

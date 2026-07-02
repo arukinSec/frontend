@@ -742,23 +742,23 @@ export default function GmailUI({ member }) {
             Gmail
           </div>
           {!selectedEmail && (
-            <div className="relative ml-8">
+            <div className="relative ml-4 md:ml-8 flex-1 max-w-xs md:max-w-md">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input 
                 type="text" 
                 placeholder="Search mail"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-96 bg-white border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-white transition-all shadow-inner"
+                className="w-full bg-white border border-slate-200 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-white transition-all shadow-inner"
               />
             </div>
           )}
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative">
         {/* Sidebar */}
-        <div className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col py-4 shrink-0">
+        <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50 flex flex-col py-4 shrink-0 overflow-y-auto md:overflow-visible max-h-48 md:max-h-none">
           <button 
             onClick={() => { if (!isPro) { window.showToast('PRO Feature: Upgrade to compose and send emails.', 'error'); } else { setIsComposing(true); } }}
             className="mx-4 mb-6 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:shadow-md transition-all rounded-2xl py-4 px-6 flex items-center justify-center gap-2 font-medium"
