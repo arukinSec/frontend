@@ -165,11 +165,7 @@ export default function ClientGateway() {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('auditors')
-        .select('id, tier, additional_slots')
-        .eq('auth_id', sanitizedAuthId)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc('verify_auditor_capacity', { auth_code: sanitizedAuthId });
 
       if (error) {
         setLoading(false);
@@ -177,41 +173,14 @@ export default function ClientGateway() {
         return;
       }
 
-      if (!data) {
+      if (!data.valid) {
         setLoading(false);
-        setAuthError('Invalid Auditor Auth ID. Please check the code and try again.');
+        setAuthError(data.error || 'Invalid Auditor Auth ID. Please check the code and try again.');
         return;
-      } else {
-        // Enforce hard connection slot limits
-        const { count, error: countErr } = await supabase
-          .from('members')
-          .select('*', { count: 'exact', head: true })
-          .eq('auditor_id', data.id)
-          .eq('connection_status', 'CONNECTED');
-
-        if (countErr) {
-          setLoading(false);
-          setAuthError('Failed to verify connection slot capacity. Please try again.');
-          return;
-        }
-
-        const tier = data.tier || 'FREE';
-        const additionalSlots = data.additional_slots || 0;
-        const maxConnections = tier === 'PRO' ? (4 + additionalSlots) : 3;
-
-        if (count >= maxConnections) {
-          setLoading(false);
-          setAuthError(
-            tier === 'PRO'
-              ? `This auditor has reached the max number of connections allowed under the PRO plan (${maxConnections} connections).`
-              : `This auditor has reached the max number of connections allowed under the Free plan (3 connections). Please upgrade to PRO to connect more accounts.`
-          );
-          return;
-        }
-
-        localStorage.setItem('arukin_auditor_id', data.id);
-        localStorage.removeItem('arukin_inputted_auth_id');
       }
+
+      localStorage.setItem('arukin_auditor_id', data.auditor_id);
+      localStorage.removeItem('arukin_inputted_auth_id');
 
       localStorage.setItem('arukin_pending_flow', 'standard');
 
