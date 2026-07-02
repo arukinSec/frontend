@@ -62,7 +62,7 @@ export default function Home({ session }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Side: Pitch */}
-          <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="lg:col-span-7 space-y-6 text-left order-2 lg:order-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">
               <ShieldCheck size={14} />
               <span>Digital Safety Auditing</span>
@@ -101,7 +101,7 @@ export default function Home({ session }) {
           </div>
 
           {/* Right Side: Login / Action Portal */}
-          <div className="lg:col-span-5 flex flex-col gap-4 animate-fade-in">
+          <div className="lg:col-span-5 flex flex-col gap-4 animate-fade-in order-1 lg:order-2">
             
             {/* Auditor Card */}
             <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-5 backdrop-blur-xl shadow-2xl">
