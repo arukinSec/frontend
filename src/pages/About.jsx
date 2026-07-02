@@ -58,8 +58,8 @@ export default function About() {
         <div className="mb-10 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5 flex items-start gap-4">
           <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={20} />
           <div>
-            <h4 className="text-amber-600 font-bold text-xs mb-1 uppercase tracking-wider">Experimental Prototype Notice</h4>
-            <p className="text-amber-500/80 text-xs leading-relaxed">
+            <h4 className="text-amber-700 font-bold text-xs mb-1 uppercase tracking-wider">Experimental Prototype Notice</h4>
+            <p className="text-amber-900 text-xs leading-relaxed">
               Arukin is currently in a highly experimental R&D beta phase. None of the features listed on this platform are fixed. We are actively testing which features are used, requested, and which ones can be removed. Our roadmap is fluid and subject to major architectural pivots.
             </p>
           </div>
