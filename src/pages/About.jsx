@@ -22,6 +22,7 @@ export default function About() {
           <div className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">Home</Link>
             <Link to="/how-it-works" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">How it works</Link>
+            <Link to="/use-cases" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">Use Cases</Link>
             <Link to="/about" className="text-sm font-semibold text-white hover:text-indigo-400 transition-colors">About</Link>
             <Link to="/pricing" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">Pricing</Link>
           </div>
@@ -42,6 +43,7 @@ export default function About() {
           <div className="md:hidden bg-[#0A0A0B] border-b border-white/10 px-6 py-4 space-y-4 shadow-2xl animate-fade-in">
             <Link to="/" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
             <Link to="/how-it-works" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>How it works</Link>
+            <Link to="/use-cases" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Use Cases</Link>
             <Link to="/about" className="block text-sm font-semibold text-white hover:text-indigo-400 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
             <Link to="/pricing" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
           </div>
@@ -63,47 +65,18 @@ export default function About() {
           </div>
         </div>
 
-        {/* Why & Who Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
-            <h3 className="text-xl font-bold text-white mb-3">Why We Built This</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              With the advent of AI tools and cheap internet, almost everyone now has a massive digital footprint. We are more connected than ever. But while most people know how to navigate YouTube, scroll Instagram, or perform a Google search, not everyone has the digital literacy to spot a sophisticated threat.
-            </p>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              It is incredibly easy for an older family member, or even someone who considers themselves tech-savvy, to click a malicious link in a WhatsApp message or a disguised Gmail attachment without realizing the danger. 
-            </p>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              While we understand the power a tool like Arukin holds, we realized that right now, consumers have absolutely no tools to fight back. Malicious actors have enterprise-grade technology to launch attacks, and everyday families need a way to protect their loved ones.
-            </p>
-          </div>
-
-          <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
-            <h3 className="text-xl font-bold text-white mb-3">Who It Is For</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <div className="mt-0.5 text-indigo-400"><Heart size={16} /></div>
-                <div>
-                  <h4 className="text-white text-sm font-bold">Guardians & Caretakers</h4>
-                  <p className="text-slate-400 text-xs leading-relaxed">Tech-savvy family members actively protecting elderly parents or vulnerable relatives from financial phishing and social scams.</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="mt-0.5 text-emerald-400"><ShieldCheck size={16} /></div>
-                <div>
-                  <h4 className="text-white text-sm font-bold">Independent Security Auditors</h4>
-                  <p className="text-slate-400 text-xs leading-relaxed">Professionals hired to run digital forensic sweeps for high-risk individuals (e.g., victims of cyber-stalking or identity theft).</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <div className="mt-0.5 text-purple-400"><Users size={16} /></div>
-                <div>
-                  <h4 className="text-white text-sm font-bold">Privacy-Conscious Individuals</h4>
-                  <p className="text-slate-400 text-xs leading-relaxed">Users who want to deeply audit their own digital footprints, revoke rogue third-party apps, and manage their cloud hygiene.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
+        {/* Why Section */}
+        <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm mb-16 max-w-4xl mx-auto">
+          <h3 className="text-xl font-bold text-white mb-3">Why We Built This</h3>
+          <p className="text-slate-400 text-sm leading-relaxed mb-4">
+            With the advent of AI tools and cheap internet, almost everyone now has a massive digital footprint. We are more connected than ever. But while most people know how to navigate YouTube, scroll Instagram, or perform a Google search, not everyone has the digital literacy to spot a sophisticated threat.
+          </p>
+          <p className="text-slate-400 text-sm leading-relaxed mb-4">
+            It is incredibly easy for an older family member, or even someone who considers themselves tech-savvy, to click a malicious link in a WhatsApp message or a disguised Gmail attachment without realizing the danger. 
+          </p>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            While we understand the power a tool like Arukin holds, we realized that right now, consumers have absolutely no tools to fight back. Malicious actors have enterprise-grade technology to launch attacks, and everyday families need a way to protect their loved ones.
+          </p>
         </div>
 
         <div className="my-16 border-t border-white/10"></div>

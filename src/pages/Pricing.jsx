@@ -38,6 +38,7 @@ export default function Pricing() {
           <div className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">Home</Link>
             <Link to="/how-it-works" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">How it works</Link>
+            <Link to="/use-cases" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">Use Cases</Link>
             <Link to="/about" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors">About</Link>
             <Link to="/pricing" className="text-sm font-semibold text-white hover:text-indigo-400 transition-colors">Pricing</Link>
           </div>
@@ -58,6 +59,7 @@ export default function Pricing() {
           <div className="md:hidden bg-[#0A0A0B] border-b border-white/10 px-6 py-4 space-y-4 shadow-2xl animate-fade-in">
             <Link to="/" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
             <Link to="/how-it-works" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>How it works</Link>
+            <Link to="/use-cases" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Use Cases</Link>
             <Link to="/about" className="block text-sm font-semibold text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
             <Link to="/pricing" className="block text-sm font-semibold text-white hover:text-indigo-400 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
           </div>

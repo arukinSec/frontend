@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Pricing from './pages/Pricing';
 import HowItWorks from './pages/HowItWorks';
+import UseCases from './pages/UseCases';
 import MembersList from './pages/MembersList';
 import MemberDashboard from './pages/MemberDashboard';
 import ClientGateway from './pages/ClientGateway';
@@ -138,6 +139,10 @@ export default function App() {
       <Route 
         path="/pricing" 
         element={<Pricing />} 
+      />
+      <Route 
+        path="/use-cases" 
+        element={<UseCases />} 
       />
       <Route 
         path="/dashboard" 
