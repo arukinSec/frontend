@@ -136,7 +136,7 @@ export default function Pricing() {
               
               <ul className="space-y-4 text-sm text-slate-300">
                 <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Active operations (Delete, Compose)</li>
-                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Secure file previews</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Secure file previews (PDFs downloadable)</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Unlock social feed monitors</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> View full Contact details</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> We host the compliance backend</li>

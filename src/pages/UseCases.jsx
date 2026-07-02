@@ -72,7 +72,7 @@ export default function UseCases() {
               </p>
               <ul className="space-y-2 text-sm text-slate-700">
                 <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Connect your personal, work, side-hustle, and spam accounts to a single dashboard.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Search emails, preview Drive files, and manage contacts across all profiles without ever logging in and out.</li>
+                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Search emails, preview Drive files (and download PDFs), and manage contacts across all profiles without ever logging in and out.</li>
               </ul>
             </div>
           </div>
