@@ -266,8 +266,6 @@ export default function GmailUI({ member }) {
     }
   };
 
-  const isSandbox = false;
-
   const logAuditAction = async (actionType, resourceId, extraMetadata = {}) => {
     try {
       const performerId = localStorage.getItem('auditor_id');
@@ -498,7 +496,6 @@ export default function GmailUI({ member }) {
   };
 
   const handleMarkAsRead = async (id) => {
-    if (isSandbox) return;
     try {
       await fetchWithAuth(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/modify`, {
         method: 'POST',
@@ -584,14 +581,8 @@ export default function GmailUI({ member }) {
 
   const handleBulkArchive = async () => {
     if (selectedEmailIds.length === 0) return;
-    if (isSandbox) {
-      selectedEmailIds.forEach(id => removeEmailFromUI(id));
-      setSelectedEmailIds([]);
-      window.showToast("Archive action completed! (Simulation Mode)", "info");
-      return;
-    }
+    setMultiActionLoading(true);
     try {
-      setLoading(true);
       await Promise.all(
         selectedEmailIds.map(id => 
           fetchWithAuth(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/modify`, {
@@ -611,20 +602,14 @@ export default function GmailUI({ member }) {
     } catch (err) {
       window.showToast("Failed to archive: " + err.message, "error");
     } finally {
-      setLoading(false);
+      setMultiActionLoading(false);
     }
   };
 
   const handleBulkDelete = async () => {
     if (selectedEmailIds.length === 0) return;
-    if (isSandbox) {
-      selectedEmailIds.forEach(id => removeEmailFromUI(id));
-      setSelectedEmailIds([]);
-      window.showToast("Delete action completed! (Simulation Mode)", "info");
-      return;
-    }
+    setMultiActionLoading(true);
     try {
-      setLoading(true);
       await Promise.all(
         selectedEmailIds.map(id => 
           fetchWithAuth(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/modify`, {
@@ -647,26 +632,14 @@ export default function GmailUI({ member }) {
     } catch (err) {
       window.showToast("Failed to delete: " + err.message, "error");
     } finally {
-      setLoading(false);
+      setMultiActionLoading(false);
     }
   };
 
   const handleBulkMarkRead = async (unreadValue = false) => {
     if (selectedEmailIds.length === 0) return;
-    if (isSandbox) {
-      setEmailDetails(prev => {
-        const copy = { ...prev };
-        selectedEmailIds.forEach(id => {
-          if (copy[id]) copy[id].unread = unreadValue;
-        });
-        return copy;
-      });
-      setSelectedEmailIds([]);
-      window.showToast("Updated read status! (Simulation Mode)", "info");
-      return;
-    }
+    setMultiActionLoading(true);
     try {
-      setLoading(true);
       const actionBody = unreadValue 
         ? { addLabelIds: ['UNREAD'] }
         : { removeLabelIds: ['UNREAD'] };
@@ -700,7 +673,7 @@ export default function GmailUI({ member }) {
     } catch (err) {
       window.showToast("Failed to update status: " + err.message, "error");
     } finally {
-      setLoading(false);
+      setMultiActionLoading(false);
     }
   };
 
@@ -814,7 +787,7 @@ export default function GmailUI({ member }) {
               <span className="flex items-center gap-4 pl-4">
                 <Users size={18} /> Facebook
               </span>
-              {!isPro && !isSandbox && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
+              {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
             </button>
             <button 
               onClick={() => { setActiveLabel('INSTAGRAM'); setSelectedEmail(null); }}
@@ -825,7 +798,7 @@ export default function GmailUI({ member }) {
               <span className="flex items-center gap-4 pl-4">
                 <Camera size={18} /> Instagram
               </span>
-              {!isPro && !isSandbox && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
+              {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
             </button>
             <button 
               onClick={() => { setActiveLabel('GOOGLE'); setSelectedEmail(null); }}
@@ -836,7 +809,7 @@ export default function GmailUI({ member }) {
               <span className="flex items-center gap-4 pl-4">
                 <Globe size={18} /> Google
               </span>
-              {!isPro && !isSandbox && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
+              {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
             </button>
           </nav>
         </div>

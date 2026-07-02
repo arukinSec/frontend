@@ -162,7 +162,6 @@ const isPreviewable = (mimeType) => {
 // ── Main DriveUI ───────────────────────────────────────────────────────────────
 export default function DriveUI({ member }) {
   const isPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
-  const isSandbox = member?.email === 'sandbox@arukin.com' || member?.status === 'Simulation';
 
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -198,18 +197,6 @@ export default function DriveUI({ member }) {
 
   // ── Fetch files ───────────────────────────────────────────────────────────────
   const fetchDriveFiles = async (folderId = 'root') => {
-    if (isSandbox) {
-      setFiles([
-        { id: 'd1', name: 'Tax Documents 2024', mimeType: 'application/vnd.google-apps.folder', modifiedTime: new Date(Date.now() - 3 * 86400000).toISOString() },
-        { id: 'd2', name: 'Family Photos', mimeType: 'application/vnd.google-apps.folder', modifiedTime: new Date(Date.now() - 10 * 86400000).toISOString() },
-        { id: 'f1', name: 'electricity_bill_warning.pdf', mimeType: 'application/pdf', size: '248102', modifiedTime: new Date(Date.now() - 86400000).toISOString() },
-        { id: 'f2', name: 'notes.txt', mimeType: 'text/plain', size: '2048', modifiedTime: new Date(Date.now() - 2 * 86400000).toISOString() },
-        { id: 'f3', name: 'photo.jpg', mimeType: 'image/jpeg', size: '1249821', modifiedTime: new Date(Date.now() - 30 * 86400000).toISOString() },
-      ]);
-      setStorageQuota({ limit: '16106127360', usage: '4294967296' });
-      setLoading(false);
-      return;
-    }
     if (!member?.access_token) { setError('No access token.'); setLoading(false); return; }
     setLoading(true); setError(null);
     try {
@@ -316,7 +303,7 @@ export default function DriveUI({ member }) {
 
   // ── Preview ───────────────────────────────────────────────────────────────────
   const openViewer = async (file) => {
-    if (!isPro && !isSandbox) {
+    if (!isPro) {
       showConfirm({
         icon: <Shield size={18} className="text-indigo-500 animate-pulse" />,
         title: 'Upgrade to PRO?',
@@ -330,7 +317,6 @@ export default function DriveUI({ member }) {
     const isText = file.mimeType?.startsWith('text/') || ['json','csv','xml'].some(t => file.mimeType?.includes(t));
     const needsBlob = file.mimeType?.startsWith('image/') || file.mimeType?.includes('pdf');
     setViewer({ open: true, file, blobUrl: null, textContent: null, previewUrl: null, loading: true });
-    if (isSandbox) { setViewer(v => ({ ...v, loading: false })); return; }
     try {
       if (isGoogle) {
         setViewer(v => ({ ...v, previewUrl: `https://drive.google.com/file/d/${file.id}/preview`, loading: false }));
@@ -352,7 +338,7 @@ export default function DriveUI({ member }) {
   // ── Download ──────────────────────────────────────────────────────────────────
   const handleDownload = (file, e) => {
     if (e) e.stopPropagation();
-    if (!isPro && !isSandbox) {
+    if (!isPro) {
       showConfirm({
         icon: <Shield size={18} className="text-indigo-500 animate-pulse" />,
         title: 'Upgrade to PRO?',
@@ -372,16 +358,6 @@ export default function DriveUI({ member }) {
   };
 
   const executeDownload = async (file) => {
-    if (isSandbox) {
-      const isGws = file.mimeType?.startsWith('application/vnd.google-apps.');
-      const isPdf = file.mimeType?.includes('pdf') || isGws;
-      const type = isPdf ? 'application/pdf' : (file.mimeType || 'text/plain');
-      const blob = new Blob([`Arukin Sandbox — simulated download for: ${file.name}`], { type });
-      const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: isGws ? `${file.name}.pdf` : file.name });
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      window.showToast(`"${file.name}" downloaded (Simulated).`, 'success');
-      return;
-    }
     try {
       window.showToast(`Starting download for "${file.name}"...`, 'info');
 

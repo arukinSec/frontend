@@ -99,8 +99,6 @@ export default function ContactsUI({ member }) {
     return res;
   };
 
-  const isSandbox = false;
-
   // ── Fetch contacts ──────────────────────────────────────────────────────────
   const fetchContacts = async () => {
 
