@@ -109,7 +109,7 @@ export default function UseCases() {
               </p>
               <ul className="space-y-2 text-sm text-slate-300">
                 <li className="flex items-center gap-2"><ArrowRight size={14} className="text-purple-400" /> Neutralize digital phishing attempts before they escalate by identifying scam signatures.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-purple-400" /> Ensure absolute data privacy with our strict read-only dual-identity role separation.</li>
+                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-purple-400" /> Ensure absolute data privacy with our strict dual-identity role separation and API sandboxing.</li>
               </ul>
             </div>
           </div>

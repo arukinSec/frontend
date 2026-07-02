@@ -99,7 +99,7 @@ export default function Privacy() {
             <ul className="list-disc pl-5 space-y-2.5 text-slate-400 mt-2">
               <li><strong>Instant Revocation:</strong> You can disconnect and sever active tokens instantly. Once disconnected, your connection metadata is permanently deleted.</li>
               <li><strong>Immutable Performer Tracking:</strong> Every auditor view action (e.g. previewing a file or trashing a mail thread) is logged with the auditor's performer ID, ensuring you can review exactly how they monitored your account.</li>
-              <li><strong>Read-Only API Relays:</strong> The console operations default to read-only metadata structures to prevent unauthorized modifications to your active Google accounts.</li>
+              <li><strong>Sandboxed API Relays:</strong> The console operations process metadata securely to prevent unauthorized background modifications while granting explicit, user-triggered management over threats.</li>
             </ul>
           </section>
 

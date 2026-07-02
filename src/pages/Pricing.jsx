@@ -73,7 +73,7 @@ export default function Pricing() {
         </div>
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2 text-center font-sans">Flexible Compliance Plans</h1>
         <p className="text-slate-400 text-sm max-w-lg text-center mb-16">
-          Access read-only scans for free, or lock in discounted early bird pricing on our hosted cloud and self-hosted versions during beta.
+          Access basic scans for free, or lock in discounted early bird pricing on our hosted cloud and self-hosted versions during beta.
         </p>
 
         {/* Pricing Cards Grid */}
