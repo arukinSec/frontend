@@ -67,35 +67,35 @@ export default function Home({ session }) {
           <div className="lg:col-span-7 space-y-6 text-left order-2 lg:order-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-semibold">
               <ShieldCheck size={14} />
-              <span>Digital Safety Auditing</span>
+              <span>Family Safety Dashboard</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-none">
-              Verify Digital Trust & <span className="text-emerald-600">Neutralize Phishing</span>
+              Protect Your Family's <span className="text-emerald-600">Digital Life</span>
             </h1>
             <p className="text-slate-600 text-sm md:text-base leading-relaxed max-w-xl">
-              Auditable safety dashboards built for compliance. Scan emails for malware, inspect folder directory changes, and secure critical communications.
+              A secure, unified dashboard to help you manage and protect the Google accounts of your less tech-savvy family members—without ever needing their passwords.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-200">
               <div className="flex gap-3">
-                <div className="h-10 w-10 rounded-lg bg-emerald-600/10 border border-indigo-500/10 flex items-center justify-center shrink-0 text-emerald-600">
+                <div className="h-10 w-10 rounded-lg bg-emerald-600/10 border border-emerald-500/10 flex items-center justify-center shrink-0 text-emerald-600">
                   <Landmark size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 text-sm">Strict Role Obfuscation</h4>
+                  <h4 className="font-semibold text-slate-900 text-sm">No Passwords Shared</h4>
                   <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                    Auditors check permissions using public 6-digit access tokens, isolating credentials completely.
+                    Connect their accounts using a simple 6-digit code. Their login credentials remain completely private.
                   </p>
                 </div>
               </div>
               <div className="flex gap-3">
-                <div className="h-10 w-10 rounded-lg bg-teal-600/10 border border-purple-500/10 flex items-center justify-center shrink-0 text-teal-600">
+                <div className="h-10 w-10 rounded-lg bg-teal-600/10 border border-teal-500/10 flex items-center justify-center shrink-0 text-teal-600">
                   <ShieldCheck size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 text-sm">Auditable Data Vault</h4>
+                  <h4 className="font-semibold text-slate-900 text-sm">Spot Scams Instantly</h4>
                   <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                    Review file directories, logs, and account settings safely through secure API relays.
+                    Review their inbox for phishing emails and check their Drive for suspicious shared files from one dashboard.
                   </p>
                 </div>
               </div>
