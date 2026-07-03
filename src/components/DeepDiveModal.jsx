@@ -3,7 +3,7 @@ import { X, Lock, Search, AlertTriangle, CreditCard, Clock, Activity } from 'luc
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
-export default function DeepDiveModal({ platform, query, memberId, isPro, onClose, onNavigateToInbox }) {
+export default function DeepDiveModal({ platform, query, memberId, isPro, serverUsage, onClose, onNavigateToInbox }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [scanCount, setScanCount] = useState(0);
@@ -11,13 +11,15 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
   
   const maxScans = isPro ? 5 : 1;
   const cacheKey = `insight_${memberId}_${platform.id}`;
-  const countKey = `insightCount_${memberId}_${platform.id}`;
 
   useEffect(() => {
-    const cachedData = localStorage.getItem(cacheKey);
-    const cachedCount = parseInt(localStorage.getItem(countKey)) || 0;
+    let initialCount = 0;
+    if (serverUsage) {
+      initialCount = serverUsage.filter(l => l.scan_type === 'insight_scan' && l.platform === platform.id).length;
+    }
+    setScanCount(initialCount);
     
-    setScanCount(cachedCount);
+    const cachedData = localStorage.getItem(cacheKey);
     
     if (cachedData) {
       try {
@@ -49,11 +51,7 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
           setData(result);
           localStorage.setItem(cacheKey, JSON.stringify(result));
           
-          setScanCount(prev => {
-            const next = prev + 1;
-            localStorage.setItem(countKey, next.toString());
-            return next;
-          });
+          setScanCount(prev => prev + 1);
         } else {
           console.error("Deep scan failed");
           if (res.status === 429) {

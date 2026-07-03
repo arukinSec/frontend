@@ -19,14 +19,39 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
   const [scanStatus, setScanStatus] = useState(footprintData ? 'complete' : 'idle');
   const [selectedPlatform, setSelectedPlatform] = useState(null);
   const [scanCount, setScanCount] = useState(0);
+  const [serverUsage, setServerUsage] = useState([]);
   
   const maxScans = isPro ? 10 : 2;
 
   useEffect(() => {
-    if (member) {
-      const count = parseInt(localStorage.getItem(`scanCount_${member.id}`)) || 0;
-      setScanCount(count);
+    async function fetchUsage() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch(`${supabase.supabaseUrl}/functions/v1/intel-gateway`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
+          body: JSON.stringify({ action: 'get_usage' })
+        });
+        if (res.ok) {
+          const { usage } = await res.json();
+          setServerUsage(usage);
+          
+          const socialLogs = usage.filter(l => l.scan_type === 'social');
+          const platformCounts = {};
+          socialLogs.forEach(l => {
+            platformCounts[l.platform] = (platformCounts[l.platform] || 0) + 1;
+          });
+          const maxScansUsed = Object.values(platformCounts).length > 0 ? Math.max(...Object.values(platformCounts)) : 0;
+          setScanCount(maxScansUsed);
+        }
+      } catch (err) {
+        console.error("Failed to fetch usage logs", err);
+      }
     }
+    if (member) fetchUsage();
   }, [member]);
 
   useEffect(() => {
@@ -108,9 +133,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
       setFootprintData(newData);
       localStorage.setItem(`footprints_${member.id}`, JSON.stringify(newData));
       
-      const newCount = scanCount + 1;
-      setScanCount(newCount);
-      localStorage.setItem(`scanCount_${member.id}`, newCount.toString());
+      setScanCount(prev => prev + 1);
       
       setScanStatus('complete');
     } catch (err) {
@@ -221,14 +244,15 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
       </div>
       
       {selectedPlatform && (
-        <DeepDiveModal
-          platform={selectedPlatform}
-          query={PLATFORM_QUERIES[selectedPlatform.id] || `from:${selectedPlatform.name.toLowerCase()}.com`}
-          memberId={member.id}
-          isPro={isPro}
-          onClose={() => setSelectedPlatform(null)}
-          onNavigateToInbox={onNavigateToInbox}
-        />
+        <DeepDiveModal 
+            platform={selectedPlatform} 
+            query={PLATFORM_QUERIES[selectedPlatform.id]}
+            memberId={member.id}
+            isPro={isPro}
+            serverUsage={serverUsage}
+            onClose={() => setSelectedPlatform(null)}
+            onNavigateToInbox={onNavigateToInbox}
+          />
       )}
     </div>
   );
