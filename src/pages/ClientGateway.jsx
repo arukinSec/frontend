@@ -37,14 +37,18 @@ export default function ClientGateway() {
   const [consentError, setConsentError] = useState('');
 
   // Clear any active auditor variables from local storage immediately when client gateway loads
+  // UNLESS this is an active Self-Audit flow, in which case we MUST preserve them.
   useEffect(() => {
-    localStorage.removeItem('admin_session');
-    localStorage.removeItem('auditor_id');
-    localStorage.removeItem('auditor_tier');
-    localStorage.removeItem('auditor_auth_id');
-    localStorage.removeItem('auditor_email');
-    localStorage.removeItem('auditor_onboarded');
-    localStorage.removeItem('auditor_role');
+    const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
+    if (!isSelfAudit) {
+      localStorage.removeItem('admin_session');
+      localStorage.removeItem('auditor_id');
+      localStorage.removeItem('auditor_tier');
+      localStorage.removeItem('auditor_auth_id');
+      localStorage.removeItem('auditor_email');
+      localStorage.removeItem('auditor_onboarded');
+      localStorage.removeItem('auditor_role');
+    }
   }, []);
 
   // Auto-load authId if provided in query string e.g. ?authId=123456 or ?authId=123-456
@@ -142,11 +146,16 @@ export default function ClientGateway() {
       if (error) throw error;
       
       const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
-      const expectedEmail = localStorage.getItem('arukin_auditor_email')?.toLowerCase() || '';
       
       let validSelfAudit = false;
-      if (isSelfAudit) {
-        if (userEmail.toLowerCase() === expectedEmail) {
+      if (isSelfAudit && parsedAuditorId) {
+        const { data: audData } = await supabase
+          .from('auditors')
+          .select('email')
+          .eq('id', parsedAuditorId)
+          .single();
+          
+        if (audData && audData.email.toLowerCase() === userEmail.toLowerCase()) {
           validSelfAudit = true;
         } else {
           window.showToast("Self-Audit cancelled: Mismatched Google account. Registered as a standard target.", "warning");
@@ -170,7 +179,7 @@ export default function ClientGateway() {
       localStorage.removeItem('arukin_auditor_email');
       
       if (validSelfAudit) {
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
         return;
       } else {
         // CRITICAL: Immediately log out of Supabase to prevent the member 
