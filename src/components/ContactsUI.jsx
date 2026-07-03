@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { Search, Users, RefreshCw, Mail, Phone, Building2, BarChart2, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import localforage from 'localforage';
 
 export default function ContactsUI({ member }) {
   const isPro = hasProAccess(member);
@@ -108,7 +109,21 @@ export default function ContactsUI({ member }) {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    const cacheKey = `contacts_cache_${member.id}`;
+    let hasCache = false;
+    
+    try {
+      const cached = await localforage.getItem(cacheKey);
+      if (cached) {
+        setContacts(cached);
+        hasCache = true;
+        setLoading(false); // Instant render
+      }
+    } catch (e) {
+      console.error('Contacts cache read error:', e);
+    }
+
+    if (!hasCache) setLoading(true);
     setError(null);
     try {
       const url = 'https://people.googleapis.com/v1/people/me/connections?personFields=names,emailAddresses,phoneNumbers,organizations,photos&pageSize=500';
@@ -134,9 +149,12 @@ export default function ContactsUI({ member }) {
       });
 
       setContacts(parsed);
+      
+      // Update cache in background
+      await localforage.setItem(cacheKey, parsed);
     } catch (err) {
       console.error(err);
-      setError(err.message);
+      if (!hasCache) setError(err.message);
     } finally {
       setLoading(false);
     }
