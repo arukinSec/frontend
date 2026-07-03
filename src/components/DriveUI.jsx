@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { File, FileText, Image, RefreshCw, Download, Trash2, X, Eye, ChevronRight, Film, Music, Shield } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import localforage from 'localforage';
 
 // ── Real Google Drive SVG logo ─────────────────────────────────────────────────
 const DriveIcon = ({ size = 20 }) => (
@@ -158,6 +159,8 @@ export default function DriveUI({ member }) {
   const isPro = hasProAccess(member);
 
   const [files, setFiles] = useState([]);
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [storageQuota, setStorageQuota] = useState(null);
@@ -199,6 +202,7 @@ export default function DriveUI({ member }) {
       const cached = await localforage.getItem(cacheKey);
       if (cached && cached.files) {
         setFiles(cached.files);
+        setNextPageToken(cached.nextPageToken || null);
         if (cached.storageQuota) setStorageQuota(cached.storageQuota);
         hasCache = true;
         setLoading(false); // Instant render
@@ -219,7 +223,7 @@ export default function DriveUI({ member }) {
       else q = encodeURIComponent(`'${folderId}' in parents and trashed=false`);
 
       const [filesRes, aboutRes] = await Promise.all([
-        fetchWithAuth(`https://www.googleapis.com/drive/v3/files?fields=files(id,name,mimeType,size,modifiedTime)&pageSize=100&q=${q}`),
+        fetchWithAuth(`https://www.googleapis.com/drive/v3/files?fields=nextPageToken,files(id,name,mimeType,size,modifiedTime)&pageSize=100&q=${q}`),
         fetchWithAuth('https://www.googleapis.com/drive/v3/about?fields=storageQuota')
       ]);
       if (!filesRes.ok) throw new Error('Failed to fetch Drive files.');
@@ -227,6 +231,7 @@ export default function DriveUI({ member }) {
       
       const newFiles = filesData.files || [];
       setFiles(newFiles);
+      setNextPageToken(filesData.nextPageToken || null);
       
       let newQuota = null;
       if (aboutRes.ok) { 
@@ -236,12 +241,37 @@ export default function DriveUI({ member }) {
       }
       
       // Update cache in background
-      await localforage.setItem(cacheKey, { files: newFiles, storageQuota: newQuota });
+      await localforage.setItem(cacheKey, { files: newFiles, nextPageToken: filesData.nextPageToken || null, storageQuota: newQuota });
     } catch (err) { 
       console.error(err); 
       if (!hasCache) setError(err.message); 
     } finally { 
       setLoading(false); 
+    }
+  };
+
+  const loadMoreFiles = async () => {
+    if (!nextPageToken || loadingMore) return;
+    setLoadingMore(true);
+    const folderId = folderStack[folderStack.length - 1].id;
+    let q;
+    if (folderId === 'images') q = encodeURIComponent(`mimeType contains 'image/' and trashed=false and 'me' in owners`);
+    else if (folderId === 'videos') q = encodeURIComponent(`mimeType contains 'video/' and trashed=false and 'me' in owners`);
+    else if (folderId === 'shared') q = encodeURIComponent('sharedWithMe=true and trashed=false');
+    else q = encodeURIComponent(`'${folderId}' in parents and trashed=false`);
+
+    try {
+      const res = await fetchWithAuth(`https://www.googleapis.com/drive/v3/files?fields=nextPageToken,files(id,name,mimeType,size,modifiedTime)&pageSize=100&q=${q}&pageToken=${nextPageToken}`);
+      if (!res.ok) throw new Error('Failed to fetch more files.');
+      const data = await res.json();
+      setFiles(prev => [...prev, ...(data.files || [])]);
+      setNextPageToken(data.nextPageToken || null);
+      // Explicitly NOT caching the appended files to conserve local storage space for images/videos
+    } catch (err) {
+      console.error(err);
+      if (window.showToast) window.showToast("Failed to load more files.", "error");
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -570,6 +600,20 @@ export default function DriveUI({ member }) {
                             </div>
                           ))}
                         </div>
+                      </div>
+                    )}
+                    
+                    {/* Load More Button */}
+                    {nextPageToken && (
+                      <div className="flex justify-center mt-6">
+                        <button
+                          onClick={loadMoreFiles}
+                          disabled={loadingMore}
+                          className="px-5 py-2.5 bg-white border border-slate-200 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {loadingMore && <RefreshCw size={14} className="animate-spin" />}
+                          {loadingMore ? 'Loading...' : 'Load More Files'}
+                        </button>
                       </div>
                     )}
                   </div>
