@@ -270,9 +270,9 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
         <div className="flex-1 overflow-y-auto flex flex-col bg-slate-50">
 
           {currentPage === 1 && (
-            <div className="flex-1 flex flex-col bg-white">
+            <div className="flex-1 flex flex-col bg-white overflow-hidden">
               {/* Hero card */}
-              <div className="bg-gradient-to-br from-indigo-50 to-slate-50 border-b border-slate-200 px-8 py-7 flex items-center gap-6 shrink-0">
+              <div className="bg-gradient-to-br from-indigo-50 to-slate-50 border-b border-slate-200 px-6 py-5 flex items-center gap-6 shrink-0">
                 <div className="relative shrink-0">
                   <img
                     src={photoUrl}
@@ -307,9 +307,9 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100 flex-1">
+              <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100 flex-1 overflow-hidden">
                 {/* Left column */}
-            <div className="px-8 py-6 space-y-8">
+            <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto">
               
               {/* Storage Analysis (Pie Chart & Space Detail) */}
               <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
@@ -407,7 +407,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
             </div>
 
             {/* Right column */}
-            <div className="px-8 py-6 space-y-6">
+            <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto">
 
               {/* Data Metrics Summary Cards */}
               <div className="mb-6 grid grid-cols-1 gap-4">
@@ -463,13 +463,25 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                    </div>
                 </div>
 
-                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Total Google Contacts</span>
-                    <p className="text-3xl font-bold text-indigo-600 mt-1">{contactsCount.toLocaleString()}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex flex-col justify-center">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Google Contacts</span>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-2xl font-bold text-indigo-600">{contactsCount.toLocaleString()}</p>
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <User size={18} className="text-indigo-500" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                    <User size={24} className="text-indigo-500" />
+
+                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex flex-col justify-center">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Identity Markers</span>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-2xl font-bold text-emerald-600">{phones.length + addresses.length + urls.length}</p>
+                      <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <Shield size={18} className="text-emerald-500" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
