@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function DeepDiveModal({ platform, query, memberId, isPro, serverUsage, onClose, onNavigateToInbox }) {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [scanCount, setScanCount] = useState(0);
   const navigate = useNavigate();
   
@@ -24,6 +24,7 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
     if (cachedData) {
       try {
         setData(JSON.parse(cachedData));
+        setLoading(false);
       } catch (e) {
         fetchDeepScan();
       }
