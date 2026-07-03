@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User } from 'lucide-react';
+import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User, Info } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { supabase } from '../supabaseClient';
 import localforage from 'localforage';
@@ -493,8 +493,17 @@ export default function YouTubeUI({ member }) {
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h4 className="text-lg font-bold text-white">High Value Subscribers</h4>
-                    <p className="text-sm text-slate-400">Analysis of the most influential accounts subscribed to this target.</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-lg font-bold text-white">Recent Subscribers (Influence Ranked)</h4>
+                      <div className="relative group flex items-center justify-center">
+                        <Info size={16} className="text-slate-500 cursor-help hover:text-white transition-colors" />
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 bg-slate-800 text-xs text-slate-300 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
+                          Google's API permanently limits subscriber queries to the most recent 1,000 accounts. This list ranks influence exclusively within that latest cohort.
+                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-400">Analysis of the most influential accounts among their newest subscribers.</p>
                   </div>
                   <button className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg transition-colors border border-white/10">
                     Export CSV
