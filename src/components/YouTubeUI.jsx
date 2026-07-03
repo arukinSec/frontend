@@ -50,47 +50,38 @@ export default function YouTubeUI({ member }) {
     setLoading(true);
     setError(null);
     try {
-      if (!member.access_token) {
-        throw new Error('No access token available for this member.');
+      if (!member.id) {
+        throw new Error('No member context available.');
       }
 
-      const headers = {
-        Authorization: `Bearer ${member.access_token}`,
-        Accept: 'application/json'
-      };
+      const res = await supabase.functions.invoke('audit-gateway', {
+        body: {
+          action: 'fetch-youtube',
+          memberId: member.id,
+          plan: isPro ? 'pro' : 'free'
+        }
+      });
 
-      // 1. Fetch Channel Info
-      const channelRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails,brandingSettings&mine=true', { headers });
-      const channelData = await channelRes.json();
-      
-      if (!channelRes.ok) throw new Error(channelData.error?.message || 'Failed to fetch channel data');
+      if (res.error) throw new Error(res.error.message || 'Failed to fetch YouTube data');
+      if (res.data.error) throw new Error(res.data.error);
 
-      // 2. Fetch Subscriptions (Who they subscribe to)
-      const subsRes = await fetch('https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&maxResults=50', { headers });
-      const subsData = await subsRes.json();
+      const ed = res.data;
+      const channelItem = ed.channel;
 
-      // 3. Fetch Playlists (Public and Private)
-      const playlistsRes = await fetch('https://www.googleapis.com/youtube/v3/playlists?part=snippet,status&mine=true&maxResults=50', { headers });
-      const playlistsData = await playlistsRes.json();
-
-      const channelItem = channelData.items?.[0];
       let formattedChannel = null;
-      let uploadsPlaylistId = null;
-
       if (channelItem) {
-        uploadsPlaylistId = channelItem.contentDetails?.relatedPlaylists?.uploads;
         formattedChannel = {
           id: channelItem.id,
-          title: channelItem.snippet.title,
-          subscribers: Number(channelItem.statistics.subscriberCount || 0).toLocaleString(),
-          videos: Number(channelItem.statistics.videoCount || 0).toLocaleString(),
-          views: Number(channelItem.statistics.viewCount || 0).toLocaleString(),
-          thumbnail: channelItem.snippet.thumbnails?.high?.url || channelItem.snippet.thumbnails?.default?.url || member.avatar_url,
+          title: channelItem.snippet?.title || 'YouTube User',
+          subscribers: Number(channelItem.statistics?.subscriberCount || 0).toLocaleString(),
+          videos: Number(channelItem.statistics?.videoCount || 0).toLocaleString(),
+          views: Number(channelItem.statistics?.viewCount || 0).toLocaleString(),
+          thumbnail: channelItem.snippet?.thumbnails?.high?.url || channelItem.snippet?.thumbnails?.default?.url || member.avatar_url,
           banner: channelItem.brandingSettings?.image?.bannerExternalUrl || null,
-          customUrl: channelItem.snippet.customUrl || '',
-          country: channelItem.snippet.country || 'Unknown',
-          description: channelItem.snippet.description || 'No description provided.',
-          joined: new Date(channelItem.snippet.publishedAt).toLocaleDateString()
+          customUrl: channelItem.snippet?.customUrl || '',
+          country: channelItem.snippet?.country || 'Unknown',
+          description: channelItem.snippet?.description || 'No description provided.',
+          joined: new Date(channelItem.snippet?.publishedAt || Date.now()).toLocaleDateString()
         };
       } else {
         formattedChannel = {
@@ -105,40 +96,35 @@ export default function YouTubeUI({ member }) {
         };
       }
 
-      const formattedSubs = (subsData.items || []).map(item => ({
-        id: item.id,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails?.default?.url || item.snippet.thumbnails?.high?.url,
-        category: 'Subscription'
-      }));
+      const formattedSubscribers = (ed.subscribers || []).map(sub => {
+        let threatLevel = 'Low';
+        if (sub.subscribers > 1000000) threatLevel = 'High';
+        else if (sub.subscribers > 50000) threatLevel = 'Medium';
+        
+        return {
+          id: sub.channelId,
+          title: sub.title,
+          thumbnail: sub.thumbnail,
+          subs: Number(sub.subscribers).toLocaleString(),
+          videos: 'Unknown',
+          joined: 'Unknown',
+          threatLevel
+        };
+      });
 
-      const formattedPlaylists = (playlistsData.items || []).map(item => ({
-        id: item.id,
-        title: item.snippet.title,
-        thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-        status: item.status?.privacyStatus || 'public'
-      }));
-
-      // Mocking complex endpoints for the UI structure while we wire them up
       const mockAnalytics = { watchTime: '1,245 hrs', revenue: '$340.50', impressions: '45,200' };
       const mockVideos = [
         { id: '1', title: 'My First Vlog', views: '1,200', likes: '45', comments: '12', date: '2025-01-15' },
         { id: '2', title: 'React Tutorial', views: '5,400', likes: '320', comments: '54', date: '2025-02-22' }
       ];
-      const mockSubscribers = [
-        { id: 's1', title: 'Tech Reviewer Pro', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '1.2M', videos: '450', joined: '2023-01-15', threatLevel: 'High' },
-        { id: 's2', title: 'Daily Vlogs', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '850K', videos: '1,200', joined: '2022-11-20', threatLevel: 'Medium' },
-        { id: 's3', title: 'Gaming Highlights', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '400K', videos: '89', joined: '2024-05-10', threatLevel: 'Low' },
-        { id: 's4', title: 'Anonymous User', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '12', videos: '0', joined: '2025-02-01', threatLevel: 'Low' }
-      ];
 
       const finalData = {
         channel: formattedChannel,
-        subscriptions: formattedSubs,
-        playlists: formattedPlaylists,
+        subscriptions: ed.subscriptions || [],
+        playlists: ed.playlists || [],
         analytics: mockAnalytics,
         videos: mockVideos,
-        subscribers: mockSubscribers
+        subscribers: formattedSubscribers
       };
 
       setData(finalData);
