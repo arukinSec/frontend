@@ -688,13 +688,26 @@ export default function MembersList() {
                               const auditorId = localStorage.getItem('auditor_id');
                               const { error } = await supabase
                                 .from('members')
-                                .update({ connection_status: 'DISCONNECTED' })
+                                .update({ 
+                                  connection_status: 'DISCONNECTED',
+                                  access_token: null,
+                                  google_refresh_token: null
+                                })
                                 .eq('id', member.id);
                                
                                if (error) {
                                  window.showToast('Failed to disconnect member: ' + error.message, 'error');
                                } else {
-                                 window.showToast('Member connection disconnected.', 'info');
+                                 window.showToast('Member connection disconnected & tokens scrubbed.', 'info');
+                                 
+                                 // Immediately scrub local storage cache for zero-knowledge compliance
+                                 try {
+                                   const cacheKey = `cache_${member.email}`;
+                                   await localforage.removeItem(cacheKey);
+                                   console.log(`Scrubbed local cache for ${member.email}`);
+                                 } catch (cacheErr) {
+                                   console.warn("Failed to clear member cache:", cacheErr);
+                                 }
                                  
                                  // Check if they disconnected their own self-audit account!
                                  if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
