@@ -192,7 +192,25 @@ export default function DriveUI({ member }) {
   // ── Fetch files ───────────────────────────────────────────────────────────────
   const fetchDriveFiles = async (folderId = 'root') => {
     if (!member?.access_token) { setError('No access token.'); setLoading(false); return; }
-    setLoading(true); setError(null);
+    
+    const cacheKey = `drive_cache_${member.id}_${folderId}`;
+    let hasCache = false;
+    try {
+      const cached = await localforage.getItem(cacheKey);
+      if (cached && cached.files) {
+        setFiles(cached.files);
+        if (cached.storageQuota) setStorageQuota(cached.storageQuota);
+        hasCache = true;
+        setLoading(false); // Instant render
+      }
+    } catch (e) { console.error('Drive cache error:', e); }
+
+    if (!hasCache) {
+      setLoading(true);
+      setFiles([]);
+    }
+    setError(null);
+    
     try {
       let q;
       if (folderId === 'images') q = encodeURIComponent(`mimeType contains 'image/' and trashed=false and 'me' in owners`);
@@ -206,10 +224,25 @@ export default function DriveUI({ member }) {
       ]);
       if (!filesRes.ok) throw new Error('Failed to fetch Drive files.');
       const filesData = await filesRes.json();
-      setFiles(filesData.files || []);
-      if (aboutRes.ok) { const d = await aboutRes.json(); setStorageQuota(d.storageQuota || null); }
-    } catch (err) { console.error(err); setError(err.message); }
-    finally { setLoading(false); }
+      
+      const newFiles = filesData.files || [];
+      setFiles(newFiles);
+      
+      let newQuota = null;
+      if (aboutRes.ok) { 
+        const d = await aboutRes.json(); 
+        newQuota = d.storageQuota || null;
+        setStorageQuota(newQuota); 
+      }
+      
+      // Update cache in background
+      await localforage.setItem(cacheKey, { files: newFiles, storageQuota: newQuota });
+    } catch (err) { 
+      console.error(err); 
+      if (!hasCache) setError(err.message); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   useEffect(() => { fetchDriveFiles('root'); }, [member]);
