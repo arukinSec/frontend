@@ -97,7 +97,8 @@ export default function YouTubeUI({ member }) {
         };
       }
 
-      const formattedSubscribers = (ed.subscribers || []).map(sub => {
+      // Only keep the Top 100 most influential subscribers
+      const formattedSubscribers = (ed.subscribers || []).slice(0, 100).map(sub => {
         return {
           id: sub.channelId,
           title: sub.title,
@@ -572,7 +573,7 @@ export default function YouTubeUI({ member }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {data.subscribers?.slice((subscribersPage - 1) * 50, subscribersPage * 50).map((sub, i) => (
+                      {data.subscribers?.slice((subscribersPage - 1) * 10, subscribersPage * 10).map((sub, i) => (
                         <tr key={i} className="hover:bg-white/[0.02] transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
@@ -592,7 +593,7 @@ export default function YouTubeUI({ member }) {
                 </div>
 
                 {/* Pagination Controls */}
-                {data.subscribers?.length > 50 && (
+                {data.subscribers?.length > 10 && (
                   <div className="flex justify-center items-center gap-2 mt-8">
                     <button 
                       onClick={() => setSubscribersPage(p => Math.max(1, p - 1))}
@@ -603,7 +604,7 @@ export default function YouTubeUI({ member }) {
                     </button>
                     
                     <div className="flex items-center gap-1 mx-2">
-                      {getPaginationRange(subscribersPage, Math.ceil(data.subscribers.length / 50)).map((item, idx) => {
+                      {getPaginationRange(subscribersPage, Math.ceil(data.subscribers.length / 10)).map((item, idx) => {
                         if (item === '...') {
                           return <span key={`ellipsis-${idx}`} className="px-1 text-slate-500 text-xs tracking-widest">...</span>;
                         }
@@ -624,8 +625,8 @@ export default function YouTubeUI({ member }) {
                     </div>
 
                     <button 
-                      onClick={() => setSubscribersPage(p => Math.min(Math.ceil(data.subscribers.length / 50), p + 1))}
-                      disabled={subscribersPage === Math.ceil(data.subscribers?.length / 50)}
+                      onClick={() => setSubscribersPage(p => Math.min(Math.ceil(data.subscribers.length / 10), p + 1))}
+                      disabled={subscribersPage === Math.ceil(data.subscribers?.length / 10)}
                       className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:hover:bg-white/5 text-slate-300 hover:text-white font-semibold text-xs rounded-lg transition-colors border border-white/10"
                     >
                       Next
