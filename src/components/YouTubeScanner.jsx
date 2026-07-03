@@ -14,29 +14,69 @@ export default function YouTubeScanner({ member }) {
     setLoading(true);
     setError(null);
     try {
-      // Artificial delay to simulate backend loading for the UI demo
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!member.access_token) {
+        throw new Error('No access token available for this member.');
+      }
 
-      // Mock Data for UI demonstration until backend is wired
-      const mockData = {
-        channel: {
-          title: member?.name || 'User Channel',
-          subscribers: '1.2K',
-          videos: '15',
-          views: '124,500',
-          thumbnail: member?.avatar_url || 'https://lh3.googleusercontent.com/a/default-user=s120',
-          description: 'Personal channel for vlogs and random clips.',
-          joined: 'Oct 2018'
-        },
-        subscriptions: [
-          { id: '1', title: 'Crypto Daily', thumbnail: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', category: 'Finance' },
-          { id: '2', title: 'BetterHelp Therapy', thumbnail: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', category: 'Mental Health' },
-          { id: '3', title: 'Las Vegas Vlogs', thumbnail: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', category: 'Travel/Gambling' }
-        ]
+      const headers = {
+        Authorization: `Bearer ${member.access_token}`,
+        Accept: 'application/json'
       };
 
-      setData(mockData);
-      await localforage.setItem(`youtube_data_${member.id}`, mockData);
+      // Fetch Channel Info
+      const channelRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true', { headers });
+      const channelData = await channelRes.json();
+      
+      if (!channelRes.ok) {
+        throw new Error(channelData.error?.message || 'Failed to fetch channel data');
+      }
+
+      // Fetch Subscriptions
+      const subsRes = await fetch('https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&maxResults=50', { headers });
+      const subsData = await subsRes.json();
+
+      if (!subsRes.ok) {
+        throw new Error(subsData.error?.message || 'Failed to fetch subscriptions');
+      }
+
+      const channelItem = channelData.items?.[0];
+      let formattedChannel = null;
+      if (channelItem) {
+        formattedChannel = {
+          title: channelItem.snippet.title,
+          subscribers: Number(channelItem.statistics.subscriberCount || 0).toLocaleString(),
+          videos: Number(channelItem.statistics.videoCount || 0).toLocaleString(),
+          views: Number(channelItem.statistics.viewCount || 0).toLocaleString(),
+          thumbnail: channelItem.snippet.thumbnails?.high?.url || channelItem.snippet.thumbnails?.default?.url || member.avatar_url,
+          description: channelItem.snippet.description || 'No description provided.',
+          joined: new Date(channelItem.snippet.publishedAt).toLocaleDateString()
+        };
+      } else {
+        formattedChannel = {
+          title: member.name || 'YouTube User',
+          subscribers: '0',
+          videos: '0',
+          views: '0',
+          thumbnail: member.avatar_url || 'https://lh3.googleusercontent.com/a/default-user=s120',
+          description: 'This user does not have a public YouTube channel.',
+          joined: 'Unknown'
+        };
+      }
+
+      const formattedSubs = (subsData.items || []).map(item => ({
+        id: item.id,
+        title: item.snippet.title,
+        thumbnail: item.snippet.thumbnails?.default?.url || item.snippet.thumbnails?.high?.url,
+        category: 'Channel'
+      }));
+
+      const finalData = {
+        channel: formattedChannel,
+        subscriptions: formattedSubs
+      };
+
+      setData(finalData);
+      await localforage.setItem(`youtube_data_${member.id}`, finalData);
       
     } catch (err) {
       console.error(err);
