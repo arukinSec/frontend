@@ -22,7 +22,7 @@ const BANKING_PLATFORMS = [
   { id: 'axis', label: 'AXIS', name: 'Axis Bank', icon: 'https://cdn.simpleicons.org/axisbank', query: 'from:axisbank.com OR from:axis.bank.in' },
   { id: 'kotak', label: 'KOTAK', name: 'Kotak Bank', icon: 'https://cdn.simpleicons.org/kotakmahindrabank', query: 'from:kotak.com' },
   { id: 'pnb', label: 'PNB', name: 'PNB', icon: 'https://cdn.simpleicons.org/punjabnationalbank', query: 'from:pnb.co.in' },
-  { id: 'boi', label: 'BOI', name: 'BOI', icon: 'https://cdn.simpleicons.org/bankofindia', query: 'from:bankofindia.co.in' },
+  { id: 'boi', label: 'BOI', name: 'BOI', icon: 'https://cdn.simpleicons.org/bankofindia', query: 'from:bankofindia.co.in OR from:bankofindia.bank.in' },
   { id: 'ubi', label: 'UBI', name: 'Union Bank', icon: 'https://cdn.simpleicons.org/unionbankofindia', query: 'from:unionbankofindia.bank' },
   { id: 'chase', label: 'CHASE', name: 'Chase', icon: 'https://cdn.simpleicons.org/chase', query: 'from:chase.com' },
   { id: 'bofa', label: 'BOFA', name: 'Bank of America', icon: 'https://cdn.simpleicons.org/bankofamerica', query: 'from:bankofamerica.com' },
@@ -105,7 +105,7 @@ export default function GmailUI({ member, initialLabel }) {
   const [loadingBody, setLoadingBody] = useState(false);
 
   // Labels State
-  const [currentMode, setCurrentMode] = useState(initialLabel ? 'PREMIUM' : 'STANDARD'); // 'STANDARD' | 'PREMIUM'
+  const [currentMode, setCurrentMode] = useState(initialLabel ? 'PREMIUM' : 'USER'); // 'USER' | 'STANDARD' | 'PREMIUM'
   const [activeLabel, setActiveLabel] = useState(initialLabel || 'INBOX');
 
   // Compose State
@@ -859,10 +859,16 @@ export default function GmailUI({ member, initialLabel }) {
 
         <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
           <button 
-            onClick={() => { setCurrentMode('STANDARD'); setActiveLabel('INBOX'); }}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'STANDARD' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+            onClick={() => { setCurrentMode('USER'); setActiveLabel('INBOX'); }}
+            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'USER' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
           >
-            Standard Inbox
+            User Inbox
+          </button>
+          <button 
+            onClick={() => { setCurrentMode('STANDARD'); setActiveLabel('OTHER_PLATFORMS'); }}
+            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'STANDARD' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
+            Standard Platforms
           </button>
           <button 
             onClick={() => { setCurrentMode('PREMIUM'); setActiveLabel('TARGET_INBOX'); }}
@@ -885,12 +891,12 @@ export default function GmailUI({ member, initialLabel }) {
           </button>
 
           <nav className="flex-1 px-2 space-y-0.5">
-            {currentMode === 'STANDARD' ? (
+            {currentMode === 'USER' && (
               <>
                 <button 
                   onClick={() => { setActiveLabel('INBOX'); setSelectedEmail(null); }}
                   className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'INBOX' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                    activeLabel === 'INBOX' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <Inbox size={18} /> Inbox
@@ -898,7 +904,7 @@ export default function GmailUI({ member, initialLabel }) {
                 <button 
                   onClick={() => { setActiveLabel('SENT'); setSelectedEmail(null); }}
                   className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SENT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                    activeLabel === 'SENT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <Send size={18} /> Sent
@@ -906,7 +912,7 @@ export default function GmailUI({ member, initialLabel }) {
                 <button 
                   onClick={() => { setActiveLabel('SPAM'); setSelectedEmail(null); }}
                   className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SPAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                    activeLabel === 'SPAM' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <Archive size={18} /> Spam
@@ -914,7 +920,7 @@ export default function GmailUI({ member, initialLabel }) {
                 <button 
                   onClick={() => { setActiveLabel('TRASH'); setSelectedEmail(null); }}
                   className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'TRASH' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                    activeLabel === 'TRASH' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <Trash2 size={18} /> Trash
@@ -935,9 +941,31 @@ export default function GmailUI({ member, initialLabel }) {
                   {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
                 </button>
               </>
-            ) : (
+            )}
+
+            {currentMode === 'STANDARD' && (
               <>
-                <div className="mb-4 space-y-1">
+                <div className="mb-4">
+                  <button 
+                    onClick={() => { if(isPro) { setActiveLabel('OTHER_PLATFORMS'); setSelectedEmail(null); } }}
+                    className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
+                      activeLabel === 'OTHER_PLATFORMS' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                    } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <Globe size={18} className={activeLabel === 'OTHER_PLATFORMS' ? "text-blue-600" : "text-slate-400"} /> All Automated Platforms
+                  </button>
+                </div>
+                {!isPro && (
+                  <div className="px-4 py-4 m-2 mt-4 bg-blue-50 border border-blue-100 rounded-xl">
+                    <p className="text-xs text-blue-800 font-medium mb-3">Upgrade to PRO to instantly scan and intercept all automated OTPs, password resets, and platform notifications.</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {currentMode === 'PREMIUM' && (
+              <>
+                <div className="mb-4">
                   <button 
                     onClick={() => { if(isPro) { setActiveLabel('TARGET_INBOX'); setSelectedEmail(null); } }}
                     className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
@@ -945,14 +973,6 @@ export default function GmailUI({ member, initialLabel }) {
                     } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? "text-purple-600" : "text-slate-400"} /> Curated Targets
-                  </button>
-                  <button 
-                    onClick={() => { if(isPro) { setActiveLabel('OTHER_PLATFORMS'); setSelectedEmail(null); } }}
-                    className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
-                      activeLabel === 'OTHER_PLATFORMS' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                    } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    <Globe size={18} className={activeLabel === 'OTHER_PLATFORMS' ? "text-purple-600" : "text-slate-400"} /> Other Platforms
                   </button>
                 </div>
 
