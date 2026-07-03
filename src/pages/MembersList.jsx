@@ -539,7 +539,11 @@ export default function MembersList() {
             </div>
           ) : (
             filteredMembers.map((member, idx) => {
-              const maxAllowed = (auditorTier === 'PRO' ? 3 : 1) + additionalSlots;
+              let maxAllowed = 1;
+              if (auditorTier === 'PRO') maxAllowed = 4;
+              else if (auditorTier === 'TRIAL') maxAllowed = 2;
+              maxAllowed += additionalSlots;
+              
               const isLocked = idx >= maxAllowed;
 
               const handleMemberClick = () => {
@@ -548,14 +552,21 @@ export default function MembersList() {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
-                      message: `Free accounts are limited to 1 connected member. Upgrade to PRO to unlock up to 3 connected members and unmask all security audits.`,
+                      message: `Free accounts are limited to 1 active slot. Upgrade to PRO to unlock up to 4 active slots (1 Self + 3 Targets) and unmask all security audits.`,
+                      action: handleUpgrade
+                    });
+                  } else if (auditorTier === 'TRIAL') {
+                    setShowUpgradeLockModal({
+                      open: true,
+                      title: 'Upgrade to PRO',
+                      message: `Trial accounts are limited to 2 active slots (Yourself + 1 Target). Upgrade to PRO to unlock up to 4 active slots.`,
                       action: handleUpgrade
                     });
                   } else {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Member Limit Reached',
-                      message: `Your PRO plan is currently limited to ${3 + additionalSlots} connected members. Purchase an additional active slot for ₹1,200/year to connect this client.`,
+                      message: `Your PRO plan is currently limited to ${4 + additionalSlots} active slots. Purchase an additional active slot for ₹1,200/year to connect this client.`,
                       action: handleAddonSlot
                     });
                   }
