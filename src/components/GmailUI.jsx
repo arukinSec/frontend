@@ -1245,14 +1245,14 @@ export default function GmailUI({ member, initialLabel }) {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col bg-white overflow-hidden">
           
-          {(currentMode === 'PREMIUM' || activeLabel === 'SOCIALS') && !isPro ? (
+          {((currentMode === 'PREMIUM' || currentMode === 'STANDARD') || activeLabel === 'SOCIALS') && !isPro ? (
             <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50 text-slate-600 text-center animate-fade-in">
               <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mb-4 border border-purple-200 shadow-sm">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
               </div>
-              <h2 className="text-xl font-bold text-slate-800 mb-2">Target Monitor is Locked</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-2">Monitor is Locked</h2>
               <p className="text-sm max-w-sm mb-6 text-slate-500">
-                Automated auditing of isolated Social and Financial accounts is only available to PRO auditors. 
+                Automated auditing of isolated Standard Platforms and Target accounts is only available to PRO auditors.
               </p>
               <div className="bg-white border border-slate-200 rounded-xl p-4 w-80 text-left mb-6 shadow-sm">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">PRO TIER UPGRADE INCLUDES:</h4>

@@ -112,6 +112,33 @@ export default function FinancialScanner({ member, fetchWithAuth, onNavigateToIn
   const currentPlatforms = FINANCIAL_CATEGORIES[activeTab];
   const needsScan = currentPlatforms.some(p => !scanResults[p.id]);
 
+  if (!isPro) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50 text-slate-600 text-center animate-fade-in h-full">
+        <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mb-4 border border-purple-200 shadow-sm">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <h2 className="text-xl font-bold text-slate-800 mb-2">Financial Scanners Locked</h2>
+        <p className="text-sm max-w-sm mb-6 text-slate-500">
+          Automated auditing of isolated Financial accounts is only available to PRO auditors. 
+        </p>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 w-80 text-left mb-6 shadow-sm">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">PRO TIER UPGRADE INCLUDES:</h4>
+          <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+            <li>Directly monitor 9 Social platforms</li>
+            <li>Directly monitor 6 Financial platforms</li>
+            <li>Perform security actions (Delete, Reply, Send)</li>
+            <li>Deep search and drive file previewing</li>
+            <li>No limit on member storage or accounts</li>
+          </ul>
+        </div>
+        <button onClick={() => window.location.href = '/pricing'} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium text-sm transition-colors shadow-lg shadow-indigo-600/20">
+          Upgrade to PRO Auditor
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col bg-slate-50 relative h-full">
       <div className="bg-white border-b border-slate-200 p-6 shrink-0 z-10">
