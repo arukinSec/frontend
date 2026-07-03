@@ -19,7 +19,7 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`
           },
-          body: JSON.stringify({ scanType: 'social', query, memberId, deepScan: true })
+          body: JSON.stringify({ scanType: 'social', query, memberId, deepScan: true, platformId: platform.id })
         });
         
         if (res.ok) {
@@ -27,7 +27,12 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
           setData(result);
         } else {
           console.error("Deep scan failed");
-          setData({ error: "Failed to load deep scan data." });
+          if (res.status === 429) {
+             const errJson = await res.json();
+             setData({ error: errJson.error });
+          } else {
+             setData({ error: "Failed to load deep scan data." });
+          }
         }
       } catch (err) {
         console.error(err);

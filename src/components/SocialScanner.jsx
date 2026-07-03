@@ -64,7 +64,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`
           },
-          body: JSON.stringify({ scanType: 'social', query, memberId: member.id })
+          body: JSON.stringify({ scanType: 'social', query, memberId: member.id, platformId: platform.id })
         });
         
         if (res.ok) {
@@ -76,7 +76,16 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
         } else {
           const errorText = await res.text();
           console.error(`Scan failed for ${platform.id}: Status ${res.status}, Error: ${errorText}`);
-          results[platform.id] = { status: 'not_found', details: 'Scan failed' };
+          if (res.status === 429) {
+            try {
+              const errData = JSON.parse(errorText);
+              results[platform.id] = { status: 'not_found', details: errData.error };
+            } catch (e) {
+              results[platform.id] = { status: 'not_found', details: 'Rate limit reached' };
+            }
+          } else {
+            results[platform.id] = { status: 'not_found', details: 'Scan failed' };
+          }
         }
       });
       
