@@ -67,7 +67,6 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
       } finally {
         setLoading(false);
       }
-    }
   };
 
   return (
