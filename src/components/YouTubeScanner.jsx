@@ -118,7 +118,7 @@ export default function YouTubeScanner({ member }) {
             <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
                 <div className="w-32 h-32 rounded-full border-4 border-white/10 overflow-hidden shrink-0 shadow-xl">
-                  <img src={data.channel.thumbnail} alt="Channel Avatar" className="w-full h-full object-cover" />
+                  <img src={data.channel.thumbnail} alt="Channel Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
                 </div>
                 <div className="flex-1 text-center md:text-left">
                   <h3 className="text-3xl font-bold text-white mb-2">{data.channel.title}</h3>
@@ -164,7 +164,7 @@ export default function YouTubeScanner({ member }) {
                   <div key={i} className="flex flex-col gap-3 p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-slate-800 overflow-hidden shrink-0 border border-white/10 shadow-md group-hover:scale-105 transition-transform">
-                        <img src={sub.thumbnail} alt={sub.title} className="w-full h-full object-cover" />
+                        <img src={sub.thumbnail} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <h4 className="text-white font-medium text-sm truncate" title={sub.title}>{sub.title}</h4>
