@@ -109,7 +109,22 @@ export default function YouTubeUI({ member }) {
         };
       });
 
-      const mockAnalytics = { watchTime: '1,245 hrs', revenue: '$340.50', impressions: '45,200' };
+      let realAnalytics = null;
+      if (ed.analytics && ed.analytics.basicStats && ed.analytics.basicStats.rows && ed.analytics.basicStats.rows.length > 0) {
+         const bs = ed.analytics.basicStats.rows[0];
+         realAnalytics = {
+           views: Number(bs[0]).toLocaleString(),
+           watchTime: (Number(bs[1]) / 60).toFixed(1) + ' hrs',
+           revenue: '$' + Number(bs[2] || 0).toFixed(2),
+           rawViewsData: ed.analytics.viewsOverTime?.rows || [],
+           rawTrafficData: ed.analytics.trafficSources?.rows || [],
+           rawGeoData: ed.analytics.geographies?.rows || [],
+           rawGenderData: ed.analytics.gender?.rows || []
+         };
+      } else {
+         realAnalytics = { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
+      }
+
       const mockVideos = [
         { id: '1', title: 'My First Vlog', views: '1,200', likes: '45', comments: '12', date: '2025-01-15' },
         { id: '2', title: 'React Tutorial', views: '5,400', likes: '320', comments: '54', date: '2025-02-22' }
@@ -119,7 +134,7 @@ export default function YouTubeUI({ member }) {
         channel: formattedChannel,
         subscriptions: ed.subscriptions || [],
         playlists: ed.playlists || [],
-        analytics: mockAnalytics,
+        analytics: realAnalytics,
         videos: mockVideos,
         subscribers: formattedSubscribers
       };
@@ -314,10 +329,10 @@ export default function YouTubeUI({ member }) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Main Line Chart */}
                   <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
-                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
+                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time (Last 7 Days)</h5>
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={mockViewData}>
+                        <AreaChart data={(data.analytics?.rawViewsData || []).map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }))}>
                           <defs>
                             <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
@@ -341,39 +356,47 @@ export default function YouTubeUI({ member }) {
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-2">Traffic Sources</h5>
                     <div className="h-48">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={mockTrafficData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={5}
-                            dataKey="value"
-                            stroke="none"
-                          >
-                            {mockTrafficData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <RechartsTooltip 
-                            contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
-                            itemStyle={{ color: '#fff' }}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      {data.analytics?.rawTrafficData?.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={data.analytics.rawTrafficData.map(row => ({ name: row[0].replace('EXT_URL', 'External').replace('YT_SEARCH', 'Search').replace('RELATED_VIDEO', 'Suggested'), value: row[1] }))}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={5}
+                              dataKey="value"
+                              stroke="none"
+                            >
+                              {data.analytics.rawTrafficData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <RechartsTooltip 
+                              contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                              itemStyle={{ color: '#fff' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-slate-500 text-sm">No data available</div>
+                      )}
                     </div>
                     <div className="space-y-2 mt-4">
-                      {mockTrafficData.map((item, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PIE_COLORS[i] }}></div>
-                            <span className="text-slate-400">{item.name}</span>
-                          </div>
-                          <span className="text-white font-medium">{item.value}%</span>
-                        </div>
-                      ))}
+                      {(data.analytics?.rawTrafficData || []).map((row, i) => {
+                         const total = data.analytics.rawTrafficData.reduce((acc, curr) => acc + curr[1], 0);
+                         const pct = total > 0 ? Math.round((row[1] / total) * 100) : 0;
+                         return (
+                           <div key={i} className="flex items-center justify-between text-xs">
+                             <div className="flex items-center gap-2">
+                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }}></div>
+                               <span className="text-slate-400">{row[0].replace('EXT_URL', 'External').replace('YT_SEARCH', 'Search').replace('RELATED_VIDEO', 'Suggested')}</span>
+                             </div>
+                             <span className="text-white font-medium">{pct}%</span>
+                           </div>
+                         );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -383,50 +406,39 @@ export default function YouTubeUI({ member }) {
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-4">Top Geographies</h5>
                     <div className="space-y-4">
-                      {[
-                        { country: 'United States', pct: 42, flag: '🇺🇸' },
-                        { country: 'United Kingdom', pct: 15, flag: '🇬🇧' },
-                        { country: 'Canada', pct: 12, flag: '🇨🇦' },
-                        { country: 'Australia', pct: 8, flag: '🇦🇺' },
-                        { country: 'Germany', pct: 5, flag: '🇩🇪' },
-                      ].map((loc, i) => (
-                        <div key={i}>
-                          <div className="flex justify-between text-xs mb-1">
-                            <span className="text-slate-300 font-medium">{loc.flag} {loc.country}</span>
-                            <span className="text-slate-400">{loc.pct}%</span>
+                      {data.analytics?.rawGeoData?.length > 0 ? data.analytics.rawGeoData.map((row, i) => {
+                        const total = data.analytics.rawGeoData.reduce((acc, curr) => acc + curr[1], 0);
+                        const pct = total > 0 ? Math.round((row[1] / total) * 100) : 0;
+                        return (
+                          <div key={i}>
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-slate-300 font-medium">{row[0]}</span>
+                              <span className="text-slate-400">{pct}%</span>
+                            </div>
+                            <div className="w-full bg-white/5 rounded-full h-1.5">
+                              <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${pct}%` }}></div>
+                            </div>
                           </div>
-                          <div className="w-full bg-white/5 rounded-full h-1.5">
-                            <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${loc.pct}%` }}></div>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      }) : <div className="text-slate-500 text-sm">No data available</div>}
                     </div>
                   </div>
 
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col justify-center">
                      <h5 className="text-sm font-semibold text-white mb-4">Audience Gender</h5>
-                     <div className="flex items-center gap-4 mb-6">
-                       <div className="flex-1">
-                         <div className="flex justify-between text-xs mb-1">
-                           <span className="text-slate-300 font-medium">Male</span>
-                           <span className="text-slate-400">65%</span>
-                         </div>
-                         <div className="w-full bg-white/5 rounded-full h-2">
-                           <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '65%' }}></div>
-                         </div>
-                       </div>
-                     </div>
-                     <div className="flex items-center gap-4">
-                       <div className="flex-1">
-                         <div className="flex justify-between text-xs mb-1">
-                           <span className="text-slate-300 font-medium">Female</span>
-                           <span className="text-slate-400">35%</span>
-                         </div>
-                         <div className="w-full bg-white/5 rounded-full h-2">
-                           <div className="bg-pink-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                     {data.analytics?.rawGenderData?.length > 0 ? data.analytics.rawGenderData.map((row, i) => (
+                       <div key={i} className="flex items-center gap-4 mb-4">
+                         <div className="flex-1">
+                           <div className="flex justify-between text-xs mb-1">
+                             <span className="text-slate-300 font-medium capitalize">{row[0]}</span>
+                             <span className="text-slate-400">{Math.round(row[1])}%</span>
+                           </div>
+                           <div className="w-full bg-white/5 rounded-full h-2">
+                             <div className={row[0] === 'male' ? "bg-indigo-500 h-2 rounded-full" : row[0] === 'female' ? "bg-pink-500 h-2 rounded-full" : "bg-emerald-500 h-2 rounded-full"} style={{ width: `${row[1]}%` }}></div>
+                           </div>
                          </div>
                        </div>
-                     </div>
+                     )) : <div className="text-slate-500 text-sm">No data available</div>}
                   </div>
                 </div>
 
