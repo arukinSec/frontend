@@ -145,6 +145,7 @@ export default function YouTubeUI({ member }) {
   }, [member]);
 
   const tabs = [
+    { id: 'info', label: 'Channel Info' },
     { id: 'analytics', label: 'Analytics' },
     { id: 'subscriptions', label: 'Subscriptions' },
     { id: 'subscribers', label: 'Subscribers' },
@@ -169,20 +170,6 @@ export default function YouTubeUI({ member }) {
             </div>
           )}
 
-          {data.channel && (
-            <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-                <div className="w-24 h-24 rounded-full border-4 border-white/10 overflow-hidden shrink-0 shadow-xl">
-                  <img src={data.channel.thumbnail} alt="Channel Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-3xl font-bold text-white mb-2">{data.channel.title}</h3>
-                  <p className="text-sm text-slate-400 line-clamp-2 max-w-3xl">{data.channel.description}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Navigation Tabs */}
           <div className="flex items-center border-b border-white/5 px-6 pt-2 overflow-x-auto hide-scrollbar bg-black/40">
             {tabs.map(tab => (
@@ -202,6 +189,27 @@ export default function YouTubeUI({ member }) {
 
           <div className="p-8 bg-black/20 flex-1 overflow-y-auto">
             
+            {/* Info Tab */}
+            {activeTab === 'info' && data.channel && (
+              <div className="space-y-6">
+                <div className="p-8 border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent rounded-2xl">
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <div className="w-32 h-32 rounded-full border-4 border-white/10 overflow-hidden shrink-0 shadow-xl">
+                      <img src={data.channel.thumbnail} alt="Channel Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                      <h3 className="text-3xl font-bold text-white mb-2">{data.channel.title}</h3>
+                      <p className="text-sm text-slate-400 max-w-3xl mb-4">{data.channel.description}</p>
+                      <div className="flex items-center justify-center md:justify-start gap-4 text-xs text-slate-500 font-medium">
+                         <span className="flex items-center gap-1"><User size={14} /> Joined {data.channel.joined}</span>
+                         <span className="flex items-center gap-1"><Eye size={14} /> {data.channel.views} Views</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
               <div className="space-y-6">
