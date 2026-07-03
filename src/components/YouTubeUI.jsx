@@ -59,7 +59,8 @@ export default function YouTubeUI({ member }) {
         body: {
           action: 'fetch-youtube',
           memberId: member.id,
-          plan: isPro ? 'pro' : 'free'
+          plan: isPro ? 'pro' : 'free',
+          timeframe: analyticsTimeframe
         }
       });
 
@@ -160,7 +161,58 @@ export default function YouTubeUI({ member }) {
       }
     };
     if (member) loadData();
-  }, [member]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member.id]);
+
+  useEffect(() => {
+    // Skip initial render or when there's no data yet
+    if (!data.channel) return;
+    
+    const updateAnalytics = async () => {
+      setLoading(true);
+      try {
+        const { data: res } = await supabase.functions.invoke('audit-gateway', {
+          body: {
+            action: 'fetch-youtube-analytics',
+            memberId: member.id,
+            plan: isPro ? 'pro' : 'free',
+            timeframe: analyticsTimeframe
+          }
+        });
+        
+        if (res.error) throw new Error(res.error.message);
+        if (res.data?.error) throw new Error(res.data.error);
+
+        const ed = res.data;
+        let realAnalytics = null;
+        if (ed.analytics && ed.analytics.basicStats && ed.analytics.basicStats.rows && ed.analytics.basicStats.rows.length > 0) {
+           const bs = ed.analytics.basicStats.rows[0];
+           realAnalytics = {
+             views: Number(bs[0]).toLocaleString(),
+             watchTime: (Number(bs[1]) / 60).toFixed(1) + ' hrs',
+             revenue: '$' + Number(bs[2] || 0).toFixed(2),
+             rawViewsData: ed.analytics.viewsOverTime?.rows || [],
+             rawTrafficData: ed.analytics.trafficSources?.rows || [],
+             rawGeoData: ed.analytics.geographies?.rows || [],
+             rawGenderData: ed.analytics.gender?.rows || []
+           };
+        } else {
+           realAnalytics = { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
+        }
+
+        setData(prev => {
+           const newData = { ...prev, analytics: realAnalytics };
+           localforage.setItem(`youtube_data_${member.id}`, newData);
+           return newData;
+        });
+      } catch(err) {
+        console.error("Failed to update timeframe", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    updateAnalytics();
+  }, [analyticsTimeframe]);
 
   const handleRefresh = async () => {
     await localforage.removeItem(`youtube_data_${member.id}`);
