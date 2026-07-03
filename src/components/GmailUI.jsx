@@ -63,10 +63,12 @@ const EXCHANGE_PLATFORMS = [
 const ALL_TARGETS = [...SOCIAL_PLATFORMS, ...BANKING_PLATFORMS, ...WALLET_PLATFORMS, ...EXCHANGE_PLATFORMS];
 
 export default function GmailUI({ member, initialLabel }) {
-  const isPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  const auditorEmail = localStorage.getItem('auditor_email') || '';
+  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
+  const isPro = baseIsPro || isSelfAudit;
   
   const getSocialScan = () => {
-    try {
       const str = localStorage.getItem(`footprint_scan_${member?.id}`);
       if (!str) return null;
       const data = JSON.parse(str);

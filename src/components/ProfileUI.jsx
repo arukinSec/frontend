@@ -35,7 +35,10 @@ const StatChip = ({ label, value, color = 'slate' }) => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function ProfileUI({ member, footprintData, setFootprintData, onNavigateToInbox }) {
-  const isPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  const auditorEmail = localStorage.getItem('auditor_email') || '';
+  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
+  const isPro = baseIsPro || isSelfAudit;
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

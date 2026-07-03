@@ -154,7 +154,10 @@ const isPreviewable = (mimeType) => {
 
 // ── Main DriveUI ───────────────────────────────────────────────────────────────
 export default function DriveUI({ member }) {
-  const isPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  const auditorEmail = localStorage.getItem('auditor_email') || '';
+  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
+  const isPro = baseIsPro || isSelfAudit;
 
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
