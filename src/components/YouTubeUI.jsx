@@ -497,7 +497,7 @@ export default function YouTubeUI({ member }) {
                       <h4 className="text-lg font-bold text-white">Recent Subscribers (Influence Ranked)</h4>
                       <div className="relative group flex items-center justify-center">
                         <Info size={16} className="text-slate-500 cursor-help hover:text-white transition-colors" />
-                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 bg-slate-800 text-xs text-slate-300 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 pointer-events-none">
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 bg-slate-800 text-xs text-slate-300 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 pointer-events-none">
                           Google's API permanently limits subscriber queries to the most recent 1,000 accounts. This list ranks influence exclusively within that latest cohort.
                           <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
                         </div>
