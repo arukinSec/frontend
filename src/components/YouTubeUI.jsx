@@ -377,7 +377,7 @@ export default function YouTubeUI({ member }) {
                     <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={(data.analytics?.[analyticsTimeframe]?.rawViewsData || []).map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }))}>
+                        <AreaChart data={(currentAnalytics.rawViewsData || []).map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }))}>
                           <defs>
                             <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
@@ -401,11 +401,11 @@ export default function YouTubeUI({ member }) {
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-2">Traffic Sources</h5>
                     <div className="h-48">
-                      {data.analytics?.[analyticsTimeframe]?.rawTrafficData?.length > 0 ? (
+                      {currentAnalytics.rawTrafficData?.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
-                              data={data.analytics[analyticsTimeframe].rawTrafficData.map(row => ({ name: row[0].replace('EXT_URL', 'External').replace('YT_SEARCH', 'Search').replace('RELATED_VIDEO', 'Suggested'), value: row[1] }))}
+                              data={currentAnalytics.rawTrafficData.map(row => ({ name: row[0].replace('EXT_URL', 'External').replace('YT_SEARCH', 'Search').replace('RELATED_VIDEO', 'Suggested'), value: row[1] }))}
                               cx="50%"
                               cy="50%"
                               innerRadius={60}
@@ -414,7 +414,7 @@ export default function YouTubeUI({ member }) {
                               dataKey="value"
                               stroke="none"
                             >
-                              {data.analytics[analyticsTimeframe].rawTrafficData.map((entry, index) => (
+                              {currentAnalytics.rawTrafficData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                               ))}
                             </Pie>
@@ -429,8 +429,8 @@ export default function YouTubeUI({ member }) {
                       )}
                     </div>
                     <div className="space-y-2 mt-4">
-                      {(data.analytics?.[analyticsTimeframe]?.rawTrafficData || []).map((row, i) => {
-                         const total = data.analytics[analyticsTimeframe].rawTrafficData.reduce((acc, curr) => acc + curr[1], 0);
+                      {(currentAnalytics.rawTrafficData || []).map((row, i) => {
+                         const total = currentAnalytics.rawTrafficData.reduce((acc, curr) => acc + curr[1], 0);
                          const pct = total > 0 ? Math.round((row[1] / total) * 100) : 0;
                          return (
                            <div key={i} className="flex items-center justify-between text-xs">
@@ -451,8 +451,8 @@ export default function YouTubeUI({ member }) {
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-4">Top Geographies</h5>
                     <div className="space-y-4">
-                      {data.analytics?.[analyticsTimeframe]?.rawGeoData?.length > 0 ? data.analytics[analyticsTimeframe].rawGeoData.map((row, i) => {
-                        const total = data.analytics[analyticsTimeframe].rawGeoData.reduce((acc, curr) => acc + curr[1], 0);
+                      {currentAnalytics.rawGeoData?.length > 0 ? currentAnalytics.rawGeoData.map((row, i) => {
+                        const total = currentAnalytics.rawGeoData.reduce((acc, curr) => acc + curr[1], 0);
                         const pct = total > 0 ? Math.round((row[1] / total) * 100) : 0;
                         return (
                           <div key={i}>
@@ -471,7 +471,7 @@ export default function YouTubeUI({ member }) {
 
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col justify-center">
                      <h5 className="text-sm font-semibold text-white mb-4">Audience Gender</h5>
-                     {data.analytics?.[analyticsTimeframe]?.rawGenderData?.length > 0 ? data.analytics[analyticsTimeframe].rawGenderData.map((row, i) => (
+                     {currentAnalytics.rawGenderData?.length > 0 ? currentAnalytics.rawGenderData.map((row, i) => (
                        <div key={i} className="flex items-center gap-4 mb-4">
                          <div className="flex-1">
                            <div className="flex justify-between text-xs mb-1">
