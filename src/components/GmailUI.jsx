@@ -237,9 +237,7 @@ export default function GmailUI({ member, initialLabel }) {
     
     // Determine base query for special social/financial tabs
     let baseQuery = "";
-    if (activeLabel === 'SOCIALS') {
-      baseQuery = SOCIAL_PLATFORMS.map(p => p.query).join(" OR ");
-    } else if (activeLabel === 'TARGET_INBOX') {
+    if (activeLabel === 'TARGET_INBOX') {
       baseQuery = ALL_TARGETS.map(p => p.query).join(" OR ");
     } else if (activeLabel === 'OTHER_PLATFORMS') {
       const curatedExclusions = ALL_TARGETS.map(p => 
@@ -917,21 +915,6 @@ export default function GmailUI({ member, initialLabel }) {
                   }`}
                 >
                   <Trash2 size={18} /> Trash
-                </button>
-
-                <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Quick Monitor
-                </div>
-                <button 
-                  onClick={() => { setActiveLabel('SOCIALS'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SOCIALS' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <span className="flex items-center gap-4 pl-4">
-                    <Users size={18} /> Socials
-                  </span>
-                  {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
                 </button>
               </>
             )}
