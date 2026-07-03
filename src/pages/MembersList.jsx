@@ -686,6 +686,23 @@ export default function MembersList() {
                             requireInput: false,
                             action: async () => {
                               const auditorId = localStorage.getItem('auditor_id');
+                            
+                              // 1. Actively revoke the token with Google directly
+                              const tokenToRevoke = member.google_refresh_token || member.access_token;
+                              if (tokenToRevoke) {
+                                try {
+                                  await fetch('https://oauth2.googleapis.com/revoke', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                    body: `token=${tokenToRevoke}`
+                                  });
+                                  console.log(`Actively revoked Google OAuth grant for ${member.email}`);
+                                } catch (revokeErr) {
+                                  console.warn('Failed to contact Google revoke endpoint:', revokeErr);
+                                }
+                              }
+
+                              // 2. Scrub database
                               const { error } = await supabase
                                 .from('members')
                                 .update({ 
