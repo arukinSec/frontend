@@ -209,7 +209,15 @@ export default function YouTubeUI({ member }) {
   }
 
   if (!data.channel) {
-    return null;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-slate-400 max-w-md mx-auto text-center h-full">
+        <MonitorPlay size={48} className="mb-4 text-slate-600" />
+        <h3 className="text-xl font-bold mb-2 text-white">No Public Channel Found</h3>
+        <p className="text-sm text-slate-500 mb-6">
+          This user does not have a public YouTube channel associated with their Google account.
+        </p>
+      </div>
+    );
   }
 
   const currentAnalytics = data?.analytics?.[analyticsTimeframe] || { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
