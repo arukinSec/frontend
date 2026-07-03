@@ -14,6 +14,7 @@ export default function YouTubeUI({ member }) {
   const [activeTab, setActiveTab] = useState('analytics');
   const [analyticsTimeframe, setAnalyticsTimeframe] = useState('7d');
   const [subscriptionsPage, setSubscriptionsPage] = useState(1);
+  const [subscribersPage, setSubscribersPage] = useState(1);
 
   const getPaginationRange = (currentPage, totalPages) => {
     if (totalPages <= 7) {
@@ -571,7 +572,7 @@ export default function YouTubeUI({ member }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {data.subscribers?.map((sub, i) => (
+                      {data.subscribers?.slice((subscribersPage - 1) * 50, subscribersPage * 50).map((sub, i) => (
                         <tr key={i} className="hover:bg-white/[0.02] transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
@@ -589,6 +590,48 @@ export default function YouTubeUI({ member }) {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {data.subscribers?.length > 50 && (
+                  <div className="flex justify-center items-center gap-2 mt-8">
+                    <button 
+                      onClick={() => setSubscribersPage(p => Math.max(1, p - 1))}
+                      disabled={subscribersPage === 1}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:hover:bg-white/5 text-slate-300 hover:text-white font-semibold text-xs rounded-lg transition-colors border border-white/10"
+                    >
+                      Previous
+                    </button>
+                    
+                    <div className="flex items-center gap-1 mx-2">
+                      {getPaginationRange(subscribersPage, Math.ceil(data.subscribers.length / 50)).map((item, idx) => {
+                        if (item === '...') {
+                          return <span key={`ellipsis-${idx}`} className="px-1 text-slate-500 text-xs tracking-widest">...</span>;
+                        }
+                        return (
+                          <button
+                            key={`page-${item}`}
+                            onClick={() => setSubscribersPage(item)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-colors border ${
+                              subscribersPage === item 
+                                ? 'bg-red-500 text-white border-red-500/50' 
+                                : 'bg-white/5 text-slate-400 border-transparent hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            {item}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button 
+                      onClick={() => setSubscribersPage(p => Math.min(Math.ceil(data.subscribers.length / 50), p + 1))}
+                      disabled={subscribersPage === Math.ceil(data.subscribers?.length / 50)}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:hover:bg-white/5 text-slate-300 hover:text-white font-semibold text-xs rounded-lg transition-colors border border-white/10"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
