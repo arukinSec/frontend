@@ -3,6 +3,7 @@ import { Search, ChevronLeft, Calendar, FileText, ArrowRight, User, Globe, Messa
 import { hasProAccess } from '../utils/access';
 import { supabase } from '../supabaseClient';
 import DOMPurify from 'dompurify';
+import localforage from 'localforage';
 
 const SOCIAL_PLATFORMS = [
   { id: 'facebook', label: 'FACEBOOK', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook', query: 'from:facebookmail.com OR from:facebook.com' },
@@ -65,26 +66,22 @@ const ALL_TARGETS = [...SOCIAL_PLATFORMS, ...BANKING_PLATFORMS, ...WALLET_PLATFO
 
 export default function GmailUI({ member, initialLabel }) {
   const isPro = hasProAccess(member);
-  
-  const getSocialScan = () => {
-    try {
-      const str = localStorage.getItem(`footprint_scan_${member?.id}`);
-      if (!str) return null;
-      const data = JSON.parse(str);
-      return data?.results || data;
-    } catch { return null; }
-  };
-  
-  const getFinScan = () => {
-    try {
-      const str = localStorage.getItem(`fin_scan_${member?.id}`);
-      if (!str) return null;
-      return JSON.parse(str);
-    } catch { return null; }
-  };
+  const [socialScan, setSocialScan] = useState(null);
+  const [finScan, setFinScan] = useState(null);
 
-  const socialScan = getSocialScan();
-  const finScan = getFinScan();
+  useEffect(() => {
+    const fetchScans = async () => {
+      try {
+        const soc = await localforage.getItem(`footprints_${member?.id}`);
+        const fin = await localforage.getItem(`fin_scan_${member?.id}`);
+        setSocialScan(soc?.results || soc || null);
+        setFinScan(fin || null);
+      } catch (e) {
+        console.error("Failed to load scans from localforage");
+      }
+    };
+    if (member?.id) fetchScans();
+  }, [member?.id]);
 
   const filteredSocial = socialScan ? SOCIAL_PLATFORMS.filter(p => socialScan[p.id]?.status === 'connected') : SOCIAL_PLATFORMS;
   const filteredBanking = finScan ? BANKING_PLATFORMS.filter(p => finScan[p.id]?.status === 'connected') : BANKING_PLATFORMS;

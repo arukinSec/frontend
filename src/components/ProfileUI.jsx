@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2, Search, CheckCircle, XCircle, Activity, ShieldAlert, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import localforage from 'localforage';
 
 import SocialScanner from './SocialScanner';
 import FinancialScanner from './FinancialScanner';
@@ -79,14 +80,13 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
     }
 
     if (!forceRefresh) {
-      const cached = localStorage.getItem(`profile_data_${member.id}`);
+      const cached = await localforage.getItem(`profile_data_${member.id}`);
       if (cached) {
         try {
-          const data = JSON.parse(cached);
-          setProfile(data.profile);
-          setContactsCount(data.contactsCount);
-          setStorage(data.storage);
-          setGmailStats(data.gmailStats);
+          setProfile(cached.profile);
+          setContactsCount(cached.contactsCount);
+          setStorage(cached.storage);
+          setGmailStats(cached.gmailStats);
           setLoading(false);
           return;
         } catch (e) {
@@ -158,12 +158,12 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
       setGmailStats(newGmailStats);
 
       // Cache all results
-      localStorage.setItem(`profile_data_${member.id}`, JSON.stringify({
+      await localforage.setItem(`profile_data_${member.id}`, {
         profile: profileData,
         contactsCount: newContactsCount,
         storage: newStorage,
         gmailStats: newGmailStats
-      }));
+      });
 
     } catch (err) {
       console.error(err);

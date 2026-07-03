@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Lock, Search, AlertTriangle, CreditCard, Clock, Activity } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import localforage from 'localforage';
 
 export default function DeepDiveModal({ platform, query, memberId, isPro, serverUsage, onClose, onNavigateToInbox }) {
   const [data, setData] = useState(null);
@@ -19,18 +20,16 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
     }
     setScanCount(initialCount);
     
-    const cachedData = localStorage.getItem(cacheKey);
-    
-    if (cachedData) {
-      try {
-        setData(JSON.parse(cachedData));
+    const checkCache = async () => {
+      const cachedData = await localforage.getItem(cacheKey);
+      if (cachedData) {
+        setData(cachedData);
         setLoading(false);
-      } catch (e) {
+      } else {
         fetchDeepScan();
       }
-    } else {
-      fetchDeepScan();
-    }
+    };
+    checkCache();
   }, [platform, query, memberId]);
 
   const fetchDeepScan = async () => {
@@ -50,7 +49,7 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
         if (res.ok) {
           const result = await res.json();
           setData(result);
-          localStorage.setItem(cacheKey, JSON.stringify(result));
+          await localforage.setItem(cacheKey, result);
           
           setScanCount(prev => prev + 1);
         } else {

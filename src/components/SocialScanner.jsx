@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { RefreshCw, Clock, CheckCircle, XCircle, Search } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import DeepDiveModal from './DeepDiveModal';
+import localforage from 'localforage';
 
 const PLATFORMS = [
   { id: 'facebook', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook' },
@@ -55,18 +56,16 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
   }, [member]);
 
   useEffect(() => {
-    if (member && !footprintData) {
-      const cached = localStorage.getItem(`footprints_${member.id}`);
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          setFootprintData(parsed);
+    const checkCache = async () => {
+      if (member && !footprintData) {
+        const cached = await localforage.getItem(`footprints_${member.id}`);
+        if (cached) {
+          setFootprintData(cached);
           setScanStatus('complete');
-        } catch (e) {
-          console.error("Failed to parse cached footprint data");
         }
       }
-    }
+    };
+    checkCache();
   }, [member, footprintData, setFootprintData]);
 
   const PLATFORM_QUERIES = {
@@ -131,7 +130,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
         results
       };
       setFootprintData(newData);
-      localStorage.setItem(`footprints_${member.id}`, JSON.stringify(newData));
+      await localforage.setItem(`footprints_${member.id}`, newData);
       
       setScanCount(prev => prev + 1);
       
