@@ -250,7 +250,7 @@ export default function YouTubeUI({ member }) {
         const d = new Date(row[0]);
         const utcDate = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
         const m = utcDate.toLocaleDateString('en-US', { month: 'short' });
-        if (!monthsMap[m]) {
+        if (monthsMap[m] === undefined) {
           monthsMap[m] = 0;
           order.push(m);
         }
@@ -268,7 +268,7 @@ export default function YouTubeUI({ member }) {
       raw.forEach(row => {
         const d = new Date(row[0]);
         const y = d.getUTCFullYear().toString();
-        if (!yearsMap[y]) {
+        if (yearsMap[y] === undefined) {
           yearsMap[y] = 0;
           order.push(y);
         }
