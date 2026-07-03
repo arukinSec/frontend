@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RefreshCw, Clock, CheckCircle, XCircle, Search } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import DeepDiveModal from './DeepDiveModal';
@@ -18,6 +18,21 @@ const PLATFORMS = [
 export default function SocialScanner({ member, footprintData, setFootprintData, fetchWithAuth, onNavigateToInbox, isPro }) {
   const [scanStatus, setScanStatus] = useState(footprintData ? 'complete' : 'idle');
   const [selectedPlatform, setSelectedPlatform] = useState(null);
+
+  useEffect(() => {
+    if (member && !footprintData) {
+      const cached = localStorage.getItem(`footprints_${member.id}`);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          setFootprintData(parsed);
+          setScanStatus('complete');
+        } catch (e) {
+          console.error("Failed to parse cached footprint data");
+        }
+      }
+    }
+  }, [member, footprintData, setFootprintData]);
 
   const PLATFORM_QUERIES = {
     facebook: 'from:facebookmail.com OR from:facebook.com',
@@ -67,10 +82,12 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
       
       await Promise.all(promises);
       
-      setFootprintData({
+      const newData = {
         lastScan: new Date().toISOString(),
         results
-      });
+      };
+      setFootprintData(newData);
+      localStorage.setItem(`footprints_${member.id}`, JSON.stringify(newData));
       setScanStatus('complete');
     } catch (err) {
       console.error("Footprint scan failed:", err);

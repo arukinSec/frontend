@@ -152,18 +152,20 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
           <button 
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors"
-          >
-            Close
-          </button>
-          <button 
-            onClick={() => onNavigateToInbox(query)}
+            onClick={() => {
+              if (isPro) {
+                onNavigateToInbox(query);
+                onClose();
+              } else {
+                navigate('/pricing');
+              }
+            }}
             className="flex items-center gap-2 px-5 py-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-lg transition-all border border-slate-200 shadow-sm hover:shadow"
           >
-            <Search size={16} className="text-indigo-500" /> Raw Inbox Search
+            <Search size={16} className={isPro ? "text-indigo-500" : "text-slate-400"} />
+            {isPro ? "Inbox" : "PRO Feature: Inbox"}
           </button>
         </div>
 
