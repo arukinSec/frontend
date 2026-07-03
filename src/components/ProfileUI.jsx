@@ -319,6 +319,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                   const usage = parseInt(storage.usage || 0);
                   const remaining = Math.max(0, limit - usage);
                   
+                  const pct = Math.min(100, (usage / limit) * 100);
                   const storageData = [
                     { name: 'Used Space', value: usage },
                     { name: 'Free Space', value: remaining }
