@@ -400,11 +400,9 @@ export default function MembersList() {
             </div>
 
             <div className="flex items-center gap-4 relative">
-              {!selectedMember && (
-                <button onClick={fetchMembers} className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-400 hover:text-white" title="Refresh">
-                  <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
-                </button>
-              )}
+              <button onClick={fetchMembers} className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-400 hover:text-white" title="Refresh">
+                <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+              </button>
 
               {/* Profile Avatar Trigger Button */}
               <button 

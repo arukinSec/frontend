@@ -99,9 +99,9 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
               <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
               <p className="text-slate-500 animate-pulse font-medium">Running deep forensic analysis...</p>
             </div>
-          ) : data?.error ? (
+          ) : !data || data.error ? (
             <div className="text-rose-600 bg-rose-50 border border-rose-100 p-4 rounded-xl text-center font-medium">
-              {data.error}
+              {data?.error || "Failed to load insight data. Please try again."}
             </div>
           ) : (
             <div className="space-y-6">
@@ -113,7 +113,7 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
                   <p className="text-sm text-slate-500 font-medium">Lifetime volume of emails found</p>
                 </div>
                 <div className="text-3xl font-bold text-slate-700">
-                  {data.volume.toLocaleString()}
+                  {data.volume?.toLocaleString() || '0'}
                 </div>
               </div>
 
