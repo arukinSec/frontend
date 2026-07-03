@@ -164,6 +164,11 @@ export default function YouTubeUI({ member }) {
     if (member) loadData();
   }, [member]);
 
+  const handleRefresh = async () => {
+    await localforage.removeItem(`youtube_data_${member.id}`);
+    await fetchYouTubeData();
+  };
+
   const tabs = [
     { id: 'info', label: 'Channel Info' },
     { id: 'analytics', label: 'Analytics' },
@@ -191,20 +196,31 @@ export default function YouTubeUI({ member }) {
           )}
 
           {/* Navigation Tabs */}
-          <div className="flex items-center border-b border-white/5 px-6 pt-2 overflow-x-auto hide-scrollbar bg-black/40">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${
-                  activeTab === tab.id 
-                    ? 'border-red-500 text-red-400' 
-                    : 'border-transparent text-slate-500 hover:text-slate-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="flex items-center justify-between border-b border-white/5 px-6 pt-2 bg-black/40">
+            <div className="flex items-center overflow-x-auto hide-scrollbar">
+              {tabs.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${
+                    activeTab === tab.id 
+                      ? 'border-red-500 text-white bg-white/[0.02]' 
+                      : 'border-transparent text-slate-400 hover:text-white hover:bg-white/[0.02]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              onClick={handleRefresh}
+              disabled={loading}
+              className="ml-4 mb-2 p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors disabled:opacity-50 shrink-0"
+              title="Force Refresh Data"
+            >
+              <RefreshCw size={16} className={loading ? "animate-spin text-red-400" : ""} />
+            </button>
           </div>
 
           <div className="p-8 bg-black/20 flex-1 overflow-y-auto">
