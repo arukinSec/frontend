@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Inbox, Send, File, Archive, Trash2, Search, MoreVertical, RefreshCw, ChevronLeft, ChevronRight, ArrowLeft, X, Users, Camera, Globe } from 'lucide-react';
+import { Search, ChevronLeft, Calendar, FileText, ArrowRight, User, Globe, MessageSquare, DollarSign, Wallet, Repeat, AlertTriangle, ExternalLink, Download, File, Mail, Archive, Send, Trash2, Users, Inbox, MoreVertical, RefreshCw, ChevronRight, ArrowLeft, X, Camera } from 'lucide-react';
+import { hasProAccess } from '../utils/access';
 import { supabase } from '../supabaseClient';
 import DOMPurify from 'dompurify';
 
@@ -63,10 +64,7 @@ const EXCHANGE_PLATFORMS = [
 const ALL_TARGETS = [...SOCIAL_PLATFORMS, ...BANKING_PLATFORMS, ...WALLET_PLATFORMS, ...EXCHANGE_PLATFORMS];
 
 export default function GmailUI({ member, initialLabel }) {
-  const auditorEmail = localStorage.getItem('auditor_email') || '';
-  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
-  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
-  const isPro = baseIsPro || isSelfAudit;
+  const isPro = hasProAccess(member);
   
   const getSocialScan = () => {
       const str = localStorage.getItem(`footprint_scan_${member?.id}`);

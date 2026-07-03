@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { hasProAccess } from '../utils/access';
 import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2, Search, CheckCircle, XCircle, Activity, ShieldAlert, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 
@@ -35,10 +36,7 @@ const StatChip = ({ label, value, color = 'slate' }) => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function ProfileUI({ member, footprintData, setFootprintData, onNavigateToInbox }) {
-  const auditorEmail = localStorage.getItem('auditor_email') || '';
-  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
-  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
-  const isPro = baseIsPro || isSelfAudit;
+  const isPro = hasProAccess(member);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

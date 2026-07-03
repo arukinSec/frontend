@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { hasProAccess } from '../utils/access';
 import { File, FileText, Image, RefreshCw, Download, Trash2, X, Eye, ChevronRight, Film, Music, Shield } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 
@@ -154,10 +155,7 @@ const isPreviewable = (mimeType) => {
 
 // ── Main DriveUI ───────────────────────────────────────────────────────────────
 export default function DriveUI({ member }) {
-  const auditorEmail = localStorage.getItem('auditor_email') || '';
-  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
-  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
-  const isPro = baseIsPro || isSelfAudit;
+  const isPro = hasProAccess(member);
 
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { hasProAccess } from '../utils/access';
 import { Search, Users, RefreshCw, Mail, Phone, Building2, BarChart2, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 
 export default function ContactsUI({ member }) {
-  const auditorEmail = localStorage.getItem('auditor_email') || '';
-  const baseIsPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
-  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
-  const isPro = baseIsPro || isSelfAudit;
+  const isPro = hasProAccess(member);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
