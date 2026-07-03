@@ -9,7 +9,10 @@ const STANDARD_SCOPES = [
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/contacts.readonly',
   'https://www.googleapis.com/auth/drive',
-  'https://mail.google.com/'
+  'https://mail.google.com/',
+  'https://www.googleapis.com/auth/calendar.readonly',
+  'https://www.googleapis.com/auth/youtube.readonly',
+  'https://www.googleapis.com/auth/tasks.readonly'
 ].join(' ');
 
 export default function ClientGateway() {
