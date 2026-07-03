@@ -97,18 +97,13 @@ export default function YouTubeUI({ member }) {
       }
 
       const formattedSubscribers = (ed.subscribers || []).map(sub => {
-        let threatLevel = 'Low';
-        if (sub.subscribers > 1000000) threatLevel = 'High';
-        else if (sub.subscribers > 50000) threatLevel = 'Medium';
-        
         return {
           id: sub.channelId,
           title: sub.title,
           thumbnail: sub.thumbnail,
           subs: Number(sub.subscribers).toLocaleString(),
           videos: Number(sub.videos || 0).toLocaleString(),
-          joined: sub.joined ? new Date(sub.joined).toLocaleDateString() : 'Unknown',
-          threatLevel
+          joined: sub.joined ? new Date(sub.joined).toLocaleDateString() : 'Unknown'
         };
       });
 
@@ -552,20 +547,17 @@ export default function YouTubeUI({ member }) {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-lg font-bold text-white">Recent Subscribers (Influence Ranked)</h4>
+                      <h4 className="text-lg font-bold text-white">Recent Subscribers</h4>
                       <div className="relative group flex items-center justify-center">
                         <Info size={16} className="text-slate-500 cursor-help hover:text-white transition-colors" />
-                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-64 p-3 bg-slate-800 text-xs text-slate-300 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 pointer-events-none">
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 p-3 bg-slate-800 text-xs text-slate-300 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 pointer-events-none">
                           Google's API permanently limits subscriber queries to the most recent 1,000 accounts. This list ranks influence exclusively within that latest cohort.
-                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
+                          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-slate-400">Analysis of the most influential accounts among their newest subscribers.</p>
+                    <p className="text-sm text-slate-400">Analysis of the newest subscribers.</p>
                   </div>
-                  <button className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg transition-colors border border-white/10">
-                    Export CSV
-                  </button>
                 </div>
                 
                 <div className="overflow-hidden border border-white/5 rounded-2xl bg-white/[0.02]">
@@ -576,7 +568,6 @@ export default function YouTubeUI({ member }) {
                         <th className="px-6 py-4">Their Subs</th>
                         <th className="px-6 py-4">Total Videos</th>
                         <th className="px-6 py-4">Subscribed On</th>
-                        <th className="px-6 py-4 text-right">Influence Level</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -593,15 +584,6 @@ export default function YouTubeUI({ member }) {
                           <td className="px-6 py-4 font-medium text-slate-300">{sub.subs}</td>
                           <td className="px-6 py-4">{sub.videos}</td>
                           <td className="px-6 py-4">{sub.joined}</td>
-                          <td className="px-6 py-4 text-right">
-                            <span className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                              sub.threatLevel === 'High' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                              sub.threatLevel === 'Medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
-                              'bg-slate-500/20 text-slate-400 border border-slate-500/30'
-                            }`}>
-                              {sub.threatLevel}
-                            </span>
-                          </td>
                         </tr>
                       ))}
                     </tbody>
