@@ -84,17 +84,6 @@ export default function YouTubeUI({ member }) {
           description: channelItem.snippet?.description || 'No description provided.',
           joined: new Date(channelItem.snippet?.publishedAt || Date.now()).toLocaleDateString()
         };
-      } else {
-        formattedChannel = {
-          id: 'unknown',
-          title: member.name || 'YouTube User',
-          subscribers: '0',
-          videos: '0',
-          views: '0',
-          thumbnail: member.avatar_url || 'https://lh3.googleusercontent.com/a/default-user=s120',
-          description: 'This user does not have a public YouTube channel.',
-          joined: 'Unknown'
-        };
       }
 
       // The backend has already filtered to the Top 100 most influential active subscribers
@@ -187,7 +176,7 @@ export default function YouTubeUI({ member }) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-slate-400">
         <Loader2 className="animate-spin mb-4 text-red-500" size={32} />
-        <p>Loading YouTube intel...</p>
+        <p>Loading YouTube stuff...</p>
       </div>
     );
   }
