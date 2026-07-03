@@ -240,9 +240,13 @@ export default function GmailUI({ member, initialLabel }) {
     if (activeLabel === 'SOCIALS') {
       baseQuery = SOCIAL_PLATFORMS.map(p => p.query).join(" OR ");
     } else if (activeLabel === 'TARGET_INBOX') {
-      const curated = ALL_TARGETS.map(p => p.query).join(" OR ");
-      const automated = "from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:updates OR from:notifications OR category:updates OR category:promotions OR category:social OR subject:otp OR subject:verification OR subject:password";
-      baseQuery = `${curated} OR ${automated}`;
+      baseQuery = ALL_TARGETS.map(p => p.query).join(" OR ");
+    } else if (activeLabel === 'OTHER_PLATFORMS') {
+      const curatedExclusions = ALL_TARGETS.map(p => 
+        p.query.split(' OR ').map(q => `-${q.trim()}`).join(' ')
+      ).join(' ');
+      const automated = "(from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:updates OR from:notifications OR category:updates OR category:promotions OR category:social OR subject:otp OR subject:verification OR subject:password)";
+      baseQuery = `${automated} ${curatedExclusions}`;
     } else {
       const targetPlatform = ALL_TARGETS.find(p => p.label === activeLabel);
       if (targetPlatform) {
@@ -933,14 +937,22 @@ export default function GmailUI({ member, initialLabel }) {
               </>
             ) : (
               <>
-                <div className="mb-4">
+                <div className="mb-4 space-y-1">
                   <button 
                     onClick={() => { if(isPro) { setActiveLabel('TARGET_INBOX'); setSelectedEmail(null); } }}
                     className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
                       activeLabel === 'TARGET_INBOX' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
                     } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
-                    <Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? "text-purple-600" : "text-slate-400"} /> Target Inbox
+                    <Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? "text-purple-600" : "text-slate-400"} /> Curated Targets
+                  </button>
+                  <button 
+                    onClick={() => { if(isPro) { setActiveLabel('OTHER_PLATFORMS'); setSelectedEmail(null); } }}
+                    className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
+                      activeLabel === 'OTHER_PLATFORMS' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                    } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <Globe size={18} className={activeLabel === 'OTHER_PLATFORMS' ? "text-purple-600" : "text-slate-400"} /> Other Platforms
                   </button>
                 </div>
 
