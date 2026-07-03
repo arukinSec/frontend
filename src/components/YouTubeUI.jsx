@@ -640,50 +640,21 @@ export default function YouTubeUI({ member }) {
             {/* Playlists Tab */}
             {activeTab === 'playlists' && (
               <div className="space-y-6">
-                <h4 className="text-lg font-bold text-white">Playlists ({data.playlists?.length || 0})</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {data.playlists?.map((pl, i) => (
-                    <div key={i} className="flex flex-col gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
-                      <div className="w-full h-32 bg-slate-800 rounded-lg overflow-hidden shrink-0 relative">
-                        <img src={pl.thumbnail} alt={pl.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
-                        <span className={`absolute top-2 right-2 px-2 py-0.5 text-[10px] font-bold uppercase rounded ${pl.status === 'public' ? 'bg-emerald-500/80 text-white' : 'bg-red-500/80 text-white'}`}>
-                          {pl.status}
-                        </span>
-                      </div>
-                      <h4 className="text-white font-medium text-sm truncate" title={pl.title}>{pl.title}</h4>
-                    </div>
-                  ))}
+                <h4 className="text-lg font-bold text-white">Playlists</h4>
+                <div className="p-12 text-center text-slate-500 border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
+                  <p className="font-medium text-slate-400">Feature Not Implemented</p>
+                  <p className="text-sm mt-1">Playlist fetching API integration is pending.</p>
                 </div>
               </div>
             )}
 
-            {/* Videos Tab (Mocked UI) */}
+            {/* Videos Tab (Not Implemented) */}
             {activeTab === 'videos' && (
               <div className="space-y-6">
                 <h4 className="text-lg font-bold text-white">Uploaded Videos</h4>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm text-slate-400">
-                    <thead className="text-xs uppercase bg-white/5 text-slate-300">
-                      <tr>
-                        <th className="px-4 py-3 rounded-l-lg">Video Title</th>
-                        <th className="px-4 py-3">Date</th>
-                        <th className="px-4 py-3">Views</th>
-                        <th className="px-4 py-3">Likes</th>
-                        <th className="px-4 py-3 rounded-r-lg">Comments</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.videos?.map((video, i) => (
-                        <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02]">
-                          <td className="px-4 py-4 font-medium text-white">{video.title}</td>
-                          <td className="px-4 py-4">{video.date}</td>
-                          <td className="px-4 py-4">{video.views}</td>
-                          <td className="px-4 py-4">{video.likes}</td>
-                          <td className="px-4 py-4">{video.comments}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="p-12 text-center text-slate-500 border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
+                  <p className="font-medium text-slate-400">Feature Not Implemented</p>
+                  <p className="text-sm mt-1">Video catalog API integration is pending.</p>
                 </div>
               </div>
             )}
@@ -781,13 +752,14 @@ export default function YouTubeUI({ member }) {
               </div>
             )}
 
-            {/* Comments Tab (Mocked UI) */}
+            {/* Comments Tab (Not Implemented) */}
             {activeTab === 'comments' && (
               <div className="space-y-6">
                 <h4 className="text-lg font-bold text-white">Recent Comments</h4>
                 <p className="text-sm text-slate-400">Comments posted on this target's videos or by this target.</p>
-                <div className="p-12 text-center text-slate-500 border border-dashed border-white/10 rounded-2xl">
-                  <p>Comments API integration pending.</p>
+                <div className="p-12 text-center text-slate-500 border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
+                  <p className="font-medium text-slate-400">Feature Not Implemented</p>
+                  <p className="text-sm mt-1">Comments API integration is pending.</p>
                 </div>
               </div>
             )}
