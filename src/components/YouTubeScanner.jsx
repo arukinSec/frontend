@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search } from 'lucide-react';
+import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import localforage from 'localforage';
 import { hasProAccess } from '../utils/access';
 
 export default function YouTubeScanner({ member }) {
   const isPro = hasProAccess(member);
-  const [activeTab, setActiveTab] = useState('subscriptions'); // 'subscriptions', 'liked', 'analysis'
+  const [activeTab, setActiveTab] = useState('channel'); // 'channel', 'subscriptions'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState({ subscriptions: [], likedVideos: [] });
+  const [data, setData] = useState({ channel: null, subscriptions: [] });
 
   useEffect(() => {
     const fetchCachedData = async () => {
@@ -42,15 +42,19 @@ export default function YouTubeScanner({ member }) {
 
       // Mock Data for UI demonstration until backend is wired
       const mockData = {
+        channel: {
+          title: member?.name || 'User Channel',
+          subscribers: '1.2K',
+          videos: '15',
+          views: '124,500',
+          thumbnail: member?.avatar_url || 'https://lh3.googleusercontent.com/a/default-user=s120',
+          description: 'Personal channel for vlogs and random clips.',
+          joined: 'Oct 2018'
+        },
         subscriptions: [
           { id: '1', title: 'Crypto Daily', thumbnail: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', category: 'Finance' },
           { id: '2', title: 'BetterHelp Therapy', thumbnail: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', category: 'Mental Health' },
           { id: '3', title: 'Las Vegas Vlogs', thumbnail: 'https://cdn-icons-png.flaticon.com/512/149/149071.png', category: 'Travel/Gambling' }
-        ],
-        likedVideos: [
-          { id: 'v1', title: 'How to hide assets during a divorce', channel: 'Legal Eagle', date: '2 days ago' },
-          { id: 'v2', title: '100x Altcoin Gems for 2026', channel: 'Crypto Daily', date: '1 week ago' },
-          { id: 'v3', title: 'Dealing with severe anxiety', channel: 'Therapy in a Nutshell', date: '2 weeks ago' }
         ]
       };
 
@@ -73,9 +77,9 @@ export default function YouTubeScanner({ member }) {
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <MonitorPlay className="text-red-500" size={24} />
-            YouTube OSINT Scanner
+            YouTube Data Gateway
           </h2>
-          <p className="text-sm text-slate-400 mt-1">Extract subscriptions, liked videos, and psychological profiles.</p>
+          <p className="text-sm text-slate-400 mt-1">Extract channel overview and subscriptions directly from the Google API.</p>
         </div>
         <button
           onClick={handleScan}
@@ -83,7 +87,7 @@ export default function YouTubeScanner({ member }) {
           className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 rounded-xl transition-all font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-          {loading ? 'Extracting Intel...' : 'Scan YouTube Account'}
+          {loading ? 'Fetching Data...' : 'Pull YouTube Data'}
         </button>
       </div>
 
@@ -97,9 +101,8 @@ export default function YouTubeScanner({ member }) {
       {/* Tabs */}
       <div className="flex items-center border-b border-white/5 px-6 pt-2 overflow-x-auto hide-scrollbar">
         {[
-          { id: 'subscriptions', label: 'Subscriptions', icon: PlayCircle },
-          { id: 'liked', label: 'Liked Videos', icon: ThumbsUp },
-          { id: 'analysis', label: 'Psychological Profile', icon: Eye }
+          { id: 'channel', label: 'Channel Overview', icon: User },
+          { id: 'subscriptions', label: 'Subscriptions', icon: PlayCircle }
         ].map(tab => (
           <button
             key={tab.id}
@@ -112,11 +115,8 @@ export default function YouTubeScanner({ member }) {
           >
             <tab.icon size={16} />
             {tab.label}
-            {tab.id === 'subscriptions' && data.subscriptions.length > 0 && (
+            {tab.id === 'subscriptions' && data.subscriptions?.length > 0 && (
               <span className="ml-1.5 px-2 py-0.5 rounded-full bg-white/5 text-[10px]">{data.subscriptions.length}</span>
-            )}
-            {tab.id === 'liked' && data.likedVideos.length > 0 && (
-              <span className="ml-1.5 px-2 py-0.5 rounded-full bg-white/5 text-[10px]">{data.likedVideos.length}</span>
             )}
           </button>
         ))}
@@ -148,113 +148,44 @@ export default function YouTubeScanner({ member }) {
           </div>
         )}
 
-        {/* Liked Videos Tab */}
-        {activeTab === 'liked' && (
-          <div className="space-y-3">
-            {data.likedVideos.length === 0 && !loading && (
-              <div className="py-12 text-center text-slate-500 border border-dashed border-white/10 rounded-xl">
-                <ThumbsUp size={32} className="mx-auto mb-3 opacity-20" />
-                <p>No liked videos extracted yet. Click Scan.</p>
+        {/* Channel Overview Tab */}
+        {activeTab === 'channel' && (
+          <div className="space-y-6">
+            {!data.channel && !loading ? (
+              <div className="py-12 text-center text-slate-500">
+                <User size={32} className="mx-auto mb-3 opacity-20" />
+                <p>No channel data fetched yet. Click Pull YouTube Data.</p>
               </div>
-            )}
-            {data.likedVideos.map((video, i) => {
-              // Basic heuristic flag
-              const titleLower = video.title.toLowerCase();
-              const isFlagged = titleLower.includes('crypto') || titleLower.includes('divorce') || titleLower.includes('therapy') || titleLower.includes('casino');
-              
-              return (
-                <div key={i} className={`flex items-start justify-between p-4 rounded-xl border transition-colors ${
-                  isFlagged ? 'bg-red-500/[0.03] border-red-500/20 hover:bg-red-500/[0.05]' : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.04]'
-                }`}>
-                  <div className="flex gap-4">
-                    <div className="w-24 h-16 bg-slate-800 rounded-lg shrink-0 flex items-center justify-center border border-white/10 overflow-hidden relative group">
-                      <PlayCircle size={20} className="text-white/30" />
+            ) : data.channel && (
+              <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col md:flex-row items-center md:items-start gap-6">
+                <div className="w-24 h-24 rounded-full border-4 border-white/10 overflow-hidden shrink-0">
+                  <img src={data.channel.thumbnail} alt="Channel Avatar" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-2xl font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                    {data.channel.title}
+                  </h3>
+                  <p className="text-sm text-slate-400 mt-1">{data.channel.description || 'No description provided.'}</p>
+                  
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 mt-6">
+                    <div className="text-center md:text-left">
+                      <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Subscribers</p>
+                      <p className="text-lg font-bold text-white">{data.channel.subscribers}</p>
                     </div>
-                    <div>
-                      <h4 className={`font-medium text-sm mb-1 ${isFlagged ? 'text-red-100' : 'text-white'}`}>{video.title}</h4>
-                      <p className="text-xs text-slate-400 flex items-center gap-3">
-                        <span>{video.channel}</span>
-                        <span className="flex items-center gap-1"><Clock size={10} /> {video.date}</span>
-                      </p>
-                      {isFlagged && (
-                        <span className="inline-block mt-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30">
-                          High Interest Target
-                        </span>
-                      )}
+                    <div className="w-px h-8 bg-white/10 hidden md:block"></div>
+                    <div className="text-center md:text-left">
+                      <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Videos</p>
+                      <p className="text-lg font-bold text-white">{data.channel.videos}</p>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Psychological Profile Tab */}
-        {activeTab === 'analysis' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl border border-white/5 bg-gradient-to-br from-indigo-500/5 to-purple-500/5">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
-                <Search className="text-indigo-400" size={18} />
-                Heuristic Profiler
-              </h3>
-              <p className="text-sm text-slate-400 mb-6 leading-relaxed">
-                Arukin analyzes the target's recent YouTube watch history, likes, and subscriptions to build an automated psychological profile based on categorized interests.
-              </p>
-              
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-xs mb-1.5">
-                    <span className="text-slate-300 font-medium">Financial & Crypto</span>
-                    <span className="text-emerald-400 font-bold">45%</span>
-                  </div>
-                  <div className="h-2 w-full bg-black/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '45%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1.5">
-                    <span className="text-slate-300 font-medium">Mental Health</span>
-                    <span className="text-red-400 font-bold">30%</span>
-                  </div>
-                  <div className="h-2 w-full bg-black/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-red-500 rounded-full" style={{ width: '30%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1.5">
-                    <span className="text-slate-300 font-medium">Travel & Leisure</span>
-                    <span className="text-indigo-400 font-bold">25%</span>
-                  </div>
-                  <div className="h-2 w-full bg-black/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: '25%' }}></div>
+                    <div className="w-px h-8 bg-white/10 hidden md:block"></div>
+                    <div className="text-center md:text-left">
+                      <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Total Views</p>
+                      <p className="text-lg font-bold text-white">{data.channel.views}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-4">
-               <div className="p-5 rounded-2xl border border-red-500/20 bg-red-500/5 flex items-start gap-4">
-                 <AlertTriangle size={24} className="text-red-400 shrink-0 mt-1" />
-                 <div>
-                   <h4 className="text-red-100 font-bold text-sm mb-1">Vulnerability Detected</h4>
-                   <p className="text-xs text-red-200/70 leading-relaxed">
-                     Target is exhibiting high engagement with financial recovery and mental health content simultaneously, indicating potential real-world distress.
-                   </p>
-                 </div>
-               </div>
-               <div className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] flex items-start gap-4">
-                 <EyeOff size={24} className="text-slate-400 shrink-0 mt-1" />
-                 <div>
-                   <h4 className="text-white font-bold text-sm mb-1">Ghost Actions (PRO)</h4>
-                   <p className="text-xs text-slate-500 leading-relaxed">
-                     Silently manipulate the target's YouTube algorithm by injecting specific subscriptions and un-liking videos.
-                   </p>
-                   <button className="mt-3 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 rounded-lg transition-colors border border-white/10 cursor-pointer">
-                     Inject Algorithm Pattern
-                   </button>
-                 </div>
-               </div>
-            </div>
+            )}
           </div>
         )}
 
