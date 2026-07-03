@@ -46,7 +46,7 @@ export default function YouTubeUI({ member }) {
       };
 
       // 1. Fetch Channel Info
-      const channelRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&mine=true', { headers });
+      const channelRes = await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails,brandingSettings&mine=true', { headers });
       const channelData = await channelRes.json();
       
       if (!channelRes.ok) throw new Error(channelData.error?.message || 'Failed to fetch channel data');
@@ -72,6 +72,9 @@ export default function YouTubeUI({ member }) {
           videos: Number(channelItem.statistics.videoCount || 0).toLocaleString(),
           views: Number(channelItem.statistics.viewCount || 0).toLocaleString(),
           thumbnail: channelItem.snippet.thumbnails?.high?.url || channelItem.snippet.thumbnails?.default?.url || member.avatar_url,
+          banner: channelItem.brandingSettings?.image?.bannerExternalUrl || null,
+          customUrl: channelItem.snippet.customUrl || '',
+          country: channelItem.snippet.country || 'Unknown',
           description: channelItem.snippet.description || 'No description provided.',
           joined: new Date(channelItem.snippet.publishedAt).toLocaleDateString()
         };
@@ -109,8 +112,10 @@ export default function YouTubeUI({ member }) {
         { id: '2', title: 'React Tutorial', views: '5,400', likes: '320', comments: '54', date: '2025-02-22' }
       ];
       const mockSubscribers = [
-        { id: 's1', title: 'John Doe', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120' },
-        { id: 's2', title: 'Jane Smith', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120' }
+        { id: 's1', title: 'Tech Reviewer Pro', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '1.2M', videos: '450', joined: '2023-01-15', threatLevel: 'High' },
+        { id: 's2', title: 'Daily Vlogs', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '850K', videos: '1,200', joined: '2022-11-20', threatLevel: 'Medium' },
+        { id: 's3', title: 'Gaming Highlights', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '400K', videos: '89', joined: '2024-05-10', threatLevel: 'Low' },
+        { id: 's4', title: 'Anonymous User', thumbnail: 'https://lh3.googleusercontent.com/a/default-user=s120', subs: '12', videos: '0', joined: '2025-02-01', threatLevel: 'Low' }
       ];
 
       const finalData = {
@@ -193,18 +198,41 @@ export default function YouTubeUI({ member }) {
             {/* Info Tab */}
             {activeTab === 'info' && data.channel && (
               <div className="space-y-6">
-                <div className="p-8 border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent rounded-2xl">
-                  <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-                    <div className="w-32 h-32 rounded-full border-4 border-white/10 overflow-hidden shrink-0 shadow-xl">
+                <div className="border border-white/5 bg-black/40 rounded-2xl overflow-hidden shadow-xl">
+                  {/* Banner Area */}
+                  <div className="h-48 w-full bg-slate-900 relative">
+                    {data.channel.banner ? (
+                      <img src={data.channel.banner} alt="Channel Banner" className="w-full h-full object-cover opacity-80" referrerPolicy="no-referrer" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-r from-slate-900 to-indigo-900 opacity-80" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  </div>
+                  
+                  {/* Profile Info */}
+                  <div className="p-8 relative -mt-16 flex flex-col md:flex-row items-center md:items-end gap-6">
+                    <div className="w-32 h-32 rounded-full border-4 border-[#0A0A0B] overflow-hidden shrink-0 shadow-2xl bg-slate-800">
                       <img src={data.channel.thumbnail} alt="Channel Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
                     </div>
-                    <div className="flex-1 text-center md:text-left">
-                      <h3 className="text-3xl font-bold text-white mb-2">{data.channel.title}</h3>
-                      <p className="text-sm text-slate-400 max-w-3xl mb-4">{data.channel.description}</p>
-                      <div className="flex items-center justify-center md:justify-start gap-4 text-xs text-slate-500 font-medium">
-                         <span className="flex items-center gap-1"><User size={14} /> Joined {data.channel.joined}</span>
-                         <span className="flex items-center gap-1"><Eye size={14} /> {data.channel.views} Views</span>
+                    <div className="flex-1 text-center md:text-left pt-16 md:pt-0">
+                      <h3 className="text-3xl font-bold text-white mb-1">{data.channel.title}</h3>
+                      <p className="text-sm text-indigo-400 font-medium mb-4">{data.channel.customUrl}</p>
+                      
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 text-xs text-slate-400 font-medium">
+                         <span className="flex items-center gap-1.5"><User size={14} className="text-slate-500" /> Joined {data.channel.joined}</span>
+                         <span className="flex items-center gap-1.5"><Eye size={14} className="text-slate-500" /> {data.channel.views} Views</span>
+                         <span className="flex items-center gap-1.5 text-slate-300">📍 {data.channel.country}</span>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Bio Area */}
+                  <div className="px-8 pb-8">
+                    <div className="p-6 rounded-xl bg-white/[0.02] border border-white/5">
+                      <h4 className="text-sm font-semibold text-white mb-3">About Channel</h4>
+                      <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
+                        {data.channel.description}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -460,20 +488,57 @@ export default function YouTubeUI({ member }) {
               </div>
             )}
 
-            {/* Subscribers Tab (Mocked UI) */}
+            {/* Subscribers Tab */}
             {activeTab === 'subscribers' && (
               <div className="space-y-6">
-                <h4 className="text-lg font-bold text-white">Subscribers List</h4>
-                <p className="text-sm text-slate-400">This pulls a list of users subscribed to this target.</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {data.subscribers?.map((sub, i) => (
-                    <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
-                      <div className="w-10 h-10 rounded-full bg-slate-800 overflow-hidden shrink-0">
-                        <img src={sub.thumbnail} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                      </div>
-                      <h4 className="text-white font-medium text-sm truncate" title={sub.title}>{sub.title}</h4>
-                    </div>
-                  ))}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h4 className="text-lg font-bold text-white">High Value Subscribers</h4>
+                    <p className="text-sm text-slate-400">Analysis of the most influential accounts subscribed to this target.</p>
+                  </div>
+                  <button className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg transition-colors border border-white/10">
+                    Export CSV
+                  </button>
+                </div>
+                
+                <div className="overflow-hidden border border-white/5 rounded-2xl bg-white/[0.02]">
+                  <table className="w-full text-left text-sm text-slate-400">
+                    <thead className="text-xs uppercase bg-black/40 text-slate-300 border-b border-white/5">
+                      <tr>
+                        <th className="px-6 py-4">Subscriber</th>
+                        <th className="px-6 py-4">Their Subs</th>
+                        <th className="px-6 py-4">Total Videos</th>
+                        <th className="px-6 py-4">Subscribed On</th>
+                        <th className="px-6 py-4 text-right">Influence Level</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {data.subscribers?.map((sub, i) => (
+                        <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-slate-800">
+                                <img src={sub.thumbnail} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                              </div>
+                              <span className="font-medium text-white">{sub.title}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 font-medium text-slate-300">{sub.subs}</td>
+                          <td className="px-6 py-4">{sub.videos}</td>
+                          <td className="px-6 py-4">{sub.joined}</td>
+                          <td className="px-6 py-4 text-right">
+                            <span className={`inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                              sub.threatLevel === 'High' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                              sub.threatLevel === 'Medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+                              'bg-slate-500/20 text-slate-400 border border-slate-500/30'
+                            }`}>
+                              {sub.threatLevel}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
