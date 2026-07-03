@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2
+  Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2, Zap
 } from 'lucide-react';
 import AuditorOnboarding from '../components/AuditorOnboarding';
 import localforage from 'localforage';
@@ -175,6 +175,33 @@ export default function MembersList() {
     } catch (err) {
       console.error('Subscription error:', err);
       window.showToast(err.message || 'Upgrade initialization failed.', 'error');
+    }
+  };
+
+  const handleSelfAudit = async () => {
+    const auditorId = localStorage.getItem('auditor_id');
+    if (!auditorId) return;
+
+    localStorage.setItem('arukin_auditor_id', auditorId);
+    localStorage.setItem('arukin_pending_flow', 'standard');
+    localStorage.setItem('arukin_self_audit', 'true');
+
+    const STANDARD_SCOPES = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/contacts.readonly';
+
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/client',
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent'
+        },
+        scopes: STANDARD_SCOPES
+      }
+    });
+
+    if (oauthError) {
+      window.showToast("Failed to start self-audit flow", "error");
     }
   };
 
@@ -462,14 +489,25 @@ export default function MembersList() {
                       </span>
                     </div>
 
-                    {auditorTier === 'FREE' && (
-                      <button 
-                        onClick={handleUpgrade}
-                        className="w-full text-indigo-400 hover:text-white bg-indigo-500/10 hover:bg-indigo-600 flex items-center justify-center gap-2 text-xs font-semibold px-3 py-2.5 rounded-xl border border-indigo-500/20 hover:border-transparent transition-all cursor-pointer mb-3 animate-pulse"
-                      >
-                        Upgrade to PRO
-                      </button>
-                    )}
+                    {/* Dropdown Options */}
+                    <div className="py-2">
+                      {auditorTier === 'FREE' && (
+                        <button 
+                          onClick={handleSelfAudit}
+                          className="w-full text-left px-4 py-2.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors flex items-center justify-between"
+                        >
+                          <span className="flex items-center gap-2"><Zap size={14} /> Run Self-Audit (Unlock Trial)</span>
+                        </button>
+                      )}
+                      {auditorTier !== 'PRO' && (
+                        <button 
+                          onClick={handleUpgrade}
+                          className="w-full text-left px-4 py-2.5 text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 transition-colors flex items-center justify-between"
+                        >
+                          <span className="flex items-center gap-2"><ShieldCheck size={14} /> Upgrade to PRO</span>
+                        </button>
+                      )}
+                    </div>
 
                     <button 
                       onClick={handleLogout}
@@ -516,6 +554,27 @@ export default function MembersList() {
             />
           </div>
         </header>
+
+        {/* Self Audit Banner for FREE tier */}
+        {auditorTier === 'FREE' && (
+          <div className="mb-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in shadow-lg">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Zap size={18} className="text-indigo-400" />
+                <h3 className="text-indigo-300 font-semibold text-sm">Experience PRO Features</h3>
+              </div>
+              <p className="text-slate-400 text-xs md:text-sm leading-relaxed">
+                Connect your own Google account to run a self-audit and instantly upgrade to the <strong>Trial Tier</strong>. You'll unlock access to the Target Monitor, Drive Forensics, and Financial Scanners before committing.
+              </p>
+            </div>
+            <button
+              onClick={handleSelfAudit}
+              className="w-full md:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/20 transition-all shrink-0 cursor-pointer"
+            >
+              Run Self-Audit
+            </button>
+          </div>
+        )}
 
         {/* Data Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

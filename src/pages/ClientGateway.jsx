@@ -141,13 +141,21 @@ export default function ClientGateway() {
 
       if (error) throw error;
       
-      // CRITICAL: Immediately log out of Supabase to prevent the member 
-      // session from leaking into the auditor administration dashboard!
-      await supabase.auth.signOut();
+      const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
       
       localStorage.removeItem('arukin_pending_flow');
       localStorage.removeItem('arukin_auditor_id');
       localStorage.removeItem('arukin_inputted_auth_id');
+      localStorage.removeItem('arukin_self_audit');
+      
+      if (isSelfAudit) {
+        window.location.href = '/dashboard';
+        return;
+      } else {
+        // CRITICAL: Immediately log out of Supabase to prevent the member 
+        // session from leaking into the auditor administration dashboard!
+        await supabase.auth.signOut();
+      }
       setUser(supabaseUser);
       setCurrentStep(2);
     } catch (err) {
