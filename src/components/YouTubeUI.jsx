@@ -457,7 +457,19 @@ export default function YouTubeUI({ member }) {
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                           <XAxis dataKey="name" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} dy={10} />
-                          <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} dx={-10} tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(1)}k` : val} />
+                          <YAxis 
+                            stroke="#ffffff50" 
+                            fontSize={12} 
+                            tickLine={false} 
+                            axisLine={false} 
+                            dx={-10} 
+                            tickFormatter={(val) => {
+                              if (val >= 1000000000) return `${(val/1000000000).toFixed(1)}B`;
+                              if (val >= 1000000) return `${(val/1000000).toFixed(1)}M`;
+                              if (val >= 1000) return `${(val/1000).toFixed(1)}k`;
+                              return val;
+                            }} 
+                          />
                           <RechartsTooltip 
                             contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
                             itemStyle={{ color: '#ef4444' }}
