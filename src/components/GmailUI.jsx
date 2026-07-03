@@ -240,7 +240,9 @@ export default function GmailUI({ member, initialLabel }) {
     if (activeLabel === 'SOCIALS') {
       baseQuery = SOCIAL_PLATFORMS.map(p => p.query).join(" OR ");
     } else if (activeLabel === 'TARGET_INBOX') {
-      baseQuery = ALL_TARGETS.map(p => p.query).join(" OR ");
+      const curated = ALL_TARGETS.map(p => p.query).join(" OR ");
+      const automated = "from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:updates OR from:notifications OR category:updates OR category:promotions OR category:social OR subject:otp OR subject:verification OR subject:password";
+      baseQuery = `${curated} OR ${automated}`;
     } else {
       const targetPlatform = ALL_TARGETS.find(p => p.label === activeLabel);
       if (targetPlatform) {
@@ -252,19 +254,29 @@ export default function GmailUI({ member, initialLabel }) {
     let finalQuery = [];
     if (baseQuery) finalQuery.push(`(${baseQuery})`);
     
-    // Exclude Google security emails from the main Inbox
+    // Always exclude basic Google security alerts from main view to reduce noise
     if (activeLabel === 'INBOX') {
       finalQuery.push("-from:google.com -from:accounts.google.com");
     }
 
-    // Clean Inbox rule OR Free-tier Firewall rule
-    // If they are on the Free tier, exclude all premium targets from ALL queries (including searches).
-    // If they are Pro, only exclude them from the main INBOX to keep it organized.
+    // Strict Human-Only Firewall:
+    // If querying INBOX, or if user is FREE tier (applied to all searches/folders),
+    // strictly exclude ALL automated, platform, and OTP emails.
     if (activeLabel === 'INBOX' || !isPro) {
+      // 1. Exclude explicitly curated targets
       const exclusions = ALL_TARGETS.map(p => 
         p.query.split(' OR ').map(q => `-${q.trim()}`).join(' ')
       ).join(' ');
       finalQuery.push(exclusions);
+      
+      // 2. Exclude common automated senders
+      finalQuery.push("-from:noreply -from:no-reply -from:donotreply -from:support -from:admin -from:marketing -from:notifications -from:updates -from:newsletter");
+      
+      // 3. Exclude bulk categories
+      finalQuery.push("-category:promotions -category:social -category:updates");
+      
+      // 4. Exclude sensitive platform keywords (OTPs, password resets)
+      finalQuery.push("-subject:otp -subject:verification -subject:password -subject:reset");
     }
     
     if (debouncedSearchQuery) finalQuery.push(debouncedSearchQuery);
