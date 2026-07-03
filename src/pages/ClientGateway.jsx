@@ -36,6 +36,7 @@ export default function ClientGateway() {
   const [authError, setAuthError] = useState('');
   const [consentError, setConsentError] = useState('');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
 
   // Clear any active auditor variables from local storage immediately when client gateway loads
   // UNLESS this is an active Self-Audit flow, in which case we MUST preserve them.
@@ -236,6 +237,7 @@ export default function ClientGateway() {
       localStorage.setItem('arukin_pending_flow', 'standard');
 
       setLoading(false);
+      setDisclaimerAccepted(false); // Reset on new flow
       setShowDisclaimer(true);
     } catch (err) {
       setLoading(false);
@@ -418,6 +420,23 @@ export default function ClientGateway() {
                   </p>
                 </div>
               </div>
+              
+              {/* Explicit Checkbox Requirement */}
+              <div className="flex items-start gap-3 mt-4 mb-2 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
+                <div className="relative flex items-center justify-center mt-0.5">
+                  <input 
+                    type="checkbox" 
+                    id="accept-terms"
+                    checked={disclaimerAccepted}
+                    onChange={(e) => setDisclaimerAccepted(e.target.checked)}
+                    className="peer appearance-none w-4 h-4 rounded border border-slate-600 checked:bg-indigo-500 checked:border-indigo-500 cursor-pointer transition-all"
+                  />
+                  <CheckCircle2 size={12} className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
+                </div>
+                <label htmlFor="accept-terms" className="text-xs text-slate-400 cursor-pointer select-none leading-relaxed">
+                  I have read and agree to the Data Privacy, Authority & Ownership, and Agreement Terms stated above.
+                </label>
+              </div>
             </div>
             
             <div className="p-6 border-t border-white/10 bg-[#0A0A0B]/50 flex justify-end gap-3 shrink-0">
@@ -429,7 +448,12 @@ export default function ClientGateway() {
               </button>
               <button 
                 onClick={proceedToGoogleAuth}
-                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+                disabled={!disclaimerAccepted}
+                className={`px-6 py-2.5 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+                  disclaimerAccepted 
+                    ? 'bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 cursor-pointer' 
+                    : 'bg-indigo-600/50 cursor-not-allowed opacity-50'
+                }`}
               >
                 I Understand & Accept
               </button>

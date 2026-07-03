@@ -17,6 +17,7 @@ export default function MembersList() {
   const [showUpgradeLockModal, setShowUpgradeLockModal] = useState({ open: false, title: '', message: '', action: null });
   const [showConfirmModal, setShowConfirmModal] = useState({ open: false, title: '', message: '', requireInput: false, action: null });
   const [showSelfAuditModal, setShowSelfAuditModal] = useState(false);
+  const [selfAuditAccepted, setSelfAuditAccepted] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
   const [showDangerZone, setShowDangerZone] = useState(false);
   const navigate = useNavigate();
@@ -180,6 +181,7 @@ export default function MembersList() {
   };
 
   const handleUnlockTrialClick = () => {
+    setSelfAuditAccepted(false);
     setShowSelfAuditModal(true);
   };
 
@@ -842,6 +844,23 @@ export default function MembersList() {
                   </ul>
                 </div>
               </div>
+              
+              {/* Explicit Checkbox Requirement */}
+              <div className="flex items-start gap-3 mt-4 mb-2 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
+                <div className="relative flex items-center justify-center mt-0.5">
+                  <input 
+                    type="checkbox" 
+                    id="accept-self-audit"
+                    checked={selfAuditAccepted}
+                    onChange={(e) => setSelfAuditAccepted(e.target.checked)}
+                    className="peer appearance-none w-4 h-4 rounded border border-slate-600 checked:bg-emerald-500 checked:border-emerald-500 cursor-pointer transition-all"
+                  />
+                  <CheckCircle2 size={12} className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
+                </div>
+                <label htmlFor="accept-self-audit" className="text-xs text-slate-400 cursor-pointer select-none leading-relaxed">
+                  I have read and agree to the Important Notice and authorize Arukin to connect my account.
+                </label>
+              </div>
             </div>
             
             <div className="p-6 border-t border-white/10 bg-[#0A0A0B]/50 flex justify-end gap-3 shrink-0">
@@ -853,7 +872,12 @@ export default function MembersList() {
               </button>
               <button 
                 onClick={handleSelfAuditAccept}
-                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
+                disabled={!selfAuditAccepted}
+                className={`px-6 py-2.5 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+                  selfAuditAccepted 
+                    ? 'bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 cursor-pointer' 
+                    : 'bg-emerald-600/50 cursor-not-allowed opacity-50'
+                }`}
               >
                 I Accept & Continue
               </button>
