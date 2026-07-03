@@ -230,7 +230,7 @@ export default function GmailUI({ member, initialLabel }) {
     return res;
   };
 
-  const fetchMessageIds = async (token = null) => {
+  const fetchMessageIds = async (token = null, isRefresh = false) => {
     let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${FETCH_SIZE}`;
     
     // Helper to generate full bidirectional queries
@@ -322,11 +322,17 @@ export default function GmailUI({ member, initialLabel }) {
     if (!res.ok) throw new Error('Failed to fetch messages. Both access and refresh tokens might be invalid.');
     
     const data = await res.json();
-    setListNextPageToken(data.nextPageToken || null);
+    if (isRefresh) {
+      setListNextPageToken(data.nextPageToken || null);
+    } else {
+      setListNextPageToken(data.nextPageToken || null);
+    }
     
     if (data.messages) {
       const newIds = data.messages.map(m => m.id);
-      setMessageIds(prev => [...prev, ...newIds]);
+      if (!isRefresh) {
+        setMessageIds(prev => [...prev, ...newIds]);
+      }
       return newIds;
     }
     return [];
@@ -370,8 +376,8 @@ export default function GmailUI({ member, initialLabel }) {
     const results = await Promise.all(promises);
     const newDetailsMap = {};
     results.forEach(item => { newDetailsMap[item.id] = item; });
-    
     setEmailDetails(prev => ({ ...prev, ...newDetailsMap }));
+    return newDetailsMap;
   };
 
   const ensurePageLoaded = async (pageIdx, tokenOverride = null) => {
@@ -544,23 +550,69 @@ export default function GmailUI({ member, initialLabel }) {
     }
 
     const init = async () => {
-      setLoading(true);
       setError(null);
+      const isSearch = !!debouncedSearchQuery;
+      const cacheKey = `gmail_cache_${member.id}_${activeLabel}_${currentMode}`;
       
-      // Reset state when label changes
-      setMessageIds([]);
-      setEmailDetails({});
-      setCurrentPage(0);
-      setListNextPageToken(null);
-      messageIdsRef.current = [];
-      emailDetailsRef.current = {};
+      let hasCache = false;
+      if (!isSearch) {
+        try {
+          const cached = await localforage.getItem(cacheKey);
+          if (cached && cached.messageIds && cached.emailDetails) {
+            setMessageIds(cached.messageIds);
+            setEmailDetails(cached.emailDetails);
+            messageIdsRef.current = cached.messageIds;
+            emailDetailsRef.current = cached.emailDetails;
+            setCurrentPage(0);
+            hasCache = true;
+            setLoading(false); // Instantly display cached UI
+          }
+        } catch (e) {
+          console.error("Cache read failed", e);
+        }
+      }
+
+      if (!hasCache) {
+        setLoading(true);
+        setMessageIds([]);
+        setEmailDetails({});
+        setCurrentPage(0);
+        setListNextPageToken(null);
+        messageIdsRef.current = [];
+        emailDetailsRef.current = {};
+      }
 
       try {
-        await ensurePageLoaded(0, 'initial');
-        preloadNextPage(1); 
+        // Background sync: Fetch the latest IDs
+        const liveIds = await fetchMessageIds(null, true);
+        
+        // Find which new live IDs we don't have details for
+        const missingIds = liveIds.filter(id => !emailDetailsRef.current[id]);
+        let fetchedDetails = {};
+        if (missingIds.length > 0) {
+          fetchedDetails = await fetchDetailsForIds(missingIds);
+        }
+
+        // Merge live IDs with our existing list, ensuring live ones stay at the top
+        const mergedIds = Array.from(new Set([...liveIds, ...messageIdsRef.current]));
+        setMessageIds(mergedIds);
+        messageIdsRef.current = mergedIds;
+
+        // Save top 40 back to cache for next time
+        if (!isSearch) {
+          const topIds = mergedIds.slice(0, 40);
+          const topDetails = {};
+          topIds.forEach(id => {
+            if (fetchedDetails[id]) topDetails[id] = fetchedDetails[id];
+            else if (emailDetailsRef.current[id]) topDetails[id] = emailDetailsRef.current[id];
+          });
+          await localforage.setItem(cacheKey, { messageIds: topIds, emailDetails: topDetails });
+        }
+        
+        preloadNextPage(1);
       } catch (err) {
-        console.error(err);
-        setError(err.message);
+        console.error("Sync error:", err);
+        if (!hasCache) setError(err.message);
       } finally {
         setLoading(false);
       }
