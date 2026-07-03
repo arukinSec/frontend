@@ -225,17 +225,22 @@ export default function YouTubeUI({ member }) {
         const utcDate = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
         return {
           name: utcDate.toLocaleDateString('en-US', { weekday: 'short' }),
-          views: row[1]
+          views: Number(row[1])
         };
       });
     }
     
     if (analyticsTimeframe === '30d') {
       const weeks = [0, 0, 0, 0];
-      const chunkSize = Math.ceil(raw.length / 4);
-      raw.forEach((row, i) => {
-        const weekIndex = Math.min(Math.floor(i / chunkSize), 3);
-        weeks[weekIndex] += row[1];
+      const lastDate = new Date(raw[raw.length - 1][0]).getTime();
+      const startDate = lastDate - (30 * 24 * 60 * 60 * 1000);
+      
+      raw.forEach((row) => {
+        const d = new Date(row[0]).getTime();
+        let weekIndex = Math.floor((d - startDate) / (7.5 * 24 * 60 * 60 * 1000));
+        if (weekIndex > 3) weekIndex = 3;
+        if (weekIndex < 0) weekIndex = 0;
+        weeks[weekIndex] += Number(row[1]);
       });
       return weeks.map((views, i) => ({
         name: `Week ${i + 1}`,
@@ -254,7 +259,7 @@ export default function YouTubeUI({ member }) {
           monthsMap[m] = 0;
           order.push(m);
         }
-        monthsMap[m] += row[1];
+        monthsMap[m] += Number(row[1]);
       });
       return order.map(m => ({
         name: m,
@@ -272,7 +277,7 @@ export default function YouTubeUI({ member }) {
           yearsMap[y] = 0;
           order.push(y);
         }
-        yearsMap[y] += row[1];
+        yearsMap[y] += Number(row[1]);
       });
       return order.map(y => ({
         name: y,
