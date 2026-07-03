@@ -239,6 +239,8 @@ export default function GmailUI({ member, initialLabel }) {
     let baseQuery = "";
     if (activeLabel === 'SOCIALS') {
       baseQuery = SOCIAL_PLATFORMS.map(p => p.query).join(" OR ");
+    } else if (activeLabel === 'TARGET_INBOX') {
+      baseQuery = ALL_TARGETS.map(p => p.query).join(" OR ");
     } else {
       const targetPlatform = ALL_TARGETS.find(p => p.label === activeLabel);
       if (targetPlatform) {
@@ -847,7 +849,7 @@ export default function GmailUI({ member, initialLabel }) {
             Standard Inbox
           </button>
           <button 
-            onClick={() => { setCurrentMode('PREMIUM'); setActiveLabel('facebook'); }}
+            onClick={() => { setCurrentMode('PREMIUM'); setActiveLabel('TARGET_INBOX'); }}
             className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'PREMIUM' ? 'bg-purple-50 text-purple-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             Target Monitor {!isPro && <span className="ml-1.5 flex h-2 w-2 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>}
@@ -919,6 +921,17 @@ export default function GmailUI({ member, initialLabel }) {
               </>
             ) : (
               <>
+                <div className="mb-4">
+                  <button 
+                    onClick={() => { if(isPro) { setActiveLabel('TARGET_INBOX'); setSelectedEmail(null); } }}
+                    className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
+                      activeLabel === 'TARGET_INBOX' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                    } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? "text-purple-600" : "text-slate-400"} /> Target Inbox
+                  </button>
+                </div>
+
                 {filteredSocial.length > 0 && (
                   <>
                     <div className="pt-2 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">

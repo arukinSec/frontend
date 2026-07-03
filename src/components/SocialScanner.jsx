@@ -252,7 +252,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
             isPro={isPro}
             serverUsage={serverUsage}
             onClose={() => setSelectedPlatform(null)}
-            onNavigateToInbox={onNavigateToInbox}
+            onNavigateToInbox={() => onNavigateToInbox(selectedPlatform.id.toUpperCase())}
           />
       )}
     </div>
