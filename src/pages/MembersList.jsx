@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock
+  Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2
 } from 'lucide-react';
 import AuditorOnboarding from '../components/AuditorOnboarding';
+import localforage from 'localforage';
 
 export default function MembersList() {
   const [members, setMembers] = useState([]);
@@ -252,6 +253,18 @@ export default function MembersList() {
     localStorage.removeItem('auditor_role');
     localStorage.removeItem('arukin_onboarded_completed');
     window.location.reload();
+  };
+
+  const handleClearCache = async (memberId) => {
+    try {
+      const keys = await localforage.keys();
+      const memberKeys = keys.filter(k => k.includes(`_${memberId}`));
+      await Promise.all(memberKeys.map(k => localforage.removeItem(k)));
+      window.showToast('Local OSINT cache cleared for this member.', 'success');
+    } catch (e) {
+      console.error(e);
+      window.showToast('Failed to clear cache.', 'error');
+    }
   };
 
   const filteredMembers = members.filter(member => 
@@ -608,6 +621,24 @@ export default function MembersList() {
                         className="w-full px-3.5 py-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 font-semibold transition-colors block text-left"
                       >
                         Disconnect
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const element = document.getElementById(`dropdown-${member.id}`);
+                          if (element) element.classList.add('hidden');
+                          
+                          setShowConfirmModal({
+                            open: true,
+                            title: 'Clear Local Intel Cache',
+                            message: `Are you sure you want to wipe all locally cached OSINT data for ${member.name}? This will force fresh scans on the next visit.`,
+                            requireInput: false,
+                            action: () => handleClearCache(member.id)
+                          });
+                        }}
+                        className="w-full px-3.5 py-2 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 font-semibold transition-colors block text-left border-t border-white/5 mt-1 pt-2"
+                      >
+                        Clear Cache
                       </button>
                     </div>
                   </div>
