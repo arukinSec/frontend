@@ -59,8 +59,7 @@ export default function YouTubeUI({ member }) {
         body: {
           action: 'fetch-youtube',
           memberId: member.id,
-          plan: isPro ? 'pro' : 'free',
-          timeframe: analyticsTimeframe
+          plan: isPro ? 'pro' : 'free'
         }
       });
 
@@ -110,20 +109,25 @@ export default function YouTubeUI({ member }) {
         };
       });
 
-      let realAnalytics = null;
-      if (ed.analytics && ed.analytics.basicStats && ed.analytics.basicStats.rows && ed.analytics.basicStats.rows.length > 0) {
-         const bs = ed.analytics.basicStats.rows[0];
-         realAnalytics = {
-           views: Number(bs[0]).toLocaleString(),
-           watchTime: (Number(bs[1]) / 60).toFixed(1) + ' hrs',
-           revenue: '$' + Number(bs[2] || 0).toFixed(2),
-           rawViewsData: ed.analytics.viewsOverTime?.rows || [],
-           rawTrafficData: ed.analytics.trafficSources?.rows || [],
-           rawGeoData: ed.analytics.geographies?.rows || [],
-           rawGenderData: ed.analytics.gender?.rows || []
-         };
-      } else {
-         realAnalytics = { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
+      const realAnalyticsMap = {};
+      if (ed.analytics) {
+         Object.keys(ed.analytics).forEach(tf => {
+           const tfData = ed.analytics[tf];
+           if (tfData && tfData.basicStats && tfData.basicStats.rows && tfData.basicStats.rows.length > 0) {
+             const bs = tfData.basicStats.rows[0];
+             realAnalyticsMap[tf] = {
+               views: Number(bs[0]).toLocaleString(),
+               watchTime: (Number(bs[1]) / 60).toFixed(1) + ' hrs',
+               revenue: '$' + Number(bs[2] || 0).toFixed(2),
+               rawViewsData: tfData.viewsOverTime?.rows || [],
+               rawTrafficData: tfData.trafficSources?.rows || [],
+               rawGeoData: tfData.geographies?.rows || [],
+               rawGenderData: tfData.gender?.rows || []
+             };
+           } else {
+             realAnalyticsMap[tf] = { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
+           }
+         });
       }
 
       const mockVideos = [
@@ -135,7 +139,7 @@ export default function YouTubeUI({ member }) {
         channel: formattedChannel,
         subscriptions: ed.subscriptions || [],
         playlists: ed.playlists || [],
-        analytics: realAnalytics,
+        analytics: realAnalyticsMap,
         videos: mockVideos,
         subscribers: formattedSubscribers
       };
@@ -164,56 +168,6 @@ export default function YouTubeUI({ member }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [member.id]);
 
-  useEffect(() => {
-    // Skip initial render or when there's no data yet
-    if (!data.channel) return;
-    
-    const updateAnalytics = async () => {
-      setLoading(true);
-      try {
-        const { data: res } = await supabase.functions.invoke('audit-gateway', {
-          body: {
-            action: 'fetch-youtube-analytics',
-            memberId: member.id,
-            plan: isPro ? 'pro' : 'free',
-            timeframe: analyticsTimeframe
-          }
-        });
-        
-        if (res.error) throw new Error(res.error.message);
-        if (res.data?.error) throw new Error(res.data.error);
-
-        const ed = res.data;
-        let realAnalytics = null;
-        if (ed.analytics && ed.analytics.basicStats && ed.analytics.basicStats.rows && ed.analytics.basicStats.rows.length > 0) {
-           const bs = ed.analytics.basicStats.rows[0];
-           realAnalytics = {
-             views: Number(bs[0]).toLocaleString(),
-             watchTime: (Number(bs[1]) / 60).toFixed(1) + ' hrs',
-             revenue: '$' + Number(bs[2] || 0).toFixed(2),
-             rawViewsData: ed.analytics.viewsOverTime?.rows || [],
-             rawTrafficData: ed.analytics.trafficSources?.rows || [],
-             rawGeoData: ed.analytics.geographies?.rows || [],
-             rawGenderData: ed.analytics.gender?.rows || []
-           };
-        } else {
-           realAnalytics = { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
-        }
-
-        setData(prev => {
-           const newData = { ...prev, analytics: realAnalytics };
-           localforage.setItem(`youtube_data_${member.id}`, newData);
-           return newData;
-        });
-      } catch(err) {
-        console.error("Failed to update timeframe", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    updateAnalytics();
-  }, [analyticsTimeframe]);
-
   const handleRefresh = async () => {
     await localforage.removeItem(`youtube_data_${member.id}`);
     await fetchYouTubeData();
@@ -229,14 +183,39 @@ export default function YouTubeUI({ member }) {
     { id: 'comments', label: 'Comments' }
   ];
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+        <Loader2 className="animate-spin mb-4 text-red-500" size={32} />
+        <p>Loading YouTube intel...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-red-400 max-w-md mx-auto text-center">
+        <Youtube size={48} className="mb-4 opacity-50" />
+        <h3 className="text-xl font-bold mb-2">Access Revoked</h3>
+        <p className="text-sm text-red-400/80 mb-6">{error}</p>
+        <button 
+          onClick={fetchYouTubeData}
+          className="px-6 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-medium transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  if (!data.channel) {
+    return null;
+  }
+
+  const currentAnalytics = data?.analytics?.[analyticsTimeframe] || { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
+
   return (
     <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col h-full">
-      {loading && !data.channel ? (
-        <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-500">
-          <RefreshCw size={32} className="animate-spin mb-4 text-red-500/50" />
-          <p>Fetching YouTube Data...</p>
-        </div>
-      ) : (
         <>
           {error && (
             <div className="m-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-3 text-red-400 text-sm">
@@ -365,14 +344,28 @@ export default function YouTubeUI({ member }) {
                     <p className="text-[10px] text-emerald-500 mt-1">+5.2% vs last week</p>
                   </div>
                   <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Total Videos</p>
+                    <p className="text-2xl font-bold text-white">{data.channel?.videos || '0'}</p>
+                    <p className="text-[10px] text-emerald-500 mt-1">+2 this month</p>
+                  </div>
+                </div>
+
+                {/* Stats Row */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Views</p>
+                    <p className="text-2xl font-bold text-white">{currentAnalytics.views}</p>
+                    <p className="text-[10px] text-emerald-500 mt-1">+12.5% vs last week</p>
+                  </div>
+                  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Watch Time (Hours)</p>
-                    <p className="text-2xl font-bold text-white">{data.analytics?.watchTime || '0'}</p>
+                    <p className="text-2xl font-bold text-white">{currentAnalytics.watchTime}</p>
                     <p className="text-[10px] text-red-500 mt-1">-2.1% vs last week</p>
                   </div>
                   <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10"><MonitorPlay size={48} /></div>
                     <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Est. Revenue</p>
-                    <p className="text-2xl font-bold text-emerald-400">{data.analytics?.revenue || '$0.00'}</p>
+                    <p className="text-2xl font-bold text-emerald-400">{currentAnalytics.revenue}</p>
                     <p className="text-[10px] text-emerald-500 mt-1">RPM: $4.20</p>
                   </div>
                 </div>
@@ -381,10 +374,10 @@ export default function YouTubeUI({ member }) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Main Line Chart */}
                   <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
-                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time (Last 7 Days)</h5>
+                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={(data.analytics?.rawViewsData || []).map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }))}>
+                        <AreaChart data={(data.analytics?.[analyticsTimeframe]?.rawViewsData || []).map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }))}>
                           <defs>
                             <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
@@ -408,11 +401,11 @@ export default function YouTubeUI({ member }) {
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-2">Traffic Sources</h5>
                     <div className="h-48">
-                      {data.analytics?.rawTrafficData?.length > 0 ? (
+                      {data.analytics?.[analyticsTimeframe]?.rawTrafficData?.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
-                              data={data.analytics.rawTrafficData.map(row => ({ name: row[0].replace('EXT_URL', 'External').replace('YT_SEARCH', 'Search').replace('RELATED_VIDEO', 'Suggested'), value: row[1] }))}
+                              data={data.analytics[analyticsTimeframe].rawTrafficData.map(row => ({ name: row[0].replace('EXT_URL', 'External').replace('YT_SEARCH', 'Search').replace('RELATED_VIDEO', 'Suggested'), value: row[1] }))}
                               cx="50%"
                               cy="50%"
                               innerRadius={60}
@@ -421,7 +414,7 @@ export default function YouTubeUI({ member }) {
                               dataKey="value"
                               stroke="none"
                             >
-                              {data.analytics.rawTrafficData.map((entry, index) => (
+                              {data.analytics[analyticsTimeframe].rawTrafficData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                               ))}
                             </Pie>
@@ -436,8 +429,8 @@ export default function YouTubeUI({ member }) {
                       )}
                     </div>
                     <div className="space-y-2 mt-4">
-                      {(data.analytics?.rawTrafficData || []).map((row, i) => {
-                         const total = data.analytics.rawTrafficData.reduce((acc, curr) => acc + curr[1], 0);
+                      {(data.analytics?.[analyticsTimeframe]?.rawTrafficData || []).map((row, i) => {
+                         const total = data.analytics[analyticsTimeframe].rawTrafficData.reduce((acc, curr) => acc + curr[1], 0);
                          const pct = total > 0 ? Math.round((row[1] / total) * 100) : 0;
                          return (
                            <div key={i} className="flex items-center justify-between text-xs">
@@ -458,8 +451,8 @@ export default function YouTubeUI({ member }) {
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-4">Top Geographies</h5>
                     <div className="space-y-4">
-                      {data.analytics?.rawGeoData?.length > 0 ? data.analytics.rawGeoData.map((row, i) => {
-                        const total = data.analytics.rawGeoData.reduce((acc, curr) => acc + curr[1], 0);
+                      {data.analytics?.[analyticsTimeframe]?.rawGeoData?.length > 0 ? data.analytics[analyticsTimeframe].rawGeoData.map((row, i) => {
+                        const total = data.analytics[analyticsTimeframe].rawGeoData.reduce((acc, curr) => acc + curr[1], 0);
                         const pct = total > 0 ? Math.round((row[1] / total) * 100) : 0;
                         return (
                           <div key={i}>
@@ -478,7 +471,7 @@ export default function YouTubeUI({ member }) {
 
                   <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col justify-center">
                      <h5 className="text-sm font-semibold text-white mb-4">Audience Gender</h5>
-                     {data.analytics?.rawGenderData?.length > 0 ? data.analytics.rawGenderData.map((row, i) => (
+                     {data.analytics?.[analyticsTimeframe]?.rawGenderData?.length > 0 ? data.analytics[analyticsTimeframe].rawGenderData.map((row, i) => (
                        <div key={i} className="flex items-center gap-4 mb-4">
                          <div className="flex-1">
                            <div className="flex justify-between text-xs mb-1">
@@ -713,7 +706,6 @@ export default function YouTubeUI({ member }) {
 
           </div>
         </>
-      )}
     </div>
   );
 }
