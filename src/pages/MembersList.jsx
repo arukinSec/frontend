@@ -7,7 +7,6 @@ import {
 import AuditorOnboarding from '../components/AuditorOnboarding';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 import { useAuditor } from '../utils/useAuditor';
-import { useAuditor } from '../utils/useAuditor';
 
 export default function MembersList() {
   const [members, setMembers] = useState([]);
@@ -46,28 +45,21 @@ export default function MembersList() {
       localStorage.setItem('auditor_onboarded', String(auditor.onboarded));
       localStorage.setItem('auditor_role', auditor.role || 'auditor');
 
-        // Auto-trigger Razorpay modal on login/refresh if they came from the pricing conversion page
-        const triggerUpgrade = localStorage.getItem('arukin_trigger_upgrade_on_login') === 'true';
-        if (triggerUpgrade && data.tier === 'FREE') {
-          localStorage.removeItem('arukin_trigger_upgrade_on_login');
-          setTimeout(() => {
-            handleUpgrade();
-          }, 800);
-        } else if (data.tier === 'PRO') {
-          localStorage.removeItem('arukin_trigger_upgrade_on_login');
-        }
+      const triggerUpgrade = localStorage.getItem('arukin_trigger_upgrade_on_login') === 'true';
+      if (triggerUpgrade && auditor.tier === 'FREE') {
+        localStorage.removeItem('arukin_trigger_upgrade_on_login');
+        setTimeout(() => { handleUpgrade(); }, 800);
+      } else if (auditor.tier === 'PRO') {
+        localStorage.removeItem('arukin_trigger_upgrade_on_login');
       }
-    };
+    }
 
-    syncAuditorProfile();
-
-    // Check if user has completed onboarding in the database
     const dbOnboarded = localStorage.getItem('auditor_onboarded') === 'true';
     if (!dbOnboarded) {
       setShowOnboarding(true);
     }
     fetchMembers();
-  }, []);
+  }, [auditor]);
 
   const handleCloseOnboarding = async () => {
     const auditorId = localStorage.getItem('auditor_id');
