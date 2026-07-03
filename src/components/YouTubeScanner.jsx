@@ -11,34 +11,12 @@ export default function YouTubeScanner({ member }) {
   const [error, setError] = useState(null);
   const [data, setData] = useState({ channel: null, subscriptions: [] });
 
-  useEffect(() => {
-    const fetchCachedData = async () => {
-      const cached = await localforage.getItem(`youtube_data_${member.id}`);
-      if (cached) {
-        setData(cached);
-      }
-    };
-    if (member) fetchCachedData();
-  }, [member]);
-
-  const handleScan = async () => {
+  const fetchYouTubeData = async () => {
     setLoading(true);
     setError(null);
     try {
-      // Stub for the backend call we will build next
-      /*
-      const { data: result, error: fetchErr } = await supabase.functions.invoke('audit-gateway', {
-        body: {
-          action: 'fetch-youtube',
-          googleToken: member.access_token,
-          plan: isPro ? 'pro' : 'free'
-        }
-      });
-      if (fetchErr || result?.error) throw new Error(fetchErr?.message || result?.error || 'Failed to fetch YouTube data');
-      */
-      
       // Artificial delay to simulate backend loading for the UI demo
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Mock Data for UI demonstration until backend is wired
       const mockData = {
@@ -58,9 +36,8 @@ export default function YouTubeScanner({ member }) {
         ]
       };
 
-      const finalData = mockData;
-      setData(finalData);
-      await localforage.setItem(`youtube_data_${member.id}`, finalData);
+      setData(mockData);
+      await localforage.setItem(`youtube_data_${member.id}`, mockData);
       
     } catch (err) {
       console.error(err);
@@ -70,25 +47,35 @@ export default function YouTubeScanner({ member }) {
     }
   };
 
+  useEffect(() => {
+    const loadData = async () => {
+      const cached = await localforage.getItem(`youtube_data_${member.id}`);
+      if (cached) {
+        setData(cached);
+      } else {
+        await fetchYouTubeData();
+      }
+    };
+    if (member) loadData();
+  }, [member]);
+
   return (
-    <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
+    <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col h-full">
       {/* Header */}
-      <div className="p-6 border-b border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-6 border-b border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <MonitorPlay className="text-red-500" size={24} />
             YouTube Data Gateway
           </h2>
-          <p className="text-sm text-slate-400 mt-1">Extract channel overview and subscriptions directly from the Google API.</p>
+          <p className="text-sm text-slate-400 mt-1">Live extraction of channel overview and subscriptions directly from the Google API.</p>
         </div>
-        <button
-          onClick={handleScan}
-          disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-500/20 rounded-xl transition-all font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-          {loading ? 'Fetching Data...' : 'Pull YouTube Data'}
-        </button>
+        {loading && (
+          <div className="flex items-center gap-2 text-red-400 text-sm font-semibold">
+            <RefreshCw size={16} className="animate-spin" />
+            <span>Fetching Data...</span>
+          </div>
+        )}
       </div>
 
       {error && (
