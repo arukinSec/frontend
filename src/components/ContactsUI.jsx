@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { Search, Users, RefreshCw, Mail, Phone, Building2, BarChart2, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
-import localforage from 'localforage';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 export default function ContactsUI({ member }) {
   const isPro = hasProAccess(member);
@@ -113,7 +113,7 @@ export default function ContactsUI({ member }) {
     let hasCache = false;
     
     try {
-      const cached = await localforage.getItem(cacheKey);
+      const cached = await getEncryptedItem(cacheKey);
       if (cached) {
         setContacts(cached);
         hasCache = true;
@@ -151,7 +151,7 @@ export default function ContactsUI({ member }) {
       setContacts(parsed);
       
       // Update cache in background
-      await localforage.setItem(cacheKey, parsed);
+      await setEncryptedItem(cacheKey, parsed);
     } catch (err) {
       console.error(err);
       if (!hasCache) setError(err.message);

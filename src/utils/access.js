@@ -3,19 +3,7 @@
  * Returns: 'FREE', 'TRIAL', or 'PRO'
  */
 export const getAccessLevel = (member) => {
-  const auditorEmail = localStorage.getItem('auditor_email') || '';
-  const auditorTier = localStorage.getItem('auditor_tier') || 'FREE';
-  
-  if (auditorTier === 'PRO') {
-    return 'PRO';
-  }
-  
-  const isSelfAudit = member?.email && auditorEmail && (member.email.toLowerCase() === auditorEmail.toLowerCase());
-  if (isSelfAudit) {
-    return 'TRIAL';
-  }
-  
-  return 'FREE';
+  return member?.tier || 'FREE';
 };
 
 /**

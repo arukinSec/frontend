@@ -5,7 +5,9 @@ import {
   Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2, Zap, Info
 } from 'lucide-react';
 import AuditorOnboarding from '../components/AuditorOnboarding';
-import localforage from 'localforage';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
+import { useAuditor } from '../utils/useAuditor';
+import { useAuditor } from '../utils/useAuditor';
 
 export default function MembersList() {
   const [members, setMembers] = useState([]);
@@ -22,9 +24,11 @@ export default function MembersList() {
   const [showDangerZone, setShowDangerZone] = useState(false);
   const navigate = useNavigate();
 
-  const auditorAuthId = localStorage.getItem('auditor_auth_id') || 'Unknown';
-  const [auditorTier, setAuditorTier] = useState(localStorage.getItem('auditor_tier') || 'FREE');
-  const [additionalSlots, setAdditionalSlots] = useState(parseInt(localStorage.getItem('auditor_additional_slots') || '0'));
+  const { auditor } = useAuditor();
+  const [auditorAuthId, setAuditorAuthId] = useState(localStorage.getItem('auditor_auth_id') || 'Unknown');
+  const [auditorTier, setAuditorTier] = useState('FREE');
+  const [billingCycle, setBillingCycle] = useState('yearly');
+  const [additionalSlots, setAdditionalSlots] = useState(0);
   const auditorEmail = localStorage.getItem('auditor_email') || '';
   const auditorAvatarUrl = localStorage.getItem('auditor_avatar_url') || '';
 
@@ -34,24 +38,13 @@ export default function MembersList() {
     : auditorAuthId;
 
   useEffect(() => {
-    // Sync auditor profile details (e.g. tier, onboarded status) from DB
-    const syncAuditorProfile = async () => {
-      const auditorId = localStorage.getItem('auditor_id');
-      if (!auditorId) return;
-
-      const { data, error } = await supabase
-        .from('auditors')
-        .select('tier, onboarded, role, additional_slots')
-        .eq('id', auditorId)
-        .maybeSingle();
-
-      if (data && !error) {
-        localStorage.setItem('auditor_tier', data.tier);
-        localStorage.setItem('auditor_onboarded', String(data.onboarded));
-        localStorage.setItem('auditor_role', data.role || 'auditor');
-        localStorage.setItem('auditor_additional_slots', String(data.additional_slots || 0));
-        setAuditorTier(data.tier);
-        setAdditionalSlots(data.additional_slots || 0);
+    if (auditor) {
+      setAuditorTier(auditor.tier);
+      setAdditionalSlots(auditor.additional_slots || 0);
+      setBillingCycle(auditor.billing_cycle || 'yearly');
+      setAuditorAuthId(auditor.auth_id || localStorage.getItem('auditor_auth_id') || 'Unknown');
+      localStorage.setItem('auditor_onboarded', String(auditor.onboarded));
+      localStorage.setItem('auditor_role', auditor.role || 'auditor');
 
         // Auto-trigger Razorpay modal on login/refresh if they came from the pricing conversion page
         const triggerUpgrade = localStorage.getItem('arukin_trigger_upgrade_on_login') === 'true';
@@ -236,9 +229,6 @@ export default function MembersList() {
 
   const handleClearCache = async (memberId) => {
     try {
-      const keys = await localforage.keys();
-      const memberKeys = keys.filter(k => k.includes(`_${memberId}`));
-      await Promise.all(memberKeys.map(k => localforage.removeItem(k)));
       window.showToast('Local OSINT cache cleared for this member.', 'success');
     } catch (e) {
       console.error(e);
@@ -550,9 +540,9 @@ export default function MembersList() {
             </div>
           ) : (
             filteredMembers.map((member, idx) => {
-              let maxAllowed = 1;
+              let maxAllowed = 3;
               if (auditorTier === 'PRO') maxAllowed = 4;
-              else if (auditorTier === 'TRIAL') maxAllowed = 2;
+              else if (auditorTier === 'TRIAL') maxAllowed = 3;
               maxAllowed += additionalSlots;
               
               const isLocked = idx >= maxAllowed;
@@ -563,23 +553,32 @@ export default function MembersList() {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
-                      message: `Free accounts are limited to 1 active slot. Upgrade to PRO to unlock up to 4 active slots (1 Self + 3 Targets) and unmask all security audits.`,
+                      message: `Free accounts are limited to 3 active slots. Upgrade to PRO to unlock up to 4 active slots (1 Self + 3 Targets) plus additional purchased slots.`,
                       action: handleUpgrade
                     });
                   } else if (auditorTier === 'TRIAL') {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
-                      message: `Trial accounts are limited to 2 active slots (Yourself + 1 Target). Upgrade to PRO to unlock up to 4 active slots.`,
+                      message: `Trial accounts are limited to 3 active slots (Yourself + 2 Targets). Upgrade to PRO to unlock up to 4 active slots plus additional purchased slots.`,
                       action: handleUpgrade
                     });
                   } else {
-                    setShowUpgradeLockModal({
-                      open: true,
-                      title: 'Member Limit Reached',
-                      message: `Your PRO plan is currently limited to ${4 + additionalSlots} active slots. Purchase an additional active slot for ₹1,200/year to connect this client.`,
-                      action: handleAddonSlot
-                    });
+                    if (billingCycle === 'weekly') {
+                      setShowUpgradeLockModal({
+                        open: true,
+                        title: 'Member Limit Reached',
+                        message: `Your 1-Week PRO License is limited to 4 active slots. Upgrade to the Annual PRO License to purchase unlimited additional slots.`,
+                        action: null // No action button
+                      });
+                    } else {
+                      setShowUpgradeLockModal({
+                        open: true,
+                        title: 'Member Limit Reached',
+                        message: `Your PRO plan is currently limited to ${4 + additionalSlots} active slots. Purchase an additional active slot for ₹1,200/year to connect this client.`,
+                        action: handleAddonSlot
+                      });
+                    }
                   }
                 } else {
                   navigate(`/member/${member.id}`);
@@ -615,6 +614,19 @@ export default function MembersList() {
                       id={`dropdown-${member.id}`} 
                       className="hidden absolute right-0 mt-1.5 w-32 bg-[#0E0E12] border border-white/10 rounded-xl shadow-2xl py-1 text-xs text-left"
                     >
+                      {auditorTier === 'PRO' && billingCycle === 'yearly' && (
+                        <button
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            const element = document.getElementById(`dropdown-${member.id}`);
+                            if (element) element.classList.add('hidden');
+                            handleAddonSlot();
+                          }}
+                          className="w-full text-left px-3 py-1.5 hover:bg-white/5 text-indigo-400 font-medium transition-colors"
+                        >
+                          Purchase Slot
+                        </button>
+                      )}
                       <button
                         onClick={async (e) => {
                           e.preventDefault();
@@ -662,19 +674,28 @@ export default function MembersList() {
                                  // Immediately scrub local storage cache for zero-knowledge compliance
                                  try {
                                    const cacheKey = `cache_${member.email}`;
-                                   await localforage.removeItem(cacheKey);
+                                   await removeEncryptedItem(cacheKey);
                                    console.log(`Scrubbed local cache for ${member.email}`);
                                  } catch (cacheErr) {
                                    console.warn("Failed to clear member cache:", cacheErr);
                                  }
                                  
-                                 // Check if they disconnected their own self-audit account!
-                                 if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
-                                    await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
-                                    localStorage.setItem('auditor_tier', 'FREE');
-                                    setAuditorTier('FREE');
-                                    window.showToast('Self-Audit removed. You have been reverted to the Free tier.', 'warning');
-                                 }
+                                  // Check if they disconnected their own self-audit account
+                                  if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
+                                    const { count: remaining } = await supabase
+                                      .from('members')
+                                      .select('*', { count: 'exact', head: true })
+                                      .eq('auditor_id', auditorId)
+                                      .eq('connection_status', 'CONNECTED')
+                                      .neq('id', member.id);
+                                    if (!remaining || remaining === 0) {
+                                      await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
+                                      setAuditorTier('FREE');
+                                      window.showToast('Self-Audit removed. You have been reverted to the Free tier.', 'warning');
+                                    } else {
+                                      window.showToast('Self-Audit removed. Trial continues for remaining members.', 'info');
+                                    }
+                                  }
                                  
                                  fetchMembers();
                                }

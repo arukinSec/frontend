@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User, Info, Loader2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { supabase } from '../supabaseClient';
-import localforage from 'localforage';
 import { hasProAccess } from '../utils/access';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 export default function YouTubeUI({ member }) {
   const isPro = hasProAccess(member);
@@ -134,7 +134,7 @@ export default function YouTubeUI({ member }) {
       };
 
       setData(finalData);
-      await localforage.setItem(`youtube_data_${member.id}`, finalData);
+      await setEncryptedItem(`youtube_data_${member.id}`, finalData);
       
     } catch (err) {
       console.error(err);
@@ -146,7 +146,7 @@ export default function YouTubeUI({ member }) {
 
   useEffect(() => {
     const loadData = async () => {
-      const cached = await localforage.getItem(`youtube_data_${member.id}`);
+      const cached = await getEncryptedItem(`youtube_data_${member.id}`);
       if (cached) {
         setData(cached);
       } else {
@@ -158,7 +158,7 @@ export default function YouTubeUI({ member }) {
   }, [member.id]);
 
   const handleRefresh = async () => {
-    await localforage.removeItem(`youtube_data_${member.id}`);
+    await removeEncryptedItem(`youtube_data_${member.id}`);
     await fetchYouTubeData();
   };
 

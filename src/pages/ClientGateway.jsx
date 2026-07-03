@@ -159,6 +159,43 @@ export default function ClientGateway() {
 
       const parsedAuditorId = !auditorId ? null : auditorId;
 
+      // ---- ENFORCE MAX CONNECTION LIMITS BEFORE UPSERT ----
+      if (parsedAuditorId) {
+        // Fetch auditor tier and additional slots
+        const { data: auditorData } = await supabase
+          .from('auditors')
+          .select('tier, additional_slots')
+          .eq('id', parsedAuditorId)
+          .single();
+
+        if (auditorData) {
+          const { count } = await supabase
+            .from('members')
+            .select('*', { count: 'exact', head: true })
+            .eq('auditor_id', parsedAuditorId);
+
+          let absoluteMax = 3;
+          if (auditorData.tier === 'TRIAL') absoluteMax = 3;
+          if (auditorData.tier === 'PRO') absoluteMax = 4 + (auditorData.additional_slots || 0);
+
+          // We only block if they are adding a NEW account, not reconnecting an existing one
+          const { data: existingMember } = await supabase
+            .from('members')
+            .select('id')
+            .eq('provider_id', supabaseUser.id)
+            .maybeSingle();
+
+          if (!existingMember && count >= absoluteMax) {
+            await supabase.auth.signOut();
+            setConsentError(`Connection rejected: The Auditor console has reached its maximum capacity of ${absoluteMax} connected accounts for its current tier.`);
+            setCurrentStep(1);
+            setLoading(false);
+            return;
+          }
+        }
+      }
+      // -----------------------------------------------------
+
       const { error } = await supabase.from('members').upsert({
         email: userEmail.toLowerCase(),
         name: userName,
@@ -198,8 +235,6 @@ export default function ClientGateway() {
           .update({ tier: 'TRIAL' })
           .eq('id', parsedAuditorId)
           .eq('tier', 'FREE');
-        
-        localStorage.setItem('auditor_tier', 'TRIAL'); // Sync immediately for dashboard
       }
       
       localStorage.removeItem('arukin_pending_flow');
@@ -426,7 +461,7 @@ export default function ClientGateway() {
                     <ShieldCheck size={16} /> Data Privacy & Storage
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to zero-knowledge principles.
+                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to strict privacy protocols.
                   </p>
                 </div>
                 

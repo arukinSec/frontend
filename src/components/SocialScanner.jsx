@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { RefreshCw, Clock, CheckCircle, XCircle, Search } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import DeepDiveModal from './DeepDiveModal';
-import localforage from 'localforage';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 const PLATFORMS = [
   { id: 'facebook', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook' },
@@ -58,7 +58,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
   useEffect(() => {
     const checkCache = async () => {
       if (member && !footprintData) {
-        const cached = await localforage.getItem(`footprints_${member.id}`);
+        const cached = await getEncryptedItem(`footprints_${member.id}`);
         if (cached) {
           setFootprintData(cached);
           setScanStatus('complete');
@@ -130,7 +130,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
         results
       };
       setFootprintData(newData);
-      await localforage.setItem(`footprints_${member.id}`, newData);
+      await setEncryptedItem(`footprints_${member.id}`, newData);
       
       setScanCount(prev => prev + 1);
       

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { File, FileText, Image, RefreshCw, Download, Trash2, X, Eye, ChevronRight, Film, Music, Shield } from 'lucide-react';
 import { supabase } from '../supabaseClient';
-import localforage from 'localforage';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 // ── Real Google Drive SVG logo ─────────────────────────────────────────────────
 const DriveIcon = ({ size = 20 }) => (
@@ -199,7 +199,7 @@ export default function DriveUI({ member }) {
     const cacheKey = `drive_cache_${member.id}_${folderId}`;
     let hasCache = false;
     try {
-      const cached = await localforage.getItem(cacheKey);
+      const cached = await getEncryptedItem(cacheKey);
       if (cached && cached.files) {
         setFiles(cached.files);
         setNextPageToken(cached.nextPageToken || null);
@@ -241,7 +241,7 @@ export default function DriveUI({ member }) {
       }
       
       // Update cache in background
-      await localforage.setItem(cacheKey, { files: newFiles, nextPageToken: filesData.nextPageToken || null, storageQuota: newQuota });
+      await setEncryptedItem(cacheKey, { files: newFiles, nextPageToken: filesData.nextPageToken || null, storageQuota: newQuota });
     } catch (err) { 
       console.error(err); 
       if (!hasCache) setError(err.message); 

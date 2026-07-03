@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2, Search, CheckCircle, XCircle, Activity, ShieldAlert, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../supabaseClient';
-import localforage from 'localforage';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 import SocialScanner from './SocialScanner';
@@ -82,7 +82,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
     }
 
     if (!forceRefresh) {
-      const cached = await localforage.getItem(`profile_data_${member.id}`);
+      const cached = await getEncryptedItem(`profile_data_${member.id}`);
       if (cached) {
         try {
           setProfile(cached.profile);
@@ -172,7 +172,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
       setGmailStats(newGmailStats);
 
       // Cache all results
-      await localforage.setItem(`profile_data_${member.id}`, {
+      await setEncryptedItem(`profile_data_${member.id}`, {
         profile: profileData,
         contactsCount: newContactsCount,
         shadowContactsCount: newShadowContactsCount,

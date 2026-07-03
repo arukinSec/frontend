@@ -254,6 +254,14 @@ export default function Pricing() {
 
         </div>
 
+        {/* Scan Limits Disclosure */}
+        <div className="w-full max-w-6xl bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+          <p className="text-xs text-amber-800 font-semibold">
+            Monthly Scan Limits: Free accounts get 1 insight scan + 2 footprint scans per month per member. 
+            PRO accounts get 5 insight scans + 10 footprint scans per month per member.
+          </p>
+        </div>
+
         {/* Self-Hosted Callout Section (Below the grid) */}
         <div className="w-full max-w-6xl bg-white shadow-sm border border-slate-200 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-start gap-4 w-full">

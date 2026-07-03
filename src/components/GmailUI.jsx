@@ -3,7 +3,7 @@ import { Search, ChevronLeft, Calendar, FileText, ArrowRight, User, Globe, Messa
 import { hasProAccess } from '../utils/access';
 import { supabase } from '../supabaseClient';
 import DOMPurify from 'dompurify';
-import localforage from 'localforage';
+import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 const SOCIAL_PLATFORMS = [
   { id: 'facebook', label: 'FACEBOOK', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook', query: 'from:facebookmail.com OR from:facebook.com' },
@@ -72,8 +72,8 @@ export default function GmailUI({ member, initialLabel }) {
   useEffect(() => {
     const fetchScans = async () => {
       try {
-        const soc = await localforage.getItem(`footprints_${member?.id}`);
-        const fin = await localforage.getItem(`fin_scan_${member?.id}`);
+        const soc = await getEncryptedItem(`footprints_${member?.id}`);
+        const fin = await getEncryptedItem(`fin_scan_${member?.id}`);
         setSocialScan(soc?.results || soc || null);
         setFinScan(fin || null);
       } catch (e) {
@@ -557,7 +557,7 @@ export default function GmailUI({ member, initialLabel }) {
       let hasCache = false;
       if (!isSearch) {
         try {
-          const cached = await localforage.getItem(cacheKey);
+          const cached = await getEncryptedItem(cacheKey);
           if (cached && cached.messageIds && cached.emailDetails) {
             setMessageIds(cached.messageIds);
             setEmailDetails(cached.emailDetails);
@@ -606,7 +606,7 @@ export default function GmailUI({ member, initialLabel }) {
             if (fetchedDetails[id]) topDetails[id] = fetchedDetails[id];
             else if (emailDetailsRef.current[id]) topDetails[id] = emailDetailsRef.current[id];
           });
-          await localforage.setItem(cacheKey, { messageIds: topIds, emailDetails: topDetails });
+          await setEncryptedItem(cacheKey, { messageIds: topIds, emailDetails: topDetails });
         }
         
         preloadNextPage(1);

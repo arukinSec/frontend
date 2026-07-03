@@ -13,7 +13,7 @@ ArukinSec Frontend is the internal auditing dashboard used to securely monitor a
 - **Zero-Install Security**: Integrates directly with Google Cloud OAuth. Vulnerable users do not need to install mobile apps or software.
 - **Silent Token Refresh**: Implements a highly robust `fetchWithAuth` wrapper. If a Google Access Token expires, the UI pauses, seamlessly invokes a Supabase Edge Function (`refresh-google-token`), updates the token securely, and retries the original request. The user experiences zero interruption.
 - **Database Security**: Locked down with strict PostgreSQL Row-Level Security (RLS) policies and `search_path` hardened RPC functions.
-- **Content Security Policy (CSP)**: Employs strict HTTP headers to neutralize Cross-Site Scripting (XSS) threats.
+- **Content Security Policy (CSP)**: Employs strict meta tags to neutralize Cross-Site Scripting (XSS) threats.
 
 ### 2. Profile Gateway (`ProfileUI.jsx`)
 The landing view when a member is opened. Fetches the full Google profile via `people/me`.

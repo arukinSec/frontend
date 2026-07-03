@@ -48,7 +48,9 @@ export default function App() {
           if (fetchErr) throw fetchErr;
 
           if (!auditorData) {
-            const proposedAuthId = String(Math.floor(100000 + Math.random() * 900000));
+            const array = new Uint32Array(1);
+            crypto.getRandomValues(array);
+            const proposedAuthId = String(100000 + (array[0] % 900000));
             const { data: inserted, error: insertErr } = await supabase
               .from('auditors')
               .insert({
