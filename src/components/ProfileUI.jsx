@@ -478,7 +478,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
             </div>
             )}
             {currentPage === 2 && (
-              <SocialScanner footprintData={footprintData} setFootprintData={setFootprintData} fetchWithAuth={fetchWithAuth} onNavigateToInbox={onNavigateToInbox} isPro={isPro} />
+              <SocialScanner member={member} footprintData={footprintData} setFootprintData={setFootprintData} fetchWithAuth={fetchWithAuth} onNavigateToInbox={onNavigateToInbox} isPro={isPro} />
             )}
             {currentPage === 3 && (
               <FinancialScanner member={member} fetchWithAuth={fetchWithAuth} onNavigateToInbox={onNavigateToInbox} isPro={isPro} />

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, RefreshCw, Search, CheckCircle, XCircle } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import { get, set } from 'idb-keyval';
 
-export const FINANCIAL_CATEGORIES = {
+const FINANCIAL_CATEGORIES = {
   banking: [
     { id: 'sbi', name: 'SBI', icon: 'https://cdn.simpleicons.org/statebankofindia', query: 'from:sbi.co.in OR from:onlinesbi.com' },
     { id: 'hdfc', name: 'HDFC Bank', icon: 'https://cdn.simpleicons.org/hdfcbank', query: 'from:hdfcbank.net OR from:hdfcbank.com OR from:hdfcbank.bank.in' },
@@ -52,10 +53,9 @@ export default function FinancialScanner({ member, fetchWithAuth, onNavigateToIn
 
   useEffect(() => {
     if (member?.id) {
-      const cached = localStorage.getItem(`fin_scan_${member.id}`);
-      if (cached) {
-        setFinData(JSON.parse(cached));
-      }
+      get(`fin_scan_${member.id}`).then(cached => {
+        if (cached) setFinData(cached);
+      });
     }
   }, [member]);
 
@@ -65,22 +65,23 @@ export default function FinancialScanner({ member, fetchWithAuth, onNavigateToIn
     
     try {
       const platformsToScan = FINANCIAL_CATEGORIES[activeTab];
-      const newResults = { ...scanResults };
+      const newResults = {};
       
       const promises = platformsToScan.map(async (platform) => {
         const query = platform.query;
         
         const { data, error } = await supabase.functions.invoke('intel-gateway', {
-          body: { scanType: 'financial', query }
+          body: { scanType: 'financial', query, memberId: member.id }
         });
         
-        if (!error && data) {
+        if (!error && data && !data.error) {
           newResults[platform.id] = {
             status: data.detected ? 'connected' : 'not_found',
             details: data.details
           };
         } else {
-          newResults[platform.id] = { status: 'not_found', details: error?.message || 'Scan failed' };
+          console.error(`Financial scan failed for ${platform.id}:`, error || data?.error);
+          newResults[platform.id] = { status: 'not_found', details: error?.message || data?.error || 'Scan failed' };
         }
       });
       
@@ -96,7 +97,7 @@ export default function FinancialScanner({ member, fetchWithAuth, onNavigateToIn
       
       setFinData(newFinData);
       if (member?.id) {
-        localStorage.setItem(`fin_scan_${member.id}`, JSON.stringify(newFinData));
+        set(`fin_scan_${member.id}`, newFinData).catch(console.error);
       }
       
       setScanStatus('complete');

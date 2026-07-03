@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { RefreshCw, Clock, CheckCircle, XCircle, Search } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import DeepDiveModal from './DeepDiveModal';
 
-export const PLATFORMS = [
+const PLATFORMS = [
   { id: 'facebook', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook' },
   { id: 'instagram', name: 'Instagram', icon: 'https://cdn.simpleicons.org/instagram' },
   { id: 'youtube', name: 'YouTube', icon: 'https://cdn.simpleicons.org/youtube' },
@@ -14,8 +15,9 @@ export const PLATFORMS = [
   { id: 'twitch', name: 'Twitch', icon: 'https://cdn.simpleicons.org/twitch' },
 ];
 
-export default function SocialScanner({ footprintData, setFootprintData, fetchWithAuth, onNavigateToInbox, isPro }) {
+export default function SocialScanner({ member, footprintData, setFootprintData, fetchWithAuth, onNavigateToInbox, isPro }) {
   const [scanStatus, setScanStatus] = useState(footprintData ? 'complete' : 'idle');
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
 
   const PLATFORM_QUERIES = {
     facebook: 'from:facebookmail.com OR from:facebook.com',
@@ -30,6 +32,7 @@ export default function SocialScanner({ footprintData, setFootprintData, fetchWi
   };
 
   const handleScanFootprint = async () => {
+    if (!member) return;
     setScanStatus('scanning');
     
     try {
@@ -38,16 +41,26 @@ export default function SocialScanner({ footprintData, setFootprintData, fetchWi
       const promises = PLATFORMS.map(async (platform) => {
         const query = PLATFORM_QUERIES[platform.id] || `from:${platform.name.toLowerCase()}.com`;
         
-        const { data, error } = await supabase.functions.invoke('intel-gateway', {
-          body: { scanType: 'social', query }
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const res = await fetch(`${supabase.supabaseUrl}/functions/v1/intel-gateway`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`
+          },
+          body: JSON.stringify({ scanType: 'social', query, memberId: member.id })
         });
         
-        if (!error && data) {
+        if (res.ok) {
+          const data = await res.json();
           results[platform.id] = { 
             status: data.detected ? 'connected' : 'not_found', 
             details: data.details 
           };
         } else {
+          const errorText = await res.text();
+          console.error(`Scan failed for ${platform.id}: Status ${res.status}, Error: ${errorText}`);
           results[platform.id] = { status: 'not_found', details: 'Scan failed' };
         }
       });
@@ -108,13 +121,11 @@ export default function SocialScanner({ footprintData, setFootprintData, fetchWi
                       <div 
                         key={platform.id} 
                         onClick={() => {
-                          if (isPro) {
-                            if (onNavigateToInbox) onNavigateToInbox(platform.id.toUpperCase());
-                          } else {
-                            window.showToast('PRO Feature: Upgrade to view target emails', 'error');
+                          if (result?.status === 'connected') {
+                            setSelectedPlatform(platform);
                           }
                         }}
-                        className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                        className={`flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 shadow-sm transition-shadow ${result?.status === 'connected' ? 'cursor-pointer hover:shadow-md hover:border-indigo-300 ring-1 ring-transparent hover:ring-indigo-100' : ''}`}
                       >
                        <div className="flex items-center gap-4">
                          {scanStatus === 'idle' && <Clock size={18} className="text-slate-300 shrink-0" />}
@@ -153,6 +164,17 @@ export default function SocialScanner({ footprintData, setFootprintData, fetchWi
           </div>
         </div>
       </div>
+      
+      {selectedPlatform && (
+        <DeepDiveModal
+          platform={selectedPlatform}
+          query={PLATFORM_QUERIES[selectedPlatform.id] || `from:${selectedPlatform.name.toLowerCase()}.com`}
+          memberId={member.id}
+          isPro={isPro}
+          onClose={() => setSelectedPlatform(null)}
+          onNavigateToInbox={onNavigateToInbox}
+        />
+      )}
     </div>
   );
 }

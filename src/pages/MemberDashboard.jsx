@@ -6,6 +6,7 @@ import GmailUI from '../components/GmailUI';
 import DriveUI from '../components/DriveUI';
 import ContactsUI from '../components/ContactsUI';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { get, set, del } from 'idb-keyval';
 import { ArrowLeft, Mail, HardDrive, Shield, Users, UserCircle, Search, Wrench } from 'lucide-react';
 
 export default function MemberDashboard() {
@@ -23,17 +24,22 @@ export default function MemberDashboard() {
   };
 
   // Load cached footprint data if available
-  const [footprintData, setFootprintData] = useState(() => {
-    const cached = localStorage.getItem(`footprint_scan_${id}`);
-    return cached ? JSON.parse(cached) : null;
-  });
+  const [footprintData, setFootprintData] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      get(`footprint_scan_${id}`).then(cached => {
+        if (cached) setFootprintData(cached);
+      });
+    }
+  }, [id]);
 
   // Save footprint data to cache when updated
   useEffect(() => {
     if (footprintData) {
-      localStorage.setItem(`footprint_scan_${id}`, JSON.stringify(footprintData));
+      set(`footprint_scan_${id}`, footprintData).catch(console.error);
     } else {
-      localStorage.removeItem(`footprint_scan_${id}`);
+      del(`footprint_scan_${id}`).catch(console.error);
     }
   }, [footprintData, id]);
 
