@@ -266,7 +266,14 @@ export default function GmailUI({ member, initialLabel }) {
     // If querying in USER mode, or if user is FREE tier (applied to all searches/folders),
     // strictly ONLY allow popular personal webmail providers.
     if (currentMode === 'USER' || !isPro) {
-      const whitelist = "from:gmail.com OR from:yahoo.com OR from:hotmail.com OR from:outlook.com OR from:icloud.com OR from:proton.me OR from:protonmail.com OR from:aol.com";
+      let whitelist = "";
+      if (['SENT', 'DRAFT'].includes(activeLabel)) {
+        // For outbound, we only want emails sent TO humans
+        whitelist = "to:gmail.com OR to:yahoo.com OR to:hotmail.com OR to:outlook.com OR to:icloud.com OR to:proton.me OR to:protonmail.com OR to:aol.com";
+      } else {
+        // For inbound, we only want emails received FROM humans
+        whitelist = "from:gmail.com OR from:yahoo.com OR from:hotmail.com OR from:outlook.com OR from:icloud.com OR from:proton.me OR from:protonmail.com OR from:aol.com";
+      }
       finalQuery.push(`(${whitelist})`);
       
       // Explicitly block OUTBOUND emails/drafts going to curated targets
@@ -275,8 +282,8 @@ export default function GmailUI({ member, initialLabel }) {
       ).join(' ');
       finalQuery.push(outboundExclusions);
       
-      // Exclude common automated senders and all Indian bank domains just in case a small business uses @gmail.com for automated alerts
-      finalQuery.push("-from:noreply -from:no-reply -from:donotreply -from:support -from:admin -from:marketing -from:notifications -from:updates -from:newsletter -from:bank.in -to:bank.in -from:banks.in -to:banks.in");
+      // Exclude automated/platform patterns (both inbound and outbound)
+      finalQuery.push("-(from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:marketing OR from:notifications OR from:updates OR from:newsletter OR from:bank.in OR from:banks.in OR to:noreply OR to:support OR to:admin OR to:billing OR to:bank.in OR to:banks.in)");
       finalQuery.push("-category:promotions -category:social -category:updates");
       finalQuery.push("-subject:otp -subject:verification -subject:password -subject:reset");
     }
@@ -284,7 +291,14 @@ export default function GmailUI({ member, initialLabel }) {
     // Standard Platforms Firewall:
     // If querying in STANDARD mode (Pro only), strictly EXCLUDE all human domains AND curated targets.
     if (currentMode === 'STANDARD' && isPro) {
-      const humanBlacklist = "-(from:gmail.com OR from:yahoo.com OR from:hotmail.com OR from:outlook.com OR from:icloud.com OR from:proton.me OR from:protonmail.com OR from:aol.com)";
+      let humanBlacklist = "";
+      if (['SENT', 'DRAFT'].includes(activeLabel)) {
+        // Exclude emails sent TO humans (so we only see emails sent to standard platforms/businesses)
+        humanBlacklist = "-(to:gmail.com OR to:yahoo.com OR to:hotmail.com OR to:outlook.com OR to:icloud.com OR to:proton.me OR to:protonmail.com OR to:aol.com)";
+      } else {
+        // Exclude emails received FROM humans
+        humanBlacklist = "-(from:gmail.com OR from:yahoo.com OR from:hotmail.com OR from:outlook.com OR from:icloud.com OR from:proton.me OR from:protonmail.com OR from:aol.com)";
+      }
       finalQuery.push(humanBlacklist);
 
       const curatedExclusions = ALL_TARGETS.map(p => 
