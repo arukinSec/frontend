@@ -3,8 +3,93 @@ import { Mail, Inbox, Send, File, Archive, Trash2, Search, MoreVertical, Refresh
 import { supabase } from '../supabaseClient';
 import DOMPurify from 'dompurify';
 
-export default function GmailUI({ member }) {
+const SOCIAL_PLATFORMS = [
+  { id: 'facebook', label: 'FACEBOOK', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook', query: 'from:facebookmail.com OR from:facebook.com' },
+  { id: 'instagram', label: 'INSTAGRAM', name: 'Instagram', icon: 'https://cdn.simpleicons.org/instagram', query: 'from:instagram.com OR from:mail.instagram.com' },
+  { id: 'youtube', label: 'YOUTUBE', name: 'YouTube', icon: 'https://cdn.simpleicons.org/youtube', query: 'from:youtube.com' },
+  { id: 'twitter', label: 'TWITTER', name: 'X (Twitter)', icon: 'https://cdn.simpleicons.org/x', query: 'from:twitter.com OR from:x.com' },
+  { id: 'linkedin', label: 'LINKEDIN', name: 'LinkedIn', icon: 'https://cdn.simpleicons.org/linkedin', query: 'from:linkedin.com' },
+  { id: 'tiktok', label: 'TIKTOK', name: 'TikTok', icon: 'https://cdn.simpleicons.org/tiktok', query: 'from:tiktok.com' },
+  { id: 'reddit', label: 'REDDIT', name: 'Reddit', icon: 'https://cdn.simpleicons.org/reddit', query: 'from:reddit.com OR from:redditmail.com' },
+  { id: 'discord', label: 'DISCORD', name: 'Discord', icon: 'https://cdn.simpleicons.org/discord', query: 'from:discord.com' },
+  { id: 'twitch', label: 'TWITCH', name: 'Twitch', icon: 'https://cdn.simpleicons.org/twitch', query: 'from:twitch.tv OR from:twitchmail.com' }
+];
+
+const BANKING_PLATFORMS = [
+  { id: 'sbi', label: 'SBI', name: 'SBI', icon: 'https://cdn.simpleicons.org/statebankofindia', query: 'from:sbi.co.in OR from:onlinesbi.com' },
+  { id: 'hdfc', label: 'HDFC', name: 'HDFC Bank', icon: 'https://cdn.simpleicons.org/hdfcbank', query: 'from:hdfcbank.net OR from:hdfcbank.com OR from:hdfcbank.bank.in' },
+  { id: 'icici', label: 'ICICI', name: 'ICICI Bank', icon: 'https://cdn.simpleicons.org/icicibank', query: 'from:icicibank.com OR from:icici.bank.in' },
+  { id: 'axis', label: 'AXIS', name: 'Axis Bank', icon: 'https://cdn.simpleicons.org/axisbank', query: 'from:axisbank.com OR from:axis.bank.in' },
+  { id: 'kotak', label: 'KOTAK', name: 'Kotak Bank', icon: 'https://cdn.simpleicons.org/kotakmahindrabank', query: 'from:kotak.com' },
+  { id: 'pnb', label: 'PNB', name: 'PNB', icon: 'https://cdn.simpleicons.org/punjabnationalbank', query: 'from:pnb.co.in' },
+  { id: 'boi', label: 'BOI', name: 'BOI', icon: 'https://cdn.simpleicons.org/bankofindia', query: 'from:bankofindia.co.in' },
+  { id: 'ubi', label: 'UBI', name: 'Union Bank', icon: 'https://cdn.simpleicons.org/unionbankofindia', query: 'from:unionbankofindia.bank' },
+  { id: 'chase', label: 'CHASE', name: 'Chase', icon: 'https://cdn.simpleicons.org/chase', query: 'from:chase.com' },
+  { id: 'bofa', label: 'BOFA', name: 'Bank of America', icon: 'https://cdn.simpleicons.org/bankofamerica', query: 'from:bankofamerica.com' },
+  { id: 'barclays', label: 'BARCLAYS', name: 'Barclays', icon: 'https://cdn.simpleicons.org/barclays', query: 'from:barclays.com OR from:barclays.co.uk' },
+  { id: 'citi', label: 'CITI', name: 'Citi', icon: 'https://cdn.simpleicons.org/citi', query: 'from:citi.com' }
+];
+
+const WALLET_PLATFORMS = [
+  { id: 'paytm', label: 'PAYTM', name: 'Paytm', icon: 'https://cdn.simpleicons.org/paytm', query: 'from:paytm.com OR from:one97.com' },
+  { id: 'phonepe', label: 'PHONEPE', name: 'PhonePe', icon: 'https://cdn.simpleicons.org/phonepe', query: 'from:phonepe.com' },
+  { id: 'cred', label: 'CRED', name: 'CRED', icon: 'https://cdn.simpleicons.org/cred', query: 'from:cred.club' },
+  { id: 'mobikwik', label: 'MOBIKWIK', name: 'MobiKwik', icon: 'https://cdn.simpleicons.org/mobikwik', query: 'from:mobikwik.com' },
+  { id: 'freecharge', label: 'FREECHARGE', name: 'Freecharge', icon: 'https://cdn.simpleicons.org/freecharge', query: 'from:freecharge.in' },
+  { id: 'fampay', label: 'FAMPAY', name: 'FamPay', icon: 'https://cdn.simpleicons.org/wechat', query: 'from:fampay.in OR from:famapp.in' },
+  { id: 'paypal', label: 'PAYPAL', name: 'PayPal', icon: 'https://cdn.simpleicons.org/paypal', query: 'from:paypal.com' },
+  { id: 'cashapp', label: 'CASHAPP', name: 'Cash App', icon: 'https://cdn.simpleicons.org/cashapp', query: 'from:cash.app OR from:square.com' },
+  { id: 'stripe', label: 'STRIPE', name: 'Stripe', icon: 'https://cdn.simpleicons.org/stripe', query: 'from:stripe.com' },
+  { id: 'venmo', label: 'VENMO', name: 'Venmo', icon: 'https://cdn.simpleicons.org/venmo', query: 'from:venmo.com' },
+  { id: 'zelle', label: 'ZELLE', name: 'Zelle', icon: 'https://cdn.simpleicons.org/zelle', query: 'from:zellepay.com' },
+  { id: 'revolut', label: 'REVOLUT', name: 'Revolut', icon: 'https://cdn.simpleicons.org/revolut', query: 'from:revolut.com' },
+  { id: 'wise', label: 'WISE', name: 'Wise', icon: 'https://cdn.simpleicons.org/wise', query: 'from:wise.com' }
+];
+
+const EXCHANGE_PLATFORMS = [
+  { id: 'zerodha', label: 'ZERODHA', name: 'Zerodha', icon: 'https://cdn.simpleicons.org/zerodha', query: 'from:zerodha.com OR from:zerodha.net' },
+  { id: 'groww', label: 'GROWW', name: 'Groww', icon: 'https://cdn.simpleicons.org/groww', query: 'from:groww.in' },
+  { id: 'upstox', label: 'UPSTOX', name: 'Upstox', icon: 'https://cdn.simpleicons.org/upstox', query: 'from:upstox.com' },
+  { id: 'angelone', label: 'ANGELONE', name: 'Angel One', icon: 'https://cdn.simpleicons.org/wechat', query: 'from:angelone.in OR from:angelbroking.com' },
+  { id: 'wazirx', label: 'WAZIRX', name: 'WazirX', icon: 'https://cdn.simpleicons.org/wazirx', query: 'from:wazirx.com' },
+  { id: 'coindcx', label: 'COINDCX', name: 'CoinDCX', icon: 'https://cdn.simpleicons.org/wechat', query: 'from:coindcx.com' },
+  { id: 'binance', label: 'BINANCE', name: 'Binance', icon: 'https://cdn.simpleicons.org/binance', query: 'from:binance.com' },
+  { id: 'coinbase', label: 'COINBASE', name: 'Coinbase', icon: 'https://cdn.simpleicons.org/coinbase', query: 'from:coinbase.com' },
+  { id: 'kraken', label: 'KRAKEN', name: 'Kraken', icon: 'https://cdn.simpleicons.org/kraken', query: 'from:kraken.com' },
+  { id: 'cryptocom', label: 'CRYPTOCOM', name: 'Crypto.com', icon: 'https://cdn.simpleicons.org/crypto.com', query: 'from:crypto.com' },
+  { id: 'robinhood', label: 'ROBINHOOD', name: 'Robinhood', icon: 'https://cdn.simpleicons.org/robinhood', query: 'from:robinhood.com' }
+];
+
+const ALL_TARGETS = [...SOCIAL_PLATFORMS, ...BANKING_PLATFORMS, ...WALLET_PLATFORMS, ...EXCHANGE_PLATFORMS];
+
+export default function GmailUI({ member, initialLabel }) {
   const isPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
+  
+  const getSocialScan = () => {
+    try {
+      const str = localStorage.getItem(`footprint_scan_${member?.id}`);
+      if (!str) return null;
+      const data = JSON.parse(str);
+      return data?.results || data;
+    } catch { return null; }
+  };
+  
+  const getFinScan = () => {
+    try {
+      const str = localStorage.getItem(`fin_scan_${member?.id}`);
+      if (!str) return null;
+      return JSON.parse(str);
+    } catch { return null; }
+  };
+
+  const socialScan = getSocialScan();
+  const finScan = getFinScan();
+
+  const filteredSocial = socialScan ? SOCIAL_PLATFORMS.filter(p => socialScan[p.id]?.status === 'connected') : SOCIAL_PLATFORMS;
+  const filteredBanking = finScan ? BANKING_PLATFORMS.filter(p => finScan[p.id]?.status === 'connected') : BANKING_PLATFORMS;
+  const filteredWallet = finScan ? WALLET_PLATFORMS.filter(p => finScan[p.id]?.status === 'connected') : WALLET_PLATFORMS;
+  const filteredExchange = finScan ? EXCHANGE_PLATFORMS.filter(p => finScan[p.id]?.status === 'connected') : EXCHANGE_PLATFORMS;
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   
@@ -20,7 +105,8 @@ export default function GmailUI({ member }) {
   const [loadingBody, setLoadingBody] = useState(false);
 
   // Labels State
-  const [activeLabel, setActiveLabel] = useState('INBOX');
+  const [currentMode, setCurrentMode] = useState(initialLabel ? 'PREMIUM' : 'STANDARD'); // 'STANDARD' | 'PREMIUM'
+  const [activeLabel, setActiveLabel] = useState(initialLabel || 'INBOX');
 
   // Compose State
   const [isComposing, setIsComposing] = useState(false);
@@ -147,25 +233,36 @@ export default function GmailUI({ member }) {
   };
 
   const fetchMessageIds = async (token = null) => {
-    const isLabelRestricted = ['FACEBOOK', 'INSTAGRAM', 'GOOGLE'].includes(activeLabel);
-    if (isLabelRestricted && !isPro) {
-      return [];
-    }
     let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${FETCH_SIZE}`;
     
-    // Determine base query for special social tabs
+    // Determine base query for special social/financial tabs
     let baseQuery = "";
-    if (activeLabel === 'FACEBOOK') baseQuery = "from:facebookmail.com OR from:facebook.com";
-    else if (activeLabel === 'INSTAGRAM') baseQuery = "from:instagram.com OR from:mail.instagram.com";
-    else if (activeLabel === 'GOOGLE') baseQuery = "from:google.com";
+    if (activeLabel === 'SOCIALS') {
+      baseQuery = SOCIAL_PLATFORMS.map(p => p.query).join(" OR ");
+    } else {
+      const targetPlatform = ALL_TARGETS.find(p => p.label === activeLabel);
+      if (targetPlatform) {
+        baseQuery = targetPlatform.query;
+      }
+    }
 
     // Combine base query with user search query
     let finalQuery = [];
     if (baseQuery) finalQuery.push(`(${baseQuery})`);
     
-    // Exclude high-value targets from the main Inbox to keep it clean and isolated
+    // Exclude Google security emails from the main Inbox
     if (activeLabel === 'INBOX') {
-      finalQuery.push("-from:facebookmail.com -from:facebook.com -from:instagram.com -from:mail.instagram.com -from:google.com");
+      finalQuery.push("-from:google.com -from:accounts.google.com");
+    }
+
+    // Clean Inbox rule OR Free-tier Firewall rule
+    // If they are on the Free tier, exclude all premium targets from ALL queries (including searches).
+    // If they are Pro, only exclude them from the main INBOX to keep it organized.
+    if (activeLabel === 'INBOX' || !isPro) {
+      const exclusions = ALL_TARGETS.map(p => 
+        p.query.split(' OR ').map(q => `-${q.trim()}`).join(' ')
+      ).join(' ');
+      finalQuery.push(exclusions);
     }
     
     if (debouncedSearchQuery) finalQuery.push(debouncedSearchQuery);
@@ -401,6 +498,11 @@ export default function GmailUI({ member }) {
       return;
     }
 
+    if ((currentMode === 'PREMIUM' || activeLabel === 'SOCIALS') && !isPro) {
+      // Do not fetch messages if premium mode is locked
+      return;
+    }
+
     const init = async () => {
       setLoading(true);
       setError(null);
@@ -425,7 +527,7 @@ export default function GmailUI({ member }) {
     };
 
     init();
-  }, [member, activeLabel, debouncedSearchQuery]);
+  }, [member, activeLabel, debouncedSearchQuery, currentMode]);
 
   const handleNextPage = async () => {
     const nextPage = currentPage + 1;
@@ -736,11 +838,26 @@ export default function GmailUI({ member }) {
             </div>
           )}
         </div>
+
+        <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
+          <button 
+            onClick={() => { setCurrentMode('STANDARD'); setActiveLabel('INBOX'); }}
+            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'STANDARD' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
+            Standard Inbox
+          </button>
+          <button 
+            onClick={() => { setCurrentMode('PREMIUM'); setActiveLabel('facebook'); }}
+            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'PREMIUM' ? 'bg-purple-50 text-purple-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
+            Target Monitor {!isPro && <span className="ml-1.5 flex h-2 w-2 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>}
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative">
         {/* Sidebar */}
-        <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50 flex flex-col py-4 shrink-0 overflow-y-auto md:overflow-visible max-h-48 md:max-h-none">
+        <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50 flex flex-col py-4 shrink-0 overflow-y-auto max-h-48 md:max-h-none custom-scrollbar">
           <button 
             onClick={() => { if (!isPro) { window.showToast('PRO Feature: Upgrade to compose and send emails.', 'error'); } else { setIsComposing(true); } }}
             className="mx-4 mb-6 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:shadow-md transition-all rounded-2xl py-4 px-6 flex items-center justify-center gap-2 font-medium"
@@ -750,95 +867,193 @@ export default function GmailUI({ member }) {
           </button>
 
           <nav className="flex-1 px-2 space-y-0.5">
-            <button 
-              onClick={() => { setActiveLabel('INBOX'); setSelectedEmail(null); }}
-              className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'INBOX' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Inbox size={18} /> Inbox
-            </button>
-            <button 
-              onClick={() => { setActiveLabel('SENT'); setSelectedEmail(null); }}
-              className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'SENT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Send size={18} /> Sent
-            </button>
-            <button 
-              onClick={() => { setActiveLabel('SPAM'); setSelectedEmail(null); }}
-              className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'SPAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Archive size={18} /> Spam
-            </button>
-            <button 
-              onClick={() => { setActiveLabel('TRASH'); setSelectedEmail(null); }}
-              className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'TRASH' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <Trash2 size={18} /> Trash
-            </button>
+            {currentMode === 'STANDARD' ? (
+              <>
+                <button 
+                  onClick={() => { setActiveLabel('INBOX'); setSelectedEmail(null); }}
+                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                    activeLabel === 'INBOX' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Inbox size={18} /> Inbox
+                </button>
+                <button 
+                  onClick={() => { setActiveLabel('SENT'); setSelectedEmail(null); }}
+                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                    activeLabel === 'SENT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Send size={18} /> Sent
+                </button>
+                <button 
+                  onClick={() => { setActiveLabel('SPAM'); setSelectedEmail(null); }}
+                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                    activeLabel === 'SPAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Archive size={18} /> Spam
+                </button>
+                <button 
+                  onClick={() => { setActiveLabel('TRASH'); setSelectedEmail(null); }}
+                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                    activeLabel === 'TRASH' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Trash2 size={18} /> Trash
+                </button>
 
-            {/* High Value Targets */}
-            <div className="pt-6 pb-2 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Socials
-            </div>
-            <button 
-              onClick={() => { setActiveLabel('FACEBOOK'); setSelectedEmail(null); }}
-              className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'FACEBOOK' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <span className="flex items-center gap-4 pl-4">
-                <Users size={18} /> Facebook
-              </span>
-              {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
-            </button>
-            <button 
-              onClick={() => { setActiveLabel('INSTAGRAM'); setSelectedEmail(null); }}
-              className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'INSTAGRAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <span className="flex items-center gap-4 pl-4">
-                <Camera size={18} /> Instagram
-              </span>
-              {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
-            </button>
-            <button 
-              onClick={() => { setActiveLabel('GOOGLE'); setSelectedEmail(null); }}
-              className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                activeLabel === 'GOOGLE' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <span className="flex items-center gap-4 pl-4">
-                <Globe size={18} /> Google
-              </span>
-              {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
-            </button>
+                <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  Quick Monitor
+                </div>
+                <button 
+                  onClick={() => { setActiveLabel('SOCIALS'); setSelectedEmail(null); }}
+                  className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                    activeLabel === 'SOCIALS' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="flex items-center gap-4 pl-4">
+                    <Users size={18} /> Socials
+                  </span>
+                  {!isPro && <span className="text-[10px] bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold border border-purple-500/20 uppercase tracking-wide">Pro</span>}
+                </button>
+              </>
+            ) : (
+              <>
+                {filteredSocial.length > 0 && (
+                  <>
+                    <div className="pt-2 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Social Accounts
+                    </div>
+                    {filteredSocial.map((platform) => (
+                      <button 
+                        key={platform.id}
+                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
+                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <span className="flex items-center gap-4 pl-4">
+                          <img 
+                            src={platform.icon} 
+                            alt={platform.name} 
+                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
+                          />
+                          {platform.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
+                
+                {filteredBanking.length > 0 && (
+                  <>
+                    <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Banking
+                    </div>
+                    {filteredBanking.map((platform) => (
+                      <button 
+                        key={platform.id}
+                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
+                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <span className="flex items-center gap-4 pl-4">
+                          <img 
+                            src={platform.icon} 
+                            alt={platform.name} 
+                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                          {platform.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {filteredWallet.length > 0 && (
+                  <>
+                    <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Wallets & P2P
+                    </div>
+                    {filteredWallet.map((platform) => (
+                      <button 
+                        key={platform.id}
+                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
+                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <span className="flex items-center gap-4 pl-4">
+                          <img 
+                            src={platform.icon} 
+                            alt={platform.name} 
+                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                          {platform.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {filteredExchange.length > 0 && (
+                  <>
+                    <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Exchanges & Trading
+                    </div>
+                    {filteredExchange.map((platform) => (
+                      <button 
+                        key={platform.id}
+                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
+                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
+                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
+                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <span className="flex items-center gap-4 pl-4">
+                          <img 
+                            src={platform.icon} 
+                            alt={platform.name} 
+                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                          {platform.name}
+                        </span>
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {!filteredSocial.length && !filteredBanking.length && !filteredWallet.length && !filteredExchange.length && (
+                  <div className="px-6 py-8 text-center text-slate-400 flex flex-col items-center gap-3">
+                    <ShieldAlert size={24} className="opacity-50" />
+                    <p className="text-sm">No target footprints detected.</p>
+                  </div>
+                )}
+              </>
+            )}
           </nav>
         </div>
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col bg-white overflow-hidden">
           
-          {['FACEBOOK', 'INSTAGRAM', 'GOOGLE'].includes(activeLabel) && !isPro ? (
+          {(currentMode === 'PREMIUM' || activeLabel === 'SOCIALS') && !isPro ? (
             <div className="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50 text-slate-600 text-center animate-fade-in">
               <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mb-4 border border-purple-200 shadow-sm">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
               </div>
-              <h2 className="text-xl font-bold text-slate-800 mb-2">Social Feed Monitor is Locked</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-2">Target Monitor is Locked</h2>
               <p className="text-sm max-w-sm mb-6 text-slate-500">
-                Automated auditing of Facebook, Instagram, and Google labels is only available to PRO auditors. 
+                Automated auditing of isolated Social and Financial accounts is only available to PRO auditors. 
               </p>
               <div className="bg-white border border-slate-200 rounded-xl p-4 w-80 text-left mb-6 shadow-sm">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">PRO TIER UPGRADE INCLUDES:</h4>
                 <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
-                  <li>Scan linked Facebook & Instagram emails</li>
+                  <li>Directly monitor 9 Social platforms</li>
+                  <li>Directly monitor 6 Financial platforms</li>
                   <li>Perform security actions (Delete, Reply, Send)</li>
                   <li>Deep search and drive file previewing</li>
                   <li>No limit on member storage or accounts</li>

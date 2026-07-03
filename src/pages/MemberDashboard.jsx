@@ -5,7 +5,8 @@ import ProfileUI from '../components/ProfileUI';
 import GmailUI from '../components/GmailUI';
 import DriveUI from '../components/DriveUI';
 import ContactsUI from '../components/ContactsUI';
-import { ArrowLeft, Mail, HardDrive, Shield, Users, UserCircle } from 'lucide-react';
+import ErrorBoundary from '../components/ErrorBoundary';
+import { ArrowLeft, Mail, HardDrive, Shield, Users, UserCircle, Search, Wrench } from 'lucide-react';
 
 export default function MemberDashboard() {
   const { id } = useParams();
@@ -14,6 +15,27 @@ export default function MemberDashboard() {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
+  const [initialGmailLabel, setInitialGmailLabel] = useState(null);
+
+  const handleNavigateToInbox = (labelId) => {
+    setInitialGmailLabel(labelId);
+    setActiveTab('gmail');
+  };
+
+  // Load cached footprint data if available
+  const [footprintData, setFootprintData] = useState(() => {
+    const cached = localStorage.getItem(`footprint_scan_${id}`);
+    return cached ? JSON.parse(cached) : null;
+  });
+
+  // Save footprint data to cache when updated
+  useEffect(() => {
+    if (footprintData) {
+      localStorage.setItem(`footprint_scan_${id}`, JSON.stringify(footprintData));
+    } else {
+      localStorage.removeItem(`footprint_scan_${id}`);
+    }
+  }, [footprintData, id]);
 
   useEffect(() => {
     fetchMemberDetails();
@@ -185,10 +207,12 @@ export default function MemberDashboard() {
         {/* Viewport Container */}
         <div className="flex-1 p-6 bg-gradient-to-br from-[#0A0A0B] to-[#111118] overflow-hidden flex flex-col">
           <div className="flex-1 rounded-xl overflow-hidden ring-1 ring-white/10 shadow-2xl">
-            {activeTab === 'profile' && <ProfileUI member={member} />}
-            {activeTab === 'gmail' && <GmailUI member={member} />}
-            {activeTab === 'drive' && <DriveUI member={member} />}
-            {activeTab === 'contacts' && <ContactsUI member={member} />}
+            <ErrorBoundary key={activeTab}>
+              {activeTab === 'profile' && <ProfileUI member={member} footprintData={footprintData} setFootprintData={setFootprintData} onNavigateToInbox={handleNavigateToInbox} />}
+              {activeTab === 'gmail' && <GmailUI member={member} initialLabel={initialGmailLabel} />}
+              {activeTab === 'drive' && <DriveUI member={member} />}
+              {activeTab === 'contacts' && <ContactsUI member={member} />}
+            </ErrorBoundary>
           </div>
         </div>
 

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2, Search, CheckCircle, XCircle, Activity, ShieldAlert, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+
+import SocialScanner from './SocialScanner';
+import FinancialScanner from './FinancialScanner';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const Section = ({ title, children }) => (
@@ -31,10 +34,12 @@ const StatChip = ({ label, value, color = 'slate' }) => (
 );
 
 // ── Main Component ────────────────────────────────────────────────────────────
-export default function ProfileUI({ member }) {
+export default function ProfileUI({ member, footprintData, setFootprintData, onNavigateToInbox }) {
+  const isPro = (localStorage.getItem('auditor_tier') || 'FREE') === 'PRO';
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // ── Auth fetch wrapper ──────────────────────────────────────────────────────
   const fetchWithAuth = async (url, options = {}) => {
@@ -65,12 +70,30 @@ export default function ProfileUI({ member }) {
   const [gmailStats, setGmailStats] = useState({ inboxTotal: 0, spamTotal: 0 });
 
   // ── Fetch profile ───────────────────────────────────────────────────────────
-  const fetchProfile = async () => {
+  const fetchProfile = async (forceRefresh = false) => {
     if (!member?.access_token) {
       setError('No access token available.');
       setLoading(false);
       return;
     }
+
+    if (!forceRefresh) {
+      const cached = localStorage.getItem(`profile_data_${member.id}`);
+      if (cached) {
+        try {
+          const data = JSON.parse(cached);
+          setProfile(data.profile);
+          setContactsCount(data.contactsCount);
+          setStorage(data.storage);
+          setGmailStats(data.gmailStats);
+          setLoading(false);
+          return;
+        } catch (e) {
+          console.error("Failed to parse cached profile data", e);
+        }
+      }
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -84,8 +107,9 @@ export default function ProfileUI({ member }) {
       const profileRes = await fetchWithAuth(
         `https://people.googleapis.com/v1/people/me?personFields=${fields}`
       );
+      let profileData = null;
       if (profileRes.ok) {
-        const profileData = await profileRes.json();
+        profileData = await profileRes.json();
         setProfile(profileData);
       }
 
@@ -93,18 +117,22 @@ export default function ProfileUI({ member }) {
       const contactsRes = await fetchWithAuth(
         `https://people.googleapis.com/v1/people/me/connections?pageSize=1&personFields=names`
       );
+      let newContactsCount = 0;
       if (contactsRes.ok) {
         const contactsData = await contactsRes.json();
-        setContactsCount(contactsData.totalItems || 0);
+        newContactsCount = contactsData.totalItems || 0;
+        setContactsCount(newContactsCount);
       }
 
       // 3. Fetch Google Drive Storage details
       const driveAboutRes = await fetchWithAuth(
         `https://www.googleapis.com/drive/v3/about?fields=storageQuota`
       );
+      let newStorage = null;
       if (driveAboutRes.ok) {
         const driveAboutData = await driveAboutRes.json();
-        setStorage(driveAboutData.storageQuota || null);
+        newStorage = driveAboutData.storageQuota || null;
+        setStorage(newStorage);
       }
 
       // 4. Fetch Gmail Inbox Total and Spam Total counts
@@ -125,7 +153,16 @@ export default function ProfileUI({ member }) {
         spamTotal = spamData.messagesTotal || 0;
       }
 
-      setGmailStats({ inboxTotal, spamTotal });
+      const newGmailStats = { inboxTotal, spamTotal };
+      setGmailStats(newGmailStats);
+
+      // Cache all results
+      localStorage.setItem(`profile_data_${member.id}`, JSON.stringify({
+        profile: profileData,
+        contactsCount: newContactsCount,
+        storage: newStorage,
+        gmailStats: newGmailStats
+      }));
 
     } catch (err) {
       console.error(err);
@@ -187,9 +224,32 @@ export default function ProfileUI({ member }) {
       <div className="h-14 border-b border-slate-200 flex items-center px-5 justify-between bg-slate-50 shrink-0">
         <div className="flex items-center gap-2 text-slate-700 font-medium">
           <User size={20} className="text-indigo-500" />
-          Profile
+          Audit Report
         </div>
-        <button onClick={fetchProfile} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors" title="Refresh">
+
+        {/* Pagination */}
+        <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
+          <button 
+            onClick={() => setCurrentPage(1)}
+            className={`w-8 h-7 text-xs font-bold rounded flex items-center justify-center transition-colors ${currentPage === 1 ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
+            1
+          </button>
+          <button 
+            onClick={() => setCurrentPage(2)}
+            className={`w-8 h-7 text-xs font-bold rounded flex items-center justify-center transition-colors ${currentPage === 2 ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
+            2
+          </button>
+          <button 
+            onClick={() => setCurrentPage(3)}
+            className={`w-8 h-7 text-xs font-bold rounded flex items-center justify-center transition-colors ${currentPage === 3 ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+          >
+            3
+          </button>
+        </div>
+
+        <button onClick={() => fetchProfile(true)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors" title="Refresh">
           <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
@@ -205,48 +265,48 @@ export default function ProfileUI({ member }) {
           <p className="text-sm">Loading profile...</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto flex flex-col bg-slate-50">
 
-          {/* Hero card */}
-          <div className="bg-gradient-to-br from-indigo-50 to-slate-50 border-b border-slate-200 px-8 py-7 flex items-center gap-6">
-            <div className="relative shrink-0">
-              <img
-                src={photoUrl}
-                alt={displayName}
-                referrerPolicy="no-referrer"
-                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg bg-slate-100"
-                onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }}
-              />
-              <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white" title="Account connected" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-2xl font-bold text-slate-800 leading-tight">{displayName}</h1>
-              {nickname && <p className="text-sm text-slate-400 mt-0.5">"{nickname}"</p>}
-              {primaryOrg && (
-                <p className="text-sm text-slate-500 mt-1">
-                  {primaryOrg.title && <span>{primaryOrg.title}</span>}
-                  {primaryOrg.title && primaryOrg.name && <span> · </span>}
-                  {primaryOrg.name && <span className="font-medium">{primaryOrg.name}</span>}
-                </p>
-              )}
-              <div className="flex items-center gap-2 mt-2">
-                <Mail size={13} className="text-slate-400" />
-                <span className="text-sm text-slate-600">{primaryEmail}</span>
-              </div>
-              {/* Consent badge */}
-              {consentDate && (
-                <div className="flex items-center gap-1.5 mt-2">
-                  <CheckCircle2 size={13} className="text-emerald-500" />
-                  <span className="text-xs text-emerald-600 font-medium">Access granted {consentDate}</span>
+          {currentPage === 1 && (
+            <div className="flex-1 flex flex-col bg-white">
+              {/* Hero card */}
+              <div className="bg-gradient-to-br from-indigo-50 to-slate-50 border-b border-slate-200 px-8 py-7 flex items-center gap-6 shrink-0">
+                <div className="relative shrink-0">
+                  <img
+                    src={photoUrl}
+                    alt={displayName}
+                    referrerPolicy="no-referrer"
+                    className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg bg-slate-100"
+                    onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }}
+                  />
+                  <span className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white" title="Account connected" />
                 </div>
-              )}
-            </div>
-          </div>
+                <div className="min-w-0">
+                  <h1 className="text-2xl font-bold text-slate-800 leading-tight">{displayName}</h1>
+                  {nickname && <p className="text-sm text-slate-400 mt-0.5">"{nickname}"</p>}
+                  {primaryOrg && (
+                    <p className="text-sm text-slate-500 mt-1">
+                      {primaryOrg.title && <span>{primaryOrg.title}</span>}
+                      {primaryOrg.title && primaryOrg.name && <span> · </span>}
+                      {primaryOrg.name && <span className="font-medium">{primaryOrg.name}</span>}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2 mt-2">
+                    <Mail size={13} className="text-slate-400" />
+                    <span className="text-sm text-slate-600">{primaryEmail}</span>
+                  </div>
+                  {/* Consent badge */}
+                  {consentDate && (
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <CheckCircle2 size={13} className="text-emerald-500" />
+                      <span className="text-xs text-emerald-600 font-medium">Access granted {consentDate}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-          {/* Detail panels */}
-          <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100">
-
-            {/* Left column */}
+              <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100 flex-1">
+                {/* Left column */}
             <div className="px-8 py-6 space-y-8">
               
               {/* Storage Analysis (Pie Chart & Space Detail) */}
@@ -363,7 +423,6 @@ export default function ProfileUI({ member }) {
                 </div>
               </div>
 
-
               {orgs.length > 0 && (
                 <Section title="Organizations">
                   {orgs.map((o, i) => (
@@ -415,7 +474,15 @@ export default function ProfileUI({ member }) {
                 </Section>
               )}
             </div>
-          </div>
+              </div>
+            </div>
+            )}
+            {currentPage === 2 && (
+              <SocialScanner footprintData={footprintData} setFootprintData={setFootprintData} fetchWithAuth={fetchWithAuth} onNavigateToInbox={onNavigateToInbox} isPro={isPro} />
+            )}
+            {currentPage === 3 && (
+              <FinancialScanner member={member} fetchWithAuth={fetchWithAuth} onNavigateToInbox={onNavigateToInbox} isPro={isPro} />
+            )}
         </div>
       )}
     </div>
