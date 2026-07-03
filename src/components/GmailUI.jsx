@@ -1103,11 +1103,6 @@ export default function GmailUI({ member, initialLabel }) {
                   <Trash2 size={18} /> Trash
                 </button>
 
-                {!isPro && (
-                  <div className="px-4 py-4 m-2 mt-4 bg-blue-50 border border-blue-100 rounded-xl">
-                    <p className="text-xs text-blue-800 font-medium mb-3">Upgrade to PRO to instantly scan and intercept all automated OTPs, password resets, and platform notifications.</p>
-                  </div>
-                )}
               </>
             )}
 
