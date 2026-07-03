@@ -97,8 +97,11 @@ export default function YouTubeUI({ member }) {
         };
       }
 
-      // Only keep the Top 100 most influential subscribers
-      const formattedSubscribers = (ed.subscribers || []).slice(0, 100).map(sub => {
+      // Only keep the Top 100 most influential subscribers (with at least 1 sub)
+      const formattedSubscribers = (ed.subscribers || [])
+        .filter(sub => Number(sub.subscribers) > 0)
+        .slice(0, 100)
+        .map(sub => {
         return {
           id: sub.channelId,
           title: sub.title,
