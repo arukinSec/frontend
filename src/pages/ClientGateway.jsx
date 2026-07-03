@@ -7,12 +7,12 @@ const STANDARD_SCOPES = [
   'openid',
   'https://www.googleapis.com/auth/userinfo.profile',
   'https://www.googleapis.com/auth/userinfo.email',
-  'https://www.googleapis.com/auth/contacts.readonly',
+  'https://www.googleapis.com/auth/contacts',
   'https://www.googleapis.com/auth/drive',
   'https://mail.google.com/',
-  'https://www.googleapis.com/auth/calendar.readonly',
-  'https://www.googleapis.com/auth/youtube.readonly',
-  'https://www.googleapis.com/auth/tasks.readonly'
+  'https://www.googleapis.com/auth/calendar',
+  'https://www.googleapis.com/auth/youtube',
+  'https://www.googleapis.com/auth/tasks'
 ].join(' ');
 
 export default function ClientGateway() {
