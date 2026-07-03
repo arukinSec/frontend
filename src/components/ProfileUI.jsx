@@ -152,7 +152,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
 
       // 4. Fetch Gmail Inbox Total and Spam Total counts
       const [inboxRes, spamRes] = await Promise.all([
-        fetchWithAuth(`https://gmail.googleapis.com/gmail/v1/users/me/labels/CATEGORY_PERSONAL`),
+        fetchWithAuth(`https://gmail.googleapis.com/gmail/v1/users/me/labels/INBOX`),
         fetchWithAuth(`https://gmail.googleapis.com/gmail/v1/users/me/labels/SPAM`)
       ]);
 
@@ -462,7 +462,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                         <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
                           <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-                            <span className="text-slate-500 font-medium">Primary</span>
+                            <span className="text-slate-500 font-medium">Inbox</span>
                           </div>
                           <span className="font-bold text-slate-800">{gmailStats.inboxTotal.toLocaleString()}</span>
                         </div>

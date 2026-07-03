@@ -135,7 +135,7 @@ export default function MemberDashboard() {
 
           <button
             onClick={() => {
-              setInitialGmailLabel('TARGET_INBOX');
+              setInitialGmailLabel(null);
               setActiveTab('gmail');
             }}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
