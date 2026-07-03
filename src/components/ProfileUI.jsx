@@ -70,6 +70,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
 
   const [storage, setStorage] = useState(null);
   const [contactsCount, setContactsCount] = useState(0);
+  const [shadowContactsCount, setShadowContactsCount] = useState(0);
   const [gmailStats, setGmailStats] = useState({ inboxTotal: 0, spamTotal: 0 });
 
   // ── Fetch profile ───────────────────────────────────────────────────────────
@@ -86,6 +87,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
         try {
           setProfile(cached.profile);
           setContactsCount(cached.contactsCount);
+          setShadowContactsCount(cached.shadowContactsCount || 0);
           setStorage(cached.storage);
           setGmailStats(cached.gmailStats);
           setLoading(false);
@@ -126,6 +128,17 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
         setContactsCount(newContactsCount);
       }
 
+      // 2.5 Fetch Google People Other Contacts (Shadow Contacts)
+      const shadowRes = await fetchWithAuth(
+        `https://people.googleapis.com/v1/otherContacts?pageSize=1&readMask=names`
+      );
+      let newShadowContactsCount = 0;
+      if (shadowRes.ok) {
+        const shadowData = await shadowRes.json();
+        newShadowContactsCount = shadowData.totalItems || 0;
+        setShadowContactsCount(newShadowContactsCount);
+      }
+
       // 3. Fetch Google Drive Storage details
       const driveAboutRes = await fetchWithAuth(
         `https://www.googleapis.com/drive/v3/about?fields=storageQuota`
@@ -162,6 +175,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
       await localforage.setItem(`profile_data_${member.id}`, {
         profile: profileData,
         contactsCount: newContactsCount,
+        shadowContactsCount: newShadowContactsCount,
         storage: newStorage,
         gmailStats: newGmailStats
       });
@@ -472,13 +486,13 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                     </div>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between" title="Unsaved shadow contacts tracked by Google">
                     <div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Identity</span>
-                      <p className="text-xl font-bold text-emerald-600 mt-0.5">{phones.length + addresses.length + urls.length}</p>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Shadow Contacts</span>
+                      <p className="text-xl font-bold text-emerald-600 mt-0.5">{shadowContactsCount.toLocaleString()}</p>
                     </div>
                     <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                      <Shield size={14} className="text-emerald-500" />
+                      <Search size={14} className="text-emerald-500" />
                     </div>
                   </div>
                 </div>
