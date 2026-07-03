@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { Shield, ArrowRight, CheckCircle2, UserCheck, Home } from 'lucide-react';
+import { Shield, ArrowRight, CheckCircle2, UserCheck, Home, ShieldCheck, Database, Info } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const STANDARD_SCOPES = [
@@ -35,6 +35,7 @@ export default function ClientGateway() {
   const [authId, setAuthId] = useState('');
   const [authError, setAuthError] = useState('');
   const [consentError, setConsentError] = useState('');
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   // Clear any active auditor variables from local storage immediately when client gateway loads
   // UNLESS this is an active Self-Audit flow, in which case we MUST preserve them.
@@ -232,10 +233,22 @@ export default function ClientGateway() {
 
       localStorage.setItem('arukin_auditor_id', data.auditor_id);
       localStorage.removeItem('arukin_inputted_auth_id');
-
       localStorage.setItem('arukin_pending_flow', 'standard');
 
-      setLoadingText('Redirecting to Google Consent...');
+      setLoading(false);
+      setShowDisclaimer(true);
+    } catch (err) {
+      setLoading(false);
+      setAuthError('Failed to verify Auditor Auth ID. Please try again.');
+    }
+  };
+
+  const proceedToGoogleAuth = async () => {
+    setLoading(true);
+    setShowDisclaimer(false);
+    setLoadingText('Redirecting to Google Consent...');
+    
+    try {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -359,6 +372,71 @@ export default function ClientGateway() {
           </>
         )}
       </div>
+
+      {/* Target Connection Disclaimer Modal */}
+      {showDisclaimer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-[#0A0A0B]/80 backdrop-blur-sm"
+            onClick={() => setShowDisclaimer(false)}
+          ></div>
+          <div className="relative w-full max-w-lg bg-[#12121A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+            <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
+              <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 border border-indigo-500/20">
+                <Shield size={24} className="text-indigo-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Security Authorization</h3>
+              <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                Before you connect your account, please carefully review the following privacy and security details.
+              </p>
+              
+              <div className="space-y-4 mb-8">
+                <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
+                  <h4 className="text-sm font-semibold text-emerald-300 mb-2 flex items-center gap-2">
+                    <ShieldCheck size={16} /> Data Privacy
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data.
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
+                  <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
+                    <Database size={16} /> Local Storage Only
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to zero-knowledge principles wherever possible.
+                  </p>
+                </div>
+
+                <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
+                  <h4 className="text-sm font-semibold text-amber-300 mb-2 flex items-center gap-2">
+                    <Info size={16} /> Agreement Terms
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    By proceeding, you grant read-only access to your account to your designated Auditor. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms of Service</a>.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-white/10 bg-[#0A0A0B]/50 flex justify-end gap-3 shrink-0">
+              <button 
+                onClick={() => setShowDisclaimer(false)}
+                className="px-5 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={proceedToGoogleAuth}
+                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+              >
+                I Understand & Accept
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Legal Links Footer */}
       <div className="mt-8 flex justify-center gap-4 text-[10px] text-slate-500 font-semibold z-10">
