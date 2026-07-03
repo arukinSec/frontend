@@ -214,6 +214,59 @@ export default function YouTubeUI({ member }) {
 
   const currentAnalytics = data?.analytics?.[analyticsTimeframe] || { watchTime: '0 hrs', revenue: '$0.00', views: '0', rawViewsData: [], rawTrafficData: [], rawGeoData: [], rawGenderData: [] };
 
+  const getChartData = () => {
+    const raw = currentAnalytics.rawViewsData || [];
+    if (raw.length === 0) return [];
+
+    if (analyticsTimeframe === '7d') {
+      return raw.map(row => {
+        const d = new Date(row[0]);
+        // Avoid timezone shift issues by adding UTC
+        const utcDate = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+        return {
+          name: utcDate.toLocaleDateString('en-US', { weekday: 'short' }),
+          views: row[1]
+        };
+      });
+    }
+    
+    if (analyticsTimeframe === '30d') {
+      const weeks = [0, 0, 0, 0];
+      const chunkSize = Math.ceil(raw.length / 4);
+      raw.forEach((row, i) => {
+        const weekIndex = Math.min(Math.floor(i / chunkSize), 3);
+        weeks[weekIndex] += row[1];
+      });
+      return weeks.map((views, i) => ({
+        name: `Week ${i + 1}`,
+        views
+      }));
+    }
+
+    if (analyticsTimeframe === '1y') {
+      const monthsMap = {};
+      const order = [];
+      raw.forEach(row => {
+        const d = new Date(row[0]);
+        const utcDate = new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+        const m = utcDate.toLocaleDateString('en-US', { month: 'short' });
+        if (!monthsMap[m]) {
+          monthsMap[m] = 0;
+          order.push(m);
+        }
+        monthsMap[m] += row[1];
+      });
+      return order.map(m => ({
+        name: m,
+        views: monthsMap[m]
+      }));
+    }
+
+    return raw.map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }));
+  };
+
+  const chartData = getChartData();
+
   return (
     <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col h-full">
         <>
@@ -373,32 +426,34 @@ export default function YouTubeUI({ member }) {
                 {/* Charts Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Main Line Chart */}
-                  <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
-                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={(currentAnalytics.rawViewsData || []).map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }))}>
-                          <defs>
-                            <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                              <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                          <XAxis dataKey="name" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
-                          <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val/1000}k`} />
-                          <RechartsTooltip 
-                            contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
-                            itemStyle={{ color: '#ef4444' }}
-                          />
-                          <Area type="monotone" dataKey="views" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
-                        </AreaChart>
-                      </ResponsiveContainer>
+                  {analyticsTimeframe !== 'lifetime' && (
+                    <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                      <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={chartData}>
+                            <defs>
+                              <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
+                                <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                            <XAxis dataKey="name" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(1)}k` : val} />
+                            <RechartsTooltip 
+                              contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                              itemStyle={{ color: '#ef4444' }}
+                            />
+                            <Area type="monotone" dataKey="views" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Traffic Sources Pie */}
-                  <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                  <div className={`p-6 bg-white/[0.02] border border-white/5 rounded-2xl ${analyticsTimeframe === 'lifetime' ? 'lg:col-span-3' : ''}`}>
                     <h5 className="text-sm font-semibold text-white mb-2">Traffic Sources</h5>
                     <div className="h-48">
                       {currentAnalytics.rawTrafficData?.length > 0 ? (
