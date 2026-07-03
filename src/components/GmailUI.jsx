@@ -67,6 +67,7 @@ export default function GmailUI({ member, initialLabel }) {
   const isPro = hasProAccess(member);
   
   const getSocialScan = () => {
+    try {
       const str = localStorage.getItem(`footprint_scan_${member?.id}`);
       if (!str) return null;
       const data = JSON.parse(str);
