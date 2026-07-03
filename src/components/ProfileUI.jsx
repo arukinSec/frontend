@@ -3,6 +3,7 @@ import { hasProAccess } from '../utils/access';
 import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2, Search, CheckCircle, XCircle, Activity, ShieldAlert, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import localforage from 'localforage';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 import SocialScanner from './SocialScanner';
 import FinancialScanner from './FinancialScanner';
@@ -318,45 +319,44 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                   const usage = parseInt(storage.usage || 0);
                   const remaining = Math.max(0, limit - usage);
                   
-                  // Calculate circle parameters for SVG chart
-                  const pct = Math.min(100, (usage / limit) * 100);
-                  const radius = 50;
-                  const circumference = 2 * Math.PI * radius;
-                  const strokeDashoffset = circumference - (pct / 100) * circumference;
+                  const storageData = [
+                    { name: 'Used Space', value: usage },
+                    { name: 'Free Space', value: remaining }
+                  ];
 
                   return (
                     <div className="flex flex-col sm:flex-row items-center gap-6">
-                      {/* SVG Pie Chart */}
-                      <div className="relative w-32 h-32 shrink-0">
-                        <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-                          {/* Background Circle */}
-                          <circle
-                            cx="60"
-                            cy="60"
-                            r={radius}
-                            className="stroke-slate-200 fill-none"
-                            strokeWidth="10"
-                          />
-                          {/* Active Value Circle */}
-                          <circle
-                            cx="60"
-                            cy="60"
-                            r={radius}
-                            className="stroke-indigo-600 fill-none transition-all duration-500 ease-out"
-                            strokeWidth="10"
-                            strokeDasharray={circumference}
-                            strokeDashoffset={strokeDashoffset}
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <div className="relative w-36 h-36 shrink-0">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={storageData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={45}
+                              outerRadius={60}
+                              paddingAngle={2}
+                              dataKey="value"
+                              stroke="none"
+                            >
+                              <Cell key="cell-0" fill="#6366f1" />
+                              <Cell key="cell-1" fill="#e2e8f0" />
+                            </Pie>
+                            <RechartsTooltip 
+                              formatter={(value) => formatBytes(value)}
+                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                              itemStyle={{ color: '#334155' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                           <span className="text-base font-bold text-slate-800">{Math.round(pct)}%</span>
                           <span className="text-[10px] text-slate-400 font-medium">Used</span>
                         </div>
                       </div>
 
                       {/* Storage Text Info */}
-                      <div className="space-y-2.5 flex-1 min-w-0">
+                      <div className="space-y-2.5 flex-1 min-w-0 w-full">
                         <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
                           <span className="text-slate-500 font-medium">Total Limit:</span>
                           <span className="font-bold text-slate-800">{formatBytes(limit)}</span>
@@ -409,18 +409,67 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
             <div className="px-8 py-6 space-y-6">
 
               {/* Data Metrics Summary Cards */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-left">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Total Emails</span>
-                  <p className="text-2xl font-bold text-slate-850 mt-1">{gmailStats.inboxTotal}</p>
+              <div className="mb-6 grid grid-cols-1 gap-4">
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
+                   <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Email Distribution</h3>
+                   <div className="flex flex-col sm:flex-row items-center gap-6">
+                      <div className="w-36 h-36 shrink-0 relative">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { name: 'Inbox', value: gmailStats.inboxTotal },
+                                { name: 'Spam', value: gmailStats.spamTotal }
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={45}
+                              outerRadius={60}
+                              paddingAngle={2}
+                              dataKey="value"
+                              stroke="none"
+                            >
+                              <Cell key="cell-0" fill="#6366f1" />
+                              <Cell key="cell-1" fill="#ef4444" />
+                            </Pie>
+                            <RechartsTooltip 
+                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                              itemStyle={{ color: '#334155' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                          <span className="text-base font-bold text-slate-800">{gmailStats.inboxTotal + gmailStats.spamTotal}</span>
+                          <span className="text-[10px] text-slate-400 font-medium">Total</span>
+                        </div>
+                      </div>
+                      <div className="space-y-2.5 flex-1 min-w-0 w-full">
+                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                            <span className="text-slate-500 font-medium">Primary Inbox</span>
+                          </div>
+                          <span className="font-bold text-slate-800">{gmailStats.inboxTotal.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                            <span className="text-slate-500 font-medium">Spam Folder</span>
+                          </div>
+                          <span className="font-bold text-slate-800">{gmailStats.spamTotal.toLocaleString()}</span>
+                        </div>
+                      </div>
+                   </div>
                 </div>
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-left">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Emails in Spam</span>
-                  <p className="text-2xl font-bold text-red-500 mt-1">{gmailStats.spamTotal}</p>
-                </div>
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-left col-span-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Total Google Contacts</span>
-                  <p className="text-2xl font-bold text-indigo-600 mt-1">{contactsCount}</p>
+
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Total Google Contacts</span>
+                    <p className="text-3xl font-bold text-indigo-600 mt-1">{contactsCount.toLocaleString()}</p>
+                  </div>
+                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <User size={24} className="text-indigo-500" />
+                  </div>
                 </div>
               </div>
 
