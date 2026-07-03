@@ -326,16 +326,16 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                   ];
 
                   return (
-                    <div className="flex flex-col sm:flex-row items-center gap-6">
-                      <div className="relative w-36 h-36 shrink-0">
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                      <div className="relative w-24 h-24 shrink-0">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
                               data={storageData}
                               cx="50%"
                               cy="50%"
-                              innerRadius={45}
-                              outerRadius={60}
+                              innerRadius={30}
+                              outerRadius={45}
                               paddingAngle={2}
                               dataKey="value"
                               stroke="none"
@@ -345,19 +345,18 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                             </Pie>
                             <RechartsTooltip 
                               formatter={(value) => formatBytes(value)}
-                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '4px 8px', fontSize: '12px' }}
                               itemStyle={{ color: '#334155' }}
                             />
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                          <span className="text-base font-bold text-slate-800">{Math.round(pct)}%</span>
-                          <span className="text-[10px] text-slate-400 font-medium">Used</span>
+                          <span className="text-sm font-bold text-slate-800">{Math.round(pct)}%</span>
                         </div>
                       </div>
 
                       {/* Storage Text Info */}
-                      <div className="space-y-2.5 flex-1 min-w-0 w-full">
+                      <div className="space-y-1.5 flex-1 min-w-0 w-full">
                         <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
                           <span className="text-slate-500 font-medium">Total Limit:</span>
                           <span className="font-bold text-slate-800">{formatBytes(limit)}</span>
@@ -410,11 +409,11 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
             <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto">
 
               {/* Data Metrics Summary Cards */}
-              <div className="mb-6 grid grid-cols-1 gap-4">
-                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
-                   <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Email Distribution</h3>
-                   <div className="flex flex-col sm:flex-row items-center gap-6">
-                      <div className="w-36 h-36 shrink-0 relative">
+              <div className="mb-4 grid grid-cols-1 gap-3">
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                   <h3 className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3">Email Distribution</h3>
+                   <div className="flex flex-col sm:flex-row items-center gap-4">
+                      <div className="w-24 h-24 shrink-0 relative">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
@@ -424,8 +423,8 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                               ]}
                               cx="50%"
                               cy="50%"
-                              innerRadius={45}
-                              outerRadius={60}
+                              innerRadius={30}
+                              outerRadius={45}
                               paddingAngle={2}
                               dataKey="value"
                               stroke="none"
@@ -434,28 +433,27 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                               <Cell key="cell-1" fill="#ef4444" />
                             </Pie>
                             <RechartsTooltip 
-                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', padding: '4px 8px', fontSize: '12px' }}
                               itemStyle={{ color: '#334155' }}
                             />
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                          <span className="text-base font-bold text-slate-800">{gmailStats.inboxTotal + gmailStats.spamTotal}</span>
-                          <span className="text-[10px] text-slate-400 font-medium">Total</span>
+                          <span className="text-sm font-bold text-slate-800">{gmailStats.inboxTotal + gmailStats.spamTotal > 9999 ? '10k+' : gmailStats.inboxTotal + gmailStats.spamTotal}</span>
                         </div>
                       </div>
-                      <div className="space-y-2.5 flex-1 min-w-0 w-full">
+                      <div className="space-y-1.5 flex-1 min-w-0 w-full">
                         <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
                           <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
-                            <span className="text-slate-500 font-medium">Primary Inbox</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                            <span className="text-slate-500 font-medium">Primary</span>
                           </div>
                           <span className="font-bold text-slate-800">{gmailStats.inboxTotal.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
                           <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                            <span className="text-slate-500 font-medium">Spam Folder</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                            <span className="text-slate-500 font-medium">Spam</span>
                           </div>
                           <span className="font-bold text-slate-800">{gmailStats.spamTotal.toLocaleString()}</span>
                         </div>
@@ -463,24 +461,24 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex flex-col justify-center">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Google Contacts</span>
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-2xl font-bold text-indigo-600">{contactsCount.toLocaleString()}</p>
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <User size={18} className="text-indigo-500" />
-                      </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Contacts</span>
+                      <p className="text-xl font-bold text-indigo-600 mt-0.5">{contactsCount.toLocaleString()}</p>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                      <User size={14} className="text-indigo-500" />
                     </div>
                   </div>
 
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex flex-col justify-center">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Identity Markers</span>
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-2xl font-bold text-emerald-600">{phones.length + addresses.length + urls.length}</p>
-                      <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <Shield size={18} className="text-emerald-500" />
-                      </div>
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Identity</span>
+                      <p className="text-xl font-bold text-emerald-600 mt-0.5">{phones.length + addresses.length + urls.length}</p>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                      <Shield size={14} className="text-emerald-500" />
                     </div>
                   </div>
                 </div>
