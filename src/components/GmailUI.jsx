@@ -250,7 +250,7 @@ export default function GmailUI({ member, initialLabel }) {
       const curatedExclusions = ALL_TARGETS.map(p => 
         getBidirectionalQuery(p.query).split(' OR ').map(q => `-${q.trim()}`).join(' ')
       ).join(' ');
-      const automated = "(from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:updates OR from:notifications OR category:updates OR category:promotions OR category:social OR subject:otp OR subject:verification OR subject:password)";
+      const automated = "(from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:updates OR from:notifications OR category:updates OR category:promotions OR category:social OR subject:otp OR subject:verification OR subject:password OR from:bank.in OR from:banks.in)";
       baseQuery = `${automated} ${curatedExclusions}`;
     } else {
       const targetPlatform = ALL_TARGETS.find(p => p.label === activeLabel);
@@ -281,8 +281,8 @@ export default function GmailUI({ member, initialLabel }) {
       ).join(' ');
       finalQuery.push(outboundExclusions);
       
-      // Exclude common automated senders just in case a small business uses @gmail.com for automated alerts
-      finalQuery.push("-from:noreply -from:no-reply -from:donotreply -from:support -from:admin -from:marketing -from:notifications -from:updates -from:newsletter");
+      // Exclude common automated senders and all Indian bank domains just in case a small business uses @gmail.com for automated alerts
+      finalQuery.push("-from:noreply -from:no-reply -from:donotreply -from:support -from:admin -from:marketing -from:notifications -from:updates -from:newsletter -from:bank.in -to:bank.in -from:banks.in -to:banks.in");
       finalQuery.push("-category:promotions -category:social -category:updates");
       finalQuery.push("-subject:otp -subject:verification -subject:password -subject:reset");
     }
