@@ -16,6 +16,7 @@ export default function MembersList() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showUpgradeLockModal, setShowUpgradeLockModal] = useState({ open: false, title: '', message: '', action: null });
   const [showConfirmModal, setShowConfirmModal] = useState({ open: false, title: '', message: '', requireInput: false, action: null });
+  const [showSelfAuditModal, setShowSelfAuditModal] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
   const [showDangerZone, setShowDangerZone] = useState(false);
   const navigate = useNavigate();
@@ -178,7 +179,12 @@ export default function MembersList() {
     }
   };
 
-  const handleSelfAudit = async () => {
+  const handleUnlockTrialClick = () => {
+    setShowSelfAuditModal(true);
+  };
+
+  const handleSelfAuditAccept = async () => {
+    setShowSelfAuditModal(false);
     const auditorId = localStorage.getItem('auditor_id');
     if (!auditorId) return;
 
@@ -495,10 +501,10 @@ export default function MembersList() {
                     <div className="py-2">
                       {auditorTier === 'FREE' && (
                         <button 
-                          onClick={handleSelfAudit}
+                          onClick={handleUnlockTrialClick}
                           className="w-full text-left px-4 py-2.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors flex items-center justify-between"
                         >
-                          <span className="flex items-center gap-2"><Zap size={14} /> Run Self-Audit (Unlock Trial)</span>
+                          <span className="flex items-center gap-2"><Zap size={14} /> Unlock Trial</span>
                         </button>
                       )}
                       {auditorTier !== 'PRO' && (
@@ -570,10 +576,10 @@ export default function MembersList() {
               </p>
             </div>
             <button
-              onClick={handleSelfAudit}
+              onClick={handleUnlockTrialClick}
               className="w-full md:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/20 transition-all shrink-0 cursor-pointer"
             >
-              Run Self-Audit
+              Unlock Trial
             </button>
           </div>
         )}
@@ -798,7 +804,65 @@ export default function MembersList() {
         </div>
       )}
 
-      {/* Custom Confirm Modal */}
+      {/* Self-Audit Disclaimer Modal */}
+      {showSelfAuditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-[#0A0A0B]/80 backdrop-blur-sm"
+            onClick={() => setShowSelfAuditModal(false)}
+          ></div>
+          <div className="relative w-full max-w-lg bg-[#12121A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+            <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 border border-emerald-500/20">
+                <ShieldCheck size={24} className="text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Unlock Trial via Self-Audit</h3>
+              <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                Before proceeding, please carefully review what a Self-Audit entails and the terms of accessing the Trial Tier.
+              </p>
+              
+              <div className="space-y-4 mb-8">
+                <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
+                  <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
+                    <Info size={16} /> What is a Self-Audit?
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    A Self-Audit involves connecting your <strong>own Google account</strong> to the Arukin console. This allows you to experience the platform from a target's perspective and instantly unlocks Trial Tier features (Target Monitor, Drive Forensics, Financial Scanners). 
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
+                  <h4 className="text-sm font-semibold text-rose-300 mb-2 flex items-center gap-2">
+                    <AlertTriangle size={16} /> Important Notice
+                  </h4>
+                  <ul className="text-xs text-slate-400 leading-relaxed list-disc pl-4 space-y-2">
+                    <li>You must authenticate using your exact Auditor email (<span className="text-white font-medium">{auditorEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
+                    <li>By proceeding, you grant Arukin read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a>.</li>
+                    <li>You agree to our <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms and Conditions</a> regarding authorized data access and acceptable use.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-white/10 bg-[#0A0A0B]/50 flex justify-end gap-3 shrink-0">
+              <button 
+                onClick={() => setShowSelfAuditModal(false)}
+                className="px-5 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSelfAuditAccept}
+                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
+              >
+                I Accept & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Disconnect Member Confirm Modal */}
       {showConfirmModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-[16px] p-4">
           <div className="w-full max-w-sm bg-[#0E0E12] border border-red-500/20 rounded-3xl p-6 shadow-2xl relative text-center">
