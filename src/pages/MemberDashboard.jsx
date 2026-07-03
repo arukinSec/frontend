@@ -101,44 +101,18 @@ export default function MemberDashboard() {
 
   return (
     <div className="h-screen flex flex-col bg-[#0A0A0B] text-slate-200 font-sans overflow-hidden">
-      
-      {/* Top Header */}
-      <header className="h-16 border-b border-white/10 bg-black/40 backdrop-blur-md flex items-center px-6 shrink-0 justify-between">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div className="h-8 w-8 rounded-full border border-white/10 bg-slate-900 overflow-hidden shrink-0">
-            <img 
-              src={member.avatar_url || 'https://lh3.googleusercontent.com/a/default-user=s120'} 
-              alt={member.name} 
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover" 
-              onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }}
-            />
-          </div>
-          
-          <div>
-            <h2 className="text-sm font-semibold text-white leading-none">{member.name}</h2>
-            <p className="text-xs text-slate-500 mt-1">{member.email}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Shield size={16} className="text-emerald-500" />
-          <span className="text-xs font-medium text-emerald-500">Connection Secure</span>
-        </div>
-      </header>
-
-      {/* Main Content Area */}
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         
         {/* App Switcher (Horizontal on mobile, Vertical on md+) */}
         <div className="w-full md:w-20 border-b md:border-r border-white/10 bg-black/20 flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 gap-4 md:gap-6 shrink-0 overflow-x-auto">
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="w-12 h-12 flex items-center justify-center rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all md:mb-4"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft size={22} />
+          </button>
           <button
             onClick={() => setActiveTab('profile')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
