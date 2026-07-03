@@ -80,6 +80,21 @@ export default function App() {
 
           const auditorAvatarUrl = activeSession.user.user_metadata?.avatar_url || '';
 
+          // Self-healing: If on TRIAL, verify self-audit account is actually connected
+          if (auditorData.tier === 'TRIAL') {
+            const { count, error: countErr } = await supabase
+              .from('members')
+              .select('*', { count: 'exact', head: true })
+              .eq('auditor_id', auditorData.id)
+              .eq('connection_status', 'CONNECTED')
+              .ilike('email', auditorData.email);
+              
+            if (!countErr && count === 0) {
+              await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorData.id);
+              auditorData.tier = 'FREE';
+            }
+          }
+
           localStorage.setItem('admin_session', 'true');
           localStorage.setItem('auditor_id', auditorData.id);
           localStorage.setItem('auditor_tier', auditorData.tier);

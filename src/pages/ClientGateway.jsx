@@ -174,8 +174,8 @@ export default function ClientGateway() {
             .select('*', { count: 'exact', head: true })
             .eq('auditor_id', parsedAuditorId);
 
-          let absoluteMax = 3;
-          if (auditorData.tier === 'TRIAL') absoluteMax = 3;
+          let absoluteMax = 1;
+          if (auditorData.tier === 'TRIAL') absoluteMax = 2;
           if (auditorData.tier === 'PRO') absoluteMax = 4 + (auditorData.additional_slots || 0);
 
           // We only block if they are adding a NEW account, not reconnecting an existing one
@@ -235,6 +235,11 @@ export default function ClientGateway() {
           .update({ tier: 'TRIAL' })
           .eq('id', parsedAuditorId)
           .eq('tier', 'FREE');
+          
+        if (localStorage.getItem('auditor_tier') === 'FREE') {
+          localStorage.setItem('auditor_tier', 'TRIAL');
+          window.dispatchEvent(new Event('storage')); // Trigger any listeners
+        }
       }
       
       localStorage.removeItem('arukin_pending_flow');
@@ -461,7 +466,7 @@ export default function ClientGateway() {
                     <ShieldCheck size={16} /> Data Privacy & Storage
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to strict privacy protocols.
+                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to zero-knowledge principles.
                   </p>
                 </div>
                 

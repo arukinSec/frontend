@@ -15,10 +15,7 @@ export default function Pricing() {
 
   useEffect(() => {
     const fetchProCount = async () => {
-      const { count, error } = await supabase
-        .from('auditors')
-        .select('*', { count: 'exact', head: true })
-        .eq('tier', 'PRO');
+      const { data: count, error } = await supabase.rpc('get_pro_auditor_count');
       if (!error && count !== null) {
         setProCount(count);
       }

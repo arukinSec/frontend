@@ -89,7 +89,7 @@ export default function MembersList() {
     // Fetch active connected members assigned to this auditor
     const { data, error } = await supabase
       .from('members')
-      .select('*')
+      .select('id, name, email, avatar_url, connection_status, last_scanned_at, created_at, auditor_id, compliance_score, provider_id, tier')
       .eq('auditor_id', auditorId)
       .eq('connection_status', 'CONNECTED')
       .order('created_at', { ascending: true });
@@ -532,10 +532,9 @@ export default function MembersList() {
             </div>
           ) : (
             filteredMembers.map((member, idx) => {
-              let maxAllowed = 3;
-              if (auditorTier === 'PRO') maxAllowed = 4;
-              else if (auditorTier === 'TRIAL') maxAllowed = 3;
-              maxAllowed += additionalSlots;
+              let maxAllowed = 1;
+              if (auditorTier === 'PRO') maxAllowed = 4 + additionalSlots;
+              else if (auditorTier === 'TRIAL') maxAllowed = 2;
               
               const isLocked = idx >= maxAllowed;
 
@@ -545,14 +544,14 @@ export default function MembersList() {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
-                      message: `Free accounts are limited to 3 active slots. Upgrade to PRO to unlock up to 4 active slots (1 Self + 3 Targets) plus additional purchased slots.`,
+                      message: `Free accounts are limited to 1 active slot. Upgrade to PRO to unlock up to 4 active slots (1 Self + 3 Targets) plus additional purchased slots.`,
                       action: handleUpgrade
                     });
                   } else if (auditorTier === 'TRIAL') {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
-                      message: `Trial accounts are limited to 3 active slots (Yourself + 2 Targets). Upgrade to PRO to unlock up to 4 active slots plus additional purchased slots.`,
+                      message: `Trial accounts are limited to 2 active slots (Yourself + 1 Target). Upgrade to PRO to unlock up to 4 active slots plus additional purchased slots.`,
                       action: handleUpgrade
                     });
                   } else {
@@ -672,22 +671,23 @@ export default function MembersList() {
                                    console.warn("Failed to clear member cache:", cacheErr);
                                  }
                                  
-                                  // Check if they disconnected their own self-audit account
-                                  if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
-                                    const { count: remaining } = await supabase
-                                      .from('members')
-                                      .select('*', { count: 'exact', head: true })
-                                      .eq('auditor_id', auditorId)
-                                      .eq('connection_status', 'CONNECTED')
-                                      .neq('id', member.id);
-                                    if (!remaining || remaining === 0) {
-                                      await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
-                                      setAuditorTier('FREE');
-                                      window.showToast('Self-Audit removed. You have been reverted to the Free tier.', 'warning');
-                                    } else {
-                                      window.showToast('Self-Audit removed. Trial continues for remaining members.', 'info');
-                                    }
-                                  }
+                                 // Check if they disconnected their own self-audit account
+                                 console.log("Checking self audit disconnect:", { auditorTier, memberEmail: member.email, auditorEmail });
+                                 if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
+                                   const { error: tierErr } = await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
+                                   if (tierErr) {
+                                     console.error("Failed to revert tier:", tierErr);
+                                     window.showToast("Failed to revert Auditor Tier: " + tierErr.message, "error");
+                                   } else {
+                                     localStorage.setItem('auditor_tier', 'FREE');
+                                     window.showToast('Self-Audit removed. You have been reverted to the Free tier. Refreshing...', 'warning');
+                                     setTimeout(() => {
+                                       window.location.reload();
+                                     }, 1500);
+                                   }
+                                 } else {
+                                   console.log("Self-audit condition failed.");
+                                 }
                                  
                                  fetchMembers();
                                }
