@@ -15,6 +15,19 @@ export default function YouTubeUI({ member }) {
   const [analyticsTimeframe, setAnalyticsTimeframe] = useState('7d');
   const [subscriptionsPage, setSubscriptionsPage] = useState(1);
 
+  const getPaginationRange = (currentPage, totalPages) => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (currentPage >= totalPages - 3) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+  };
+
   const mockViewData = [
     { name: 'Mon', views: 4200 },
     { name: 'Tue', views: 3800 },
@@ -448,19 +461,21 @@ export default function YouTubeUI({ member }) {
                     </button>
                     
                     <div className="flex items-center gap-1 mx-2">
-                      {Array.from({ length: Math.ceil(data.subscriptions.length / 25) }).map((_, idx) => {
-                        const pageNum = idx + 1;
+                      {getPaginationRange(subscriptionsPage, Math.ceil(data.subscriptions.length / 25)).map((item, idx) => {
+                        if (item === '...') {
+                          return <span key={`ellipsis-${idx}`} className="px-1 text-slate-500 text-xs tracking-widest">...</span>;
+                        }
                         return (
                           <button
-                            key={pageNum}
-                            onClick={() => setSubscriptionsPage(pageNum)}
+                            key={`page-${item}`}
+                            onClick={() => setSubscriptionsPage(item)}
                             className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-colors border ${
-                              subscriptionsPage === pageNum 
+                              subscriptionsPage === item 
                                 ? 'bg-red-500 text-white border-red-500/50' 
                                 : 'bg-white/5 text-slate-400 border-transparent hover:bg-white/10 hover:text-white'
                             }`}
                           >
-                            {pageNum}
+                            {item}
                           </button>
                         );
                       })}
