@@ -34,7 +34,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token}`
           },
-          body: JSON.stringify({ action: 'get_usage' })
+          body: JSON.stringify({ action: 'get_usage', memberId: member.id })
         });
         if (res.ok) {
           const { usage } = await res.json();
