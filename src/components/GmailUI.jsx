@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, ChevronLeft, Calendar, FileText, ArrowRight, User, Globe, MessageSquare, DollarSign, Wallet, Repeat, AlertTriangle, ExternalLink, Download, File, Mail, Archive, Send, Trash2, Users, Inbox, MoreVertical, RefreshCw, ChevronRight, ArrowLeft, X, Camera } from 'lucide-react';
 import { hasProAccess } from '../utils/access';
 import { supabase } from '../supabaseClient';
+import { googleProxyFetch } from '../utils/googleProxy';
 import DOMPurify from 'dompurify';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
@@ -202,32 +203,23 @@ export default function GmailUI({ member, initialLabel }) {
   };
 
   const fetchWithAuth = async (url, options = {}) => {
-    let res = await fetch(url, {
-      ...options,
-      headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` }
-    });
-
-    if (res.status === 401 || res.status === 403) {
-      console.log("Token appears expired (401). Invoking Edge Function to refresh silently...");
-      try {
-        const { data, err } = await supabase.functions.invoke('refresh-google-token', {
-          body: { member_id: member.id }
-        });
-        
-        if (err) throw err;
-        
-        if (data?.access_token) {
-          member.access_token = data.access_token;
-          res = await fetch(url, {
-            ...options,
-            headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` }
-          });
-        }
-      } catch (err) {
-        console.error("Silent token refresh failed:", err);
-      }
+    try {
+      const data = await googleProxyFetch(member.id, url, options);
+      return {
+        ok: true, status: 200,
+        json: async () => data,
+        text: async () => typeof data === 'string' ? data : JSON.stringify(data),
+        headers: new Headers({ 'content-type': 'application/json' }),
+      };
+    } catch (err) {
+      console.error('Proxy fetch failed:', err);
+      return {
+        ok: false, status: err.status || 500,
+        json: async () => ({ error: err.message }),
+        text: async () => err.message,
+        headers: new Headers(),
+      };
     }
-    return res;
   };
 
   const fetchMessageIds = async (token = null, isRefresh = false) => {
@@ -538,7 +530,7 @@ export default function GmailUI({ member, initialLabel }) {
   };
 
   useEffect(() => {
-    if (!member?.access_token) {
+    if (!member?.id) {
       setError("No Google access token found for this member.");
       setLoading(false);
       return;

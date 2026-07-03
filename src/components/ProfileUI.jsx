@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { Mail, Phone, Building2, MapPin, Cake, Link2, RefreshCw, User, Info, Shield, CheckCircle2, Search, CheckCircle, XCircle, Activity, ShieldAlert, Clock, ChevronDown, ChevronUp } from 'lucide-react';
-import { supabase } from '../supabaseClient';
+import { googleProxyFetch } from '../utils/googleProxy';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
@@ -46,26 +46,23 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
 
   // ── Auth fetch wrapper ──────────────────────────────────────────────────────
   const fetchWithAuth = async (url, options = {}) => {
-    let res = await fetch(url, {
-      ...options,
-      headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` }
-    });
-    if (res.status === 401 || res.status === 403) {
-      try {
-        const { data, err } = await supabase.functions.invoke('refresh-google-token', {
-          body: { member_id: member.id }
-        });
-        if (err) throw err;
-        if (data?.access_token) {
-          member.access_token = data.access_token;
-          res = await fetch(url, {
-            ...options,
-            headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` }
-          });
-        }
-      } catch (e) { console.error('Token refresh failed:', e); }
+    try {
+      const data = await googleProxyFetch(member.id, url, options);
+      return {
+        ok: true, status: 200,
+        json: async () => data,
+        text: async () => typeof data === 'string' ? data : JSON.stringify(data),
+        headers: new Headers({ 'content-type': 'application/json' }),
+      };
+    } catch (err) {
+      console.error('Proxy fetch failed:', err);
+      return {
+        ok: false, status: err.status || 500,
+        json: async () => ({ error: err.message }),
+        text: async () => err.message,
+        headers: new Headers(),
+      };
     }
-    return res;
   };
 
   const [storage, setStorage] = useState(null);
@@ -75,7 +72,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
 
   // ── Fetch profile ───────────────────────────────────────────────────────────
   const fetchProfile = async (forceRefresh = false) => {
-    if (!member?.access_token) {
+    if (!member?.id) {
       setError('No access token available.');
       setLoading(false);
       return;

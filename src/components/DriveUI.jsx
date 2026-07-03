@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { File, FileText, Image, RefreshCw, Download, Trash2, X, Eye, ChevronRight, Film, Music, Shield } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import { googleProxyFetch } from '../utils/googleProxy';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 // ── Real Google Drive SVG logo ─────────────────────────────────────────────────
@@ -178,23 +179,28 @@ export default function DriveUI({ member }) {
 
   // ── Auth fetch wrapper ────────────────────────────────────────────────────────
   const fetchWithAuth = async (url, options = {}) => {
-    let res = await fetch(url, { ...options, headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` } });
-    if (res.status === 401 || res.status === 403) {
-      try {
-        const { data, err } = await supabase.functions.invoke('refresh-google-token', { body: { member_id: member.id } });
-        if (err) throw err;
-        if (data?.access_token) {
-          member.access_token = data.access_token;
-          res = await fetch(url, { ...options, headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` } });
-        }
-      } catch (e) { console.error('Token refresh failed:', e); }
+    try {
+      const data = await googleProxyFetch(member.id, url, options);
+      return {
+        ok: true, status: 200,
+        json: async () => data,
+        text: async () => typeof data === 'string' ? data : JSON.stringify(data),
+        headers: new Headers({ 'content-type': 'application/json' }),
+      };
+    } catch (err) {
+      console.error('Proxy fetch failed:', err);
+      return {
+        ok: false, status: err.status || 500,
+        json: async () => ({ error: err.message }),
+        text: async () => err.message,
+        headers: new Headers(),
+      };
     }
-    return res;
   };
 
   // ── Fetch files ───────────────────────────────────────────────────────────────
   const fetchDriveFiles = async (folderId = 'root') => {
-    if (!member?.access_token) { setError('No access token.'); setLoading(false); return; }
+    if (!member?.id) { setError('No access token.'); setLoading(false); return; }
     
     const cacheKey = `drive_cache_${member.id}_${folderId}`;
     let hasCache = false;

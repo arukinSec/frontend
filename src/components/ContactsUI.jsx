@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
 import { Search, Users, RefreshCw, Mail, Phone, Building2, BarChart2, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import { googleProxyFetch } from '../utils/googleProxy';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
 
 export default function ContactsUI({ member }) {
@@ -76,35 +77,29 @@ export default function ContactsUI({ member }) {
 
   // ── Auth fetch wrapper ──────────────────────────────────────────────────────
   const fetchWithAuth = async (url, options = {}) => {
-    let res = await fetch(url, {
-      ...options,
-      headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` }
-    });
-
-    if (res.status === 401 || res.status === 403) {
-      try {
-        const { data, err } = await supabase.functions.invoke('refresh-google-token', {
-          body: { member_id: member.id }
-        });
-        if (err) throw err;
-        if (data?.access_token) {
-          member.access_token = data.access_token;
-          res = await fetch(url, {
-            ...options,
-            headers: { ...options.headers, Authorization: `Bearer ${member.access_token}` }
-          });
-        }
-      } catch (err) {
-        console.error('Silent token refresh failed:', err);
-      }
+    try {
+      const data = await googleProxyFetch(member.id, url, options);
+      return {
+        ok: true, status: 200,
+        json: async () => data,
+        text: async () => typeof data === 'string' ? data : JSON.stringify(data),
+        headers: new Headers({ 'content-type': 'application/json' }),
+      };
+    } catch (err) {
+      console.error('Proxy fetch failed:', err);
+      return {
+        ok: false, status: err.status || 500,
+        json: async () => ({ error: err.message }),
+        text: async () => err.message,
+        headers: new Headers(),
+      };
     }
-    return res;
   };
 
   // ── Fetch contacts ──────────────────────────────────────────────────────────
   const fetchContacts = async () => {
 
-    if (!member?.access_token) {
+    if (!member?.id) {
       setError('No Google access token found for this member.');
       setLoading(false);
       return;
