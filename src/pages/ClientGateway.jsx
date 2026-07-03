@@ -393,28 +393,28 @@ export default function ClientGateway() {
               <div className="space-y-4 mb-8">
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
                   <h4 className="text-sm font-semibold text-emerald-300 mb-2 flex items-center gap-2">
-                    <ShieldCheck size={16} /> Data Privacy
+                    <ShieldCheck size={16} /> Data Privacy & Storage
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data.
+                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to zero-knowledge principles.
                   </p>
                 </div>
                 
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
-                    <Database size={16} /> Local Storage Only
+                  <h4 className="text-sm font-semibold text-amber-300 mb-2 flex items-center gap-2">
+                    <UserCheck size={16} /> Authority & Ownership
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to zero-knowledge principles wherever possible.
+                    By proceeding, you explicitly confirm that you are the rightful owner of this Google account and possess the legal authority to grant access to its contents to your designated Auditor.
                   </p>
                 </div>
 
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-amber-300 mb-2 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
                     <Info size={16} /> Agreement Terms
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    By proceeding, you grant read-only access to your account to your designated Auditor. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms of Service</a>.
+                    By proceeding, you grant read and write access to your account to your designated Auditor. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms of Service</a>.
                   </p>
                 </div>
               </div>
