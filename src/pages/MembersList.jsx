@@ -118,66 +118,8 @@ export default function MembersList() {
     }
   };
 
-  const handleUpgrade = async () => {
-    try {
-      window.showToast('Initializing secure checkout...', 'info');
-
-      // 1. Create subscription via Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
-        body: {
-          auditor_id: localStorage.getItem('auditor_id'),
-          plan_id: import.meta.env.VITE_RAZORPAY_PLAN_ID
-        }
-      });
-
-      if (error || !data?.id) {
-        throw new Error(error?.message || 'Failed to create subscription session');
-      }
-
-      // 2. Dynamically load Razorpay SDK from CDN if not already loaded
-      if (!window.Razorpay) {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.body.appendChild(script);
-        });
-      }
-
-      // 3. Configure and open Razorpay Checkout Modal
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        order_id: data.id,
-        name: 'Arukin Security',
-        description: 'Yearly Premium Security Audit Console',
-        prefill: {
-          email: localStorage.getItem('auditor_email') || '',
-        },
-        theme: {
-          color: '#6366f1' // Indigo-500
-        },
-        handler: function (response) {
-          window.showToast('Payment successful! Processing activation...', 'success');
-          // Wait 3 seconds and refresh the page to fetch upgraded database state
-          setTimeout(() => {
-            window.location.reload();
-          }, 3500);
-        },
-        modal: {
-          ondismiss: function () {
-            window.showToast('Payment cancelled.', 'info');
-          }
-        }
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-
-    } catch (err) {
-      console.error('Subscription error:', err);
-      window.showToast(err.message || 'Upgrade initialization failed.', 'error');
-    }
+  const handleUpgrade = () => {
+    navigate('/pricing');
   };
 
   const handleUnlockTrialClick = () => {

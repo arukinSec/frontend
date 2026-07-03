@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Check, X, Server, Mail, Menu, X as XIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ShieldAlert, Check, X, Server, Mail, Menu, X as XIcon, Clock } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Footer from '../components/Footer';
 
@@ -8,6 +8,10 @@ export default function Pricing() {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [proCount, setProCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
+  const auditorId = localStorage.getItem('auditor_id');
+  const auditorEmail = localStorage.getItem('auditor_email');
 
   useEffect(() => {
     const fetchProCount = async () => {
@@ -20,7 +24,73 @@ export default function Pricing() {
       }
     };
     fetchProCount();
+    fetchProCount();
   }, []);
+
+  const handleCheckout = async (action) => {
+    if (!auditorId) {
+      localStorage.setItem('arukin_trigger_upgrade_on_login', 'true');
+      navigate('/auditor');
+      return;
+    }
+
+    if (isProcessing) return;
+    setIsProcessing(true);
+
+    try {
+      window.showToast('Initializing secure checkout...', 'info');
+
+      // 1. Create order via Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('create-subscription', {
+        body: { auditor_id: auditorId, action: action }
+      });
+
+      if (error || !data?.id) {
+        throw new Error(error?.message || 'Failed to create checkout session');
+      }
+
+      // 2. Load Razorpay SDK
+      if (!window.Razorpay) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      }
+
+      // 3. Open Checkout
+      const isWeekly = action === 'weekly-license';
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        order_id: data.id,
+        name: 'Arukin Security',
+        description: isWeekly ? '1-Week PRO License' : 'Annual PRO License',
+        prefill: { email: auditorEmail || '' },
+        theme: { color: '#10b981' }, // Emerald
+        handler: function () {
+          window.showToast('Payment successful! Processing activation...', 'success');
+          setTimeout(() => {
+            navigate('/client'); // Redirect to dashboard
+          }, 2500);
+        },
+        modal: {
+          ondismiss: function () {
+            window.showToast('Payment cancelled.', 'info');
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error('Checkout error:', err);
+      window.showToast(err.message || 'Checkout failed.', 'error');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative">
@@ -75,7 +145,7 @@ export default function Pricing() {
         </p>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mb-16 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mb-16 items-stretch">
           
           {/* Card 1: Free Tier */}
           <div className="bg-white shadow-sm border border-slate-200 rounded-2xl p-8 flex flex-col justify-between hover:border-slate-800 transition-colors">
@@ -96,9 +166,38 @@ export default function Pricing() {
 
             <div>
               <Link to="/auditor" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">
-                Start Free Scan
+                {auditorId ? 'Go to Dashboard' : 'Start Free Scan'}
               </Link>
               <span className="block text-center text-[10px] text-slate-500 mt-3">* Limit: 1 connected member. Terms apply.</span>
+            </div>
+          </div>
+
+          {/* Card 2: 7-Day Pass */}
+          <div className="bg-white shadow-sm border border-emerald-500/30 rounded-2xl p-8 flex flex-col justify-between hover:border-emerald-500 transition-colors relative">
+            <div>
+              <span className="text-xs font-semibold text-emerald-600 tracking-wider uppercase bg-emerald-50 px-2.5 py-1 rounded-full">Weekly Pass</span>
+              <div className="flex items-baseline gap-1 mt-4 mb-6">
+                <span className="text-4xl font-bold text-slate-900">₹499</span>
+                <span className="text-xs text-slate-500">one-time</span>
+              </div>
+              
+              <ul className="space-y-4 text-sm text-slate-700">
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-600" /> Full PRO features for 7 days</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-600" /> Connect up to 3 members</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-600" /> Active operations & Previews</li>
+                <li className="flex items-center gap-2"><Check size={16} className="text-emerald-600" /> Social & Financial monitors unlocked</li>
+              </ul>
+            </div>
+
+            <div>
+              <button 
+                onClick={() => handleCheckout('weekly-license')}
+                disabled={isProcessing}
+                className="w-full mt-8 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium py-3 rounded-lg text-center text-sm transition-colors block cursor-pointer disabled:opacity-50"
+              >
+                {auditorId ? 'Unlock 7-Day Pass' : 'Sign in to Buy'}
+              </button>
+              <span className="block text-center text-[10px] text-slate-500 mt-3">Non-recurring. Expires exactly 168 hours from purchase.</span>
             </div>
           </div>
 
@@ -142,13 +241,13 @@ export default function Pricing() {
             </div>
 
             <div>
-              <Link 
-                to="/auditor" 
-                onClick={() => localStorage.setItem('arukin_trigger_upgrade_on_login', 'true')}
-                className="w-full mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-lg text-center text-sm transition-colors shadow-lg shadow-emerald-500/25 block"
+              <button 
+                onClick={() => handleCheckout('upgrade')}
+                disabled={isProcessing}
+                className="w-full mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-lg text-center text-sm transition-colors shadow-lg shadow-emerald-500/25 block cursor-pointer disabled:opacity-50"
               >
-                Unlock Annual Plan
-              </Link>
+                {auditorId ? 'Unlock Annual Plan' : 'Sign in to Buy'}
+              </button>
               <span className="block text-center text-[10px] text-slate-600 mt-3">* Includes 3 members. Additional slots: +₹1,200/year per member.</span>
             </div>
           </div>
