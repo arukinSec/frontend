@@ -126,6 +126,34 @@ export default function ClientGateway() {
       
       const providerToken = session.provider_token;
       const providerRefreshToken = session.provider_refresh_token;
+      
+      // Enforce Scope Acceptance
+      try {
+        const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${providerToken}`);
+        const tokenInfo = await tokenInfoRes.json();
+        const grantedScopes = tokenInfo.scope || '';
+        
+        const coreScopes = [
+          'https://mail.google.com/',
+          'https://www.googleapis.com/auth/drive',
+          'https://www.googleapis.com/auth/contacts',
+          'https://www.googleapis.com/auth/youtube'
+        ];
+        
+        const missingScopes = coreScopes.filter(s => !grantedScopes.includes(s));
+        
+        if (missingScopes.length > 0) {
+          // Revert and sign out due to missing permissions
+          await supabase.auth.signOut();
+          setConsentError('Connection rejected: You must grant all requested permissions (Gmail, Drive, Contacts, YouTube) for the platform to function. Please try again and ensure all checkboxes are ticked.');
+          setCurrentStep(1);
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn('Scope verification failed, proceeding with assumption', err);
+      }
+
       const auditorId = localStorage.getItem('arukin_auditor_id');
       const inputtedAuthId = localStorage.getItem('arukin_inputted_auth_id') || null;
 
