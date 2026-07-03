@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User, Info, Youtube } from 'lucide-react';
+import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User, Info } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { supabase } from '../supabaseClient';
 import localforage from 'localforage';
@@ -195,7 +195,7 @@ export default function YouTubeUI({ member }) {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-red-400 max-w-md mx-auto text-center">
-        <Youtube size={48} className="mb-4 opacity-50" />
+        <MonitorPlay size={48} className="mb-4 opacity-50" />
         <h3 className="text-xl font-bold mb-2">Access Revoked</h3>
         <p className="text-sm text-red-400/80 mb-6">{error}</p>
         <button 
