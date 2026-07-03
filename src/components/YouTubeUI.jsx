@@ -426,7 +426,7 @@ export default function YouTubeUI({ member }) {
               <div className="space-y-6">
                 <h4 className="text-lg font-bold text-white">Channels They Subscribe To ({data.subscriptions?.length || 0})</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                  {data.subscriptions?.slice(0, subscriptionsPage * 25).map((sub, i) => (
+                  {data.subscriptions?.slice((subscriptionsPage - 1) * 25, subscriptionsPage * 25).map((sub, i) => (
                     <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
                       <div className="w-10 h-10 rounded-full bg-slate-800 overflow-hidden shrink-0">
                         <img src={sub.thumbnail} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" onError={(e) => { e.target.src = 'https://lh3.googleusercontent.com/a/default-user=s120'; }} />
@@ -435,14 +435,43 @@ export default function YouTubeUI({ member }) {
                     </div>
                   ))}
                 </div>
-                {data.subscriptions?.length > subscriptionsPage * 25 && (
-                  <div className="flex justify-center mt-8">
+                
+                {/* Pagination Controls */}
+                {data.subscriptions?.length > 25 && (
+                  <div className="flex justify-center items-center gap-2 mt-8">
                     <button 
-                      onClick={() => setSubscriptionsPage(p => p + 1)}
-                      className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-lg transition-colors border border-white/10 flex items-center gap-2"
+                      onClick={() => setSubscriptionsPage(p => Math.max(1, p - 1))}
+                      disabled={subscriptionsPage === 1}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:hover:bg-white/5 text-slate-300 hover:text-white font-semibold text-xs rounded-lg transition-colors border border-white/10"
                     >
-                      <RefreshCw size={16} className="text-slate-400" />
-                      Load Next 25 Subscriptions
+                      Previous
+                    </button>
+                    
+                    <div className="flex items-center gap-1 mx-2">
+                      {Array.from({ length: Math.ceil(data.subscriptions.length / 25) }).map((_, idx) => {
+                        const pageNum = idx + 1;
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setSubscriptionsPage(pageNum)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-colors border ${
+                              subscriptionsPage === pageNum 
+                                ? 'bg-red-500 text-white border-red-500/50' 
+                                : 'bg-white/5 text-slate-400 border-transparent hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button 
+                      onClick={() => setSubscriptionsPage(p => Math.min(Math.ceil(data.subscriptions.length / 25), p + 1))}
+                      disabled={subscriptionsPage === Math.ceil(data.subscriptions.length / 25)}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 disabled:hover:bg-white/5 text-slate-300 hover:text-white font-semibold text-xs rounded-lg transition-colors border border-white/10"
+                    >
+                      Next
                     </button>
                   </div>
                 )}
