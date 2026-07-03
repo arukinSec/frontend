@@ -106,8 +106,8 @@ export default function YouTubeUI({ member }) {
           title: sub.title,
           thumbnail: sub.thumbnail,
           subs: Number(sub.subscribers).toLocaleString(),
-          videos: 'Unknown',
-          joined: 'Unknown',
+          videos: Number(sub.videos || 0).toLocaleString(),
+          joined: sub.joined ? new Date(sub.joined).toLocaleDateString() : 'Unknown',
           threatLevel
         };
       });
