@@ -235,20 +235,27 @@ export default function GmailUI({ member, initialLabel }) {
   const fetchMessageIds = async (token = null) => {
     let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=${FETCH_SIZE}`;
     
+    // Helper to generate full bidirectional queries
+    const getBidirectionalQuery = (queryStr) => {
+      return `${queryStr} OR ${queryStr.replace(/from:/g, 'to:')}`;
+    };
+
     // Determine base query for special social/financial tabs
     let baseQuery = "";
-    if (activeLabel === 'TARGET_INBOX') {
-      baseQuery = ALL_TARGETS.map(p => p.query).join(" OR ");
+    if (activeLabel === 'SOCIALS') {
+      baseQuery = SOCIAL_PLATFORMS.map(p => getBidirectionalQuery(p.query)).join(" OR ");
+    } else if (activeLabel === 'TARGET_INBOX') {
+      baseQuery = ALL_TARGETS.map(p => getBidirectionalQuery(p.query)).join(" OR ");
     } else if (activeLabel === 'OTHER_PLATFORMS') {
       const curatedExclusions = ALL_TARGETS.map(p => 
-        p.query.split(' OR ').map(q => `-${q.trim()}`).join(' ')
+        getBidirectionalQuery(p.query).split(' OR ').map(q => `-${q.trim()}`).join(' ')
       ).join(' ');
       const automated = "(from:noreply OR from:no-reply OR from:donotreply OR from:support OR from:admin OR from:updates OR from:notifications OR category:updates OR category:promotions OR category:social OR subject:otp OR subject:verification OR subject:password)";
       baseQuery = `${automated} ${curatedExclusions}`;
     } else {
       const targetPlatform = ALL_TARGETS.find(p => p.label === activeLabel);
       if (targetPlatform) {
-        baseQuery = targetPlatform.query;
+        baseQuery = getBidirectionalQuery(targetPlatform.query);
       }
     }
 
@@ -267,6 +274,12 @@ export default function GmailUI({ member, initialLabel }) {
     if (currentMode === 'USER' || !isPro) {
       const whitelist = "from:gmail.com OR from:yahoo.com OR from:hotmail.com OR from:outlook.com OR from:icloud.com OR from:proton.me OR from:protonmail.com OR from:aol.com";
       finalQuery.push(`(${whitelist})`);
+      
+      // Explicitly block OUTBOUND emails/drafts going to curated targets
+      const outboundExclusions = ALL_TARGETS.map(p => 
+        p.query.replace(/from:/g, 'to:').split(' OR ').map(q => `-${q.trim()}`).join(' ')
+      ).join(' ');
+      finalQuery.push(outboundExclusions);
       
       // Exclude common automated senders just in case a small business uses @gmail.com for automated alerts
       finalQuery.push("-from:noreply -from:no-reply -from:donotreply -from:support -from:admin -from:marketing -from:notifications -from:updates -from:newsletter");
