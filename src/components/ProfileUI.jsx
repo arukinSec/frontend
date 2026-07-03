@@ -334,6 +334,8 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                   const remaining = Math.max(0, limit - usage);
                   
                   const pct = Math.min(100, (usage / limit) * 100);
+                  const displayPct = pct > 0 && pct < 1 ? (pct < 0.01 ? '<0.01' : pct.toFixed(2)) : Math.round(pct);
+                  
                   const storageData = [
                     { name: 'Used Space', value: usage },
                     { name: 'Free Space', value: remaining }
@@ -365,7 +367,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                          <span className="text-sm font-bold text-slate-800">{Math.round(pct)}%</span>
+                          <span className="text-sm font-bold text-slate-800">{displayPct}%</span>
                         </div>
                       </div>
 
