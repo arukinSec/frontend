@@ -12,6 +12,7 @@ export default function YouTubeUI({ member }) {
   const [data, setData] = useState({ channel: null, subscriptions: [] });
 
   const [activeTab, setActiveTab] = useState('analytics');
+  const [analyticsTimeframe, setAnalyticsTimeframe] = useState('7d');
 
   const mockViewData = [
     { name: 'Mon', views: 4200 },
@@ -213,7 +214,29 @@ export default function YouTubeUI({ member }) {
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
               <div className="space-y-6">
-                <h4 className="text-lg font-bold text-white">Channel Analytics Overview (Last 7 Days)</h4>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <h4 className="text-lg font-bold text-white">Channel Analytics Overview</h4>
+                  <div className="flex items-center gap-1 bg-black/40 p-1 rounded-lg border border-white/5">
+                    {[
+                      { id: '7d', label: '7 Days' },
+                      { id: '30d', label: '30 Days' },
+                      { id: '1y', label: '1 Year' },
+                      { id: 'lifetime', label: 'Lifetime' }
+                    ].map(tf => (
+                      <button
+                        key={tf.id}
+                        onClick={() => setAnalyticsTimeframe(tf.id)}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                          analyticsTimeframe === tf.id
+                            ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                            : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                        }`}
+                      >
+                        {tf.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 
                 {/* KPI Row */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
