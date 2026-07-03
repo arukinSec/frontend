@@ -183,16 +183,21 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, server
 
         {/* Footer Actions */}
         <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
-          <button 
-            onClick={fetchDeepScan}
-            disabled={loading}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-all border shadow-sm ${
-              loading ? 'bg-slate-200 text-slate-500 cursor-not-allowed border-transparent' : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200 hover:shadow'
-            }`}
-          >
-            <Activity size={16} className={loading ? "animate-spin text-slate-400" : "text-emerald-500"} />
-            {loading ? 'Scanning...' : `Rescan Insight (${Math.max(0, maxScans - scanCount)} left)`}
-          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-slate-500 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-sm">
+              {scanCount}/{maxScans} Dives Used
+            </span>
+            <button 
+              onClick={fetchDeepScan}
+              disabled={loading}
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-all border shadow-sm ${
+                loading ? 'bg-slate-200 text-slate-500 cursor-not-allowed border-transparent' : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200 hover:shadow'
+              }`}
+            >
+              <Activity size={16} className={loading ? "animate-spin text-slate-400" : "text-emerald-500"} />
+              {loading ? 'Scanning...' : 'Rescan Insight'}
+            </button>
+          </div>
 
           <button 
             onClick={() => {

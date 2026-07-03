@@ -161,6 +161,10 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
               </p>
             </div>
             
+            <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-slate-500 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-sm">
+              {scanCount}/{maxScans} Scans Used
+            </span>
             <button
               onClick={() => {
                 if (scanCount >= maxScans) {
@@ -178,12 +182,9 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
               }`}
             >
               {scanStatus === 'scanning' ? <RefreshCw size={18} className="animate-spin" /> : <Search size={18} />}
-              {scanStatus === 'scanning' 
-                ? 'Scanning...' 
-                : scanStatus === 'complete' 
-                  ? `Rescan (${Math.max(0, maxScans - scanCount)} left)` 
-                  : `Run Scan (${Math.max(0, maxScans - scanCount)} left)`}
+              {scanStatus === 'scanning' ? 'Scanning...' : scanStatus === 'complete' ? 'Rescan' : 'Run Scan'}
             </button>
+            </div>
           </div>
 
           <div className="border-t border-slate-200 pt-6 mt-2">
