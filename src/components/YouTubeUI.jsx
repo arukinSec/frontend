@@ -262,6 +262,24 @@ export default function YouTubeUI({ member }) {
       }));
     }
 
+    if (analyticsTimeframe === 'lifetime') {
+      const yearsMap = {};
+      const order = [];
+      raw.forEach(row => {
+        const d = new Date(row[0]);
+        const y = d.getUTCFullYear().toString();
+        if (!yearsMap[y]) {
+          yearsMap[y] = 0;
+          order.push(y);
+        }
+        yearsMap[y] += row[1];
+      });
+      return order.map(y => ({
+        name: y,
+        views: yearsMap[y]
+      }));
+    }
+
     return raw.map(row => ({ name: row[0].split('-').slice(1).join('/'), views: row[1] }));
   };
 
@@ -426,34 +444,32 @@ export default function YouTubeUI({ member }) {
                 {/* Charts Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Main Line Chart */}
-                  {analyticsTimeframe !== 'lifetime' && (
-                    <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
-                      <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart data={chartData}>
-                            <defs>
-                              <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                                <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
-                              </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                            <XAxis dataKey="name" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(1)}k` : val} />
-                            <RechartsTooltip 
-                              contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
-                              itemStyle={{ color: '#ef4444' }}
-                            />
-                            <Area type="monotone" dataKey="views" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
-                          </AreaChart>
-                        </ResponsiveContainer>
-                      </div>
+                  <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={chartData}>
+                          <defs>
+                            <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                          <XAxis dataKey="name" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
+                          <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(1)}k` : val} />
+                          <RechartsTooltip 
+                            contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                            itemStyle={{ color: '#ef4444' }}
+                          />
+                          <Area type="monotone" dataKey="views" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
                     </div>
-                  )}
+                  </div>
 
                   {/* Traffic Sources Pie */}
-                  <div className={`p-6 bg-white/[0.02] border border-white/5 rounded-2xl ${analyticsTimeframe === 'lifetime' ? 'lg:col-span-3' : ''}`}>
+                  <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <h5 className="text-sm font-semibold text-white mb-2">Traffic Sources</h5>
                     <div className="h-48">
                       {currentAnalytics.rawTrafficData?.length > 0 ? (
