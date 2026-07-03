@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MonitorPlay, ThumbsUp, PlayCircle, Clock, AlertTriangle, RefreshCw, Eye, EyeOff, Search, User } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { supabase } from '../supabaseClient';
 import localforage from 'localforage';
 import { hasProAccess } from '../utils/access';
@@ -11,6 +12,24 @@ export default function YouTubeUI({ member }) {
   const [data, setData] = useState({ channel: null, subscriptions: [] });
 
   const [activeTab, setActiveTab] = useState('analytics');
+
+  const mockViewData = [
+    { name: 'Mon', views: 4200 },
+    { name: 'Tue', views: 3800 },
+    { name: 'Wed', views: 5600 },
+    { name: 'Thu', views: 8900 },
+    { name: 'Fri', views: 7200 },
+    { name: 'Sat', views: 12400 },
+    { name: 'Sun', views: 14200 },
+  ];
+
+  const mockTrafficData = [
+    { name: 'Suggested', value: 45 },
+    { name: 'Search', value: 30 },
+    { name: 'Direct', value: 15 },
+    { name: 'External', value: 10 },
+  ];
+  const PIE_COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
 
   const fetchYouTubeData = async () => {
     setLoading(true);
@@ -186,21 +205,153 @@ export default function YouTubeUI({ member }) {
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
               <div className="space-y-6">
-                <h4 className="text-lg font-bold text-white">Channel Analytics</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <h4 className="text-lg font-bold text-white">Channel Analytics Overview (Last 7 Days)</h4>
+                
+                {/* KPI Row */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Total Subscribers</p>
                     <p className="text-2xl font-bold text-white">{data.channel?.subscribers || '0'}</p>
+                    <p className="text-[10px] text-emerald-500 mt-1">+14% vs last week</p>
                   </div>
                   <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
                     <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Total Views</p>
                     <p className="text-2xl font-bold text-white">{data.channel?.views || '0'}</p>
+                    <p className="text-[10px] text-emerald-500 mt-1">+5.2% vs last week</p>
                   </div>
                   <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Watch Time (Hours)</p>
+                    <p className="text-2xl font-bold text-white">{data.analytics?.watchTime || '0'}</p>
+                    <p className="text-[10px] text-red-500 mt-1">-2.1% vs last week</p>
+                  </div>
+                  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10"><MonitorPlay size={48} /></div>
                     <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Est. Revenue</p>
                     <p className="text-2xl font-bold text-emerald-400">{data.analytics?.revenue || '$0.00'}</p>
+                    <p className="text-[10px] text-emerald-500 mt-1">RPM: $4.20</p>
                   </div>
                 </div>
+
+                {/* Charts Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Main Line Chart */}
+                  <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <h5 className="text-sm font-semibold text-white mb-6">Views Over Time</h5>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={mockViewData}>
+                          <defs>
+                            <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                          <XAxis dataKey="name" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
+                          <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val/1000}k`} />
+                          <RechartsTooltip 
+                            contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                            itemStyle={{ color: '#ef4444' }}
+                          />
+                          <Area type="monotone" dataKey="views" stroke="#ef4444" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* Traffic Sources Pie */}
+                  <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <h5 className="text-sm font-semibold text-white mb-2">Traffic Sources</h5>
+                    <div className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={mockTrafficData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="value"
+                            stroke="none"
+                          >
+                            {mockTrafficData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <RechartsTooltip 
+                            contentStyle={{ backgroundColor: '#111118', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                            itemStyle={{ color: '#fff' }}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="space-y-2 mt-4">
+                      {mockTrafficData.map((item, i) => (
+                        <div key={i} className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PIE_COLORS[i] }}></div>
+                            <span className="text-slate-400">{item.name}</span>
+                          </div>
+                          <span className="text-white font-medium">{item.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Demographics Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl">
+                    <h5 className="text-sm font-semibold text-white mb-4">Top Geographies</h5>
+                    <div className="space-y-4">
+                      {[
+                        { country: 'United States', pct: 42, flag: '🇺🇸' },
+                        { country: 'United Kingdom', pct: 15, flag: '🇬🇧' },
+                        { country: 'Canada', pct: 12, flag: '🇨🇦' },
+                        { country: 'Australia', pct: 8, flag: '🇦🇺' },
+                        { country: 'Germany', pct: 5, flag: '🇩🇪' },
+                      ].map((loc, i) => (
+                        <div key={i}>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span className="text-slate-300 font-medium">{loc.flag} {loc.country}</span>
+                            <span className="text-slate-400">{loc.pct}%</span>
+                          </div>
+                          <div className="w-full bg-white/5 rounded-full h-1.5">
+                            <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${loc.pct}%` }}></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex flex-col justify-center">
+                     <h5 className="text-sm font-semibold text-white mb-4">Audience Gender</h5>
+                     <div className="flex items-center gap-4 mb-6">
+                       <div className="flex-1">
+                         <div className="flex justify-between text-xs mb-1">
+                           <span className="text-slate-300 font-medium">Male</span>
+                           <span className="text-slate-400">65%</span>
+                         </div>
+                         <div className="w-full bg-white/5 rounded-full h-2">
+                           <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '65%' }}></div>
+                         </div>
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-4">
+                       <div className="flex-1">
+                         <div className="flex justify-between text-xs mb-1">
+                           <span className="text-slate-300 font-medium">Female</span>
+                           <span className="text-slate-400">35%</span>
+                         </div>
+                         <div className="w-full bg-white/5 rounded-full h-2">
+                           <div className="bg-pink-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                         </div>
+                       </div>
+                     </div>
+                  </div>
+                </div>
+
               </div>
             )}
 
