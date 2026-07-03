@@ -142,13 +142,34 @@ export default function ClientGateway() {
       if (error) throw error;
       
       const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
+      const expectedEmail = localStorage.getItem('arukin_auditor_email')?.toLowerCase() || '';
+      
+      let validSelfAudit = false;
+      if (isSelfAudit) {
+        if (userEmail === expectedEmail) {
+          validSelfAudit = true;
+        } else {
+          window.showToast("Self-Audit cancelled: Mismatched Google account. Registered as a standard target.", "warning");
+        }
+      }
+
+      // Upgrade tier for valid self audit
+      if (validSelfAudit && parsedAuditorId) {
+        await supabase.from('auditors')
+          .update({ tier: 'TRIAL' })
+          .eq('id', parsedAuditorId)
+          .eq('tier', 'FREE');
+        
+        localStorage.setItem('auditor_tier', 'TRIAL'); // Sync immediately for dashboard
+      }
       
       localStorage.removeItem('arukin_pending_flow');
       localStorage.removeItem('arukin_auditor_id');
       localStorage.removeItem('arukin_inputted_auth_id');
       localStorage.removeItem('arukin_self_audit');
+      localStorage.removeItem('arukin_auditor_email');
       
-      if (isSelfAudit) {
+      if (validSelfAudit) {
         window.location.href = '/dashboard';
         return;
       } else {

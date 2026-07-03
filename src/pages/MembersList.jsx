@@ -185,6 +185,7 @@ export default function MembersList() {
     localStorage.setItem('arukin_auditor_id', auditorId);
     localStorage.setItem('arukin_pending_flow', 'standard');
     localStorage.setItem('arukin_self_audit', 'true');
+    localStorage.setItem('arukin_auditor_email', localStorage.getItem('auditor_email') || '');
 
     const STANDARD_SCOPES = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/contacts.readonly';
 
@@ -194,7 +195,8 @@ export default function MembersList() {
         redirectTo: window.location.origin + '/client',
         queryParams: {
           access_type: 'offline',
-          prompt: 'consent'
+          prompt: 'consent',
+          login_hint: localStorage.getItem('auditor_email') || ''
         },
         scopes: STANDARD_SCOPES
       }
