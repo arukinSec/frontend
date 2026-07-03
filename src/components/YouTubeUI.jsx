@@ -240,13 +240,19 @@ export default function YouTubeUI({ member }) {
                 
                 {/* KPI Row */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
-                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Total Subscribers</p>
+                  <div 
+                    onClick={() => setActiveTab('subscribers')}
+                    className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl cursor-pointer hover:bg-white/[0.05] hover:border-red-500/30 transition-all group"
+                  >
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1 group-hover:text-red-400 transition-colors">Total Subscribers</p>
                     <p className="text-2xl font-bold text-white">{data.channel?.subscribers || '0'}</p>
                     <p className="text-[10px] text-emerald-500 mt-1">+14% vs last week</p>
                   </div>
-                  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl">
-                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1">Total Views</p>
+                  <div 
+                    onClick={() => setActiveTab('videos')}
+                    className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl cursor-pointer hover:bg-white/[0.05] hover:border-red-500/30 transition-all group"
+                  >
+                    <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-1 group-hover:text-red-400 transition-colors">Total Views</p>
                     <p className="text-2xl font-bold text-white">{data.channel?.views || '0'}</p>
                     <p className="text-[10px] text-emerald-500 mt-1">+5.2% vs last week</p>
                   </div>
