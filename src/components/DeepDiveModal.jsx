@@ -4,12 +4,34 @@ import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
 export default function DeepDiveModal({ platform, query, memberId, isPro, onClose, onNavigateToInbox }) {
-  const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [scanCount, setScanCount] = useState(0);
   const navigate = useNavigate();
+  
+  const maxScans = isPro ? 5 : 1;
+  const cacheKey = `insight_${memberId}_${platform.id}`;
+  const countKey = `insightCount_${memberId}_${platform.id}`;
 
   useEffect(() => {
-    async function fetchDeepScan() {
+    const cachedData = localStorage.getItem(cacheKey);
+    const cachedCount = parseInt(localStorage.getItem(countKey)) || 0;
+    
+    setScanCount(cachedCount);
+    
+    if (cachedData) {
+      try {
+        setData(JSON.parse(cachedData));
+      } catch (e) {
+        fetchDeepScan();
+      }
+    } else {
+      fetchDeepScan();
+    }
+  }, [platform, query, memberId]);
+
+  const fetchDeepScan = async () => {
+    setLoading(true);
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
@@ -25,6 +47,13 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
         if (res.ok) {
           const result = await res.json();
           setData(result);
+          localStorage.setItem(cacheKey, JSON.stringify(result));
+          
+          setScanCount(prev => {
+            const next = prev + 1;
+            localStorage.setItem(countKey, next.toString());
+            return next;
+          });
         } else {
           console.error("Deep scan failed");
           if (res.status === 429) {
@@ -41,9 +70,7 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
         setLoading(false);
       }
     }
-    
-    fetchDeepScan();
-  }, [platform, query, memberId]);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
@@ -157,7 +184,18 @@ export default function DeepDiveModal({ platform, query, memberId, isPro, onClos
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+          <button 
+            onClick={fetchDeepScan}
+            disabled={loading}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg transition-all border shadow-sm ${
+              loading ? 'bg-slate-200 text-slate-500 cursor-not-allowed border-transparent' : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200 hover:shadow'
+            }`}
+          >
+            <Activity size={16} className={loading ? "animate-spin text-slate-400" : "text-emerald-500"} />
+            {loading ? 'Scanning...' : `Rescan Insight (${Math.max(0, maxScans - scanCount)} left)`}
+          </button>
+
           <button 
             onClick={() => {
               if (isPro) {
