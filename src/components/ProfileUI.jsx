@@ -326,16 +326,16 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                   ];
 
                   return (
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="relative w-24 h-24 shrink-0">
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                      <div className="relative w-36 h-36 shrink-0">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
                               data={storageData}
                               cx="50%"
                               cy="50%"
-                              innerRadius={30}
-                              outerRadius={45}
+                              innerRadius={45}
+                              outerRadius={60}
                               paddingAngle={2}
                               dataKey="value"
                               stroke="none"
@@ -412,8 +412,8 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
               <div className="mb-4 grid grid-cols-1 gap-3">
                 <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
                    <h3 className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3">Email Distribution</h3>
-                   <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="w-24 h-24 shrink-0 relative">
+                   <div className="flex flex-col sm:flex-row items-center gap-6">
+                      <div className="w-36 h-36 shrink-0 relative">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
@@ -423,8 +423,8 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                               ]}
                               cx="50%"
                               cy="50%"
-                              innerRadius={30}
-                              outerRadius={45}
+                              innerRadius={45}
+                              outerRadius={60}
                               paddingAngle={2}
                               dataKey="value"
                               stroke="none"
@@ -446,7 +446,7 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                         <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
                           <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-                            <span className="text-slate-500 font-medium">Primary</span>
+                            <span className="text-slate-500 font-medium">Inbox</span>
                           </div>
                           <span className="font-bold text-slate-800">{gmailStats.inboxTotal.toLocaleString()}</span>
                         </div>
