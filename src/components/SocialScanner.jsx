@@ -79,9 +79,9 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
           if (res.status === 429) {
             try {
               const errData = JSON.parse(errorText);
-              results[platform.id] = { status: 'not_found', details: errData.error };
+              results[platform.id] = { status: 'rate_limited', details: errData.error };
             } catch (e) {
-              results[platform.id] = { status: 'not_found', details: 'Rate limit reached' };
+              results[platform.id] = { status: 'rate_limited', details: 'Rate limit reached' };
             }
           } else {
             results[platform.id] = { status: 'not_found', details: 'Scan failed' };
@@ -153,16 +153,16 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
                         }}
                         className={`flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 shadow-sm transition-shadow ${result?.status === 'connected' ? 'cursor-pointer hover:shadow-md hover:border-indigo-300 ring-1 ring-transparent hover:ring-indigo-100' : ''}`}
                       >
-                       <div className="flex items-center gap-4">
-                         {scanStatus === 'idle' && <Clock size={18} className="text-slate-300 shrink-0" />}
-                         {scanStatus === 'scanning' && <RefreshCw size={18} className="text-indigo-400 animate-spin shrink-0" />}
-                         {scanStatus === 'complete' && result?.status === 'connected' && <CheckCircle size={18} className="text-emerald-500 shrink-0" />}
-                         {scanStatus === 'complete' && result?.status === 'not_found' && <XCircle size={18} className="text-slate-300 shrink-0" />}
-                         
-                         <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
-                             <img src={platform.icon} alt={platform.name} className="w-5 h-5 object-contain" />
-                           </div>
+                         <div className="flex items-center gap-4">
+                          {scanStatus === 'idle' && <Clock size={18} className="text-slate-300 shrink-0" />}
+                          {scanStatus === 'scanning' && <RefreshCw size={18} className="text-indigo-400 animate-spin shrink-0" />}
+                          {scanStatus === 'complete' && result?.status === 'connected' && <CheckCircle size={18} className="text-emerald-500 shrink-0" />}
+                          {scanStatus === 'complete' && (result?.status === 'not_found' || result?.status === 'rate_limited') && <XCircle size={18} className="text-rose-500 shrink-0" />}
+                          
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                              <img src={platform.icon} alt={platform.name} className="w-5 h-5 object-contain" />
+                            </div>
                            <div>
                              <p className="text-sm font-bold text-slate-800">{platform.name}</p>
                              <p className={`text-[10px] uppercase font-bold tracking-wider ${
@@ -174,16 +174,19 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
                                {scanStatus === 'idle' ? 'Ready to Scan' :
                                 scanStatus === 'scanning' ? 'Scanning...' :
                                 result?.status === 'connected' ? 'Email Detected' : 'Unlikely'}
-                             </p>
-                           </div>
-                         </div>
-                       </div>
-                       {scanStatus === 'complete' && result?.details && (
-                         <span className="text-xs text-slate-600 font-bold bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">
-                           {result.details}
-                         </span>
-                       )}
-                     </div>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        {scanStatus === 'complete' && result?.status === 'rate_limited' && result?.details && (
+                          <span className="text-xs text-rose-600 font-bold bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-md">
+                            {result.details}
+                          </span>
+                        )}
+                        {scanStatus === 'complete' && result?.status === 'connected' && (
+                          <Search size={16} className="text-indigo-400 opacity-50 group-hover:opacity-100 transition-opacity" />
+                        )}
+                      </div>
                    );
                  })}
                </div>
