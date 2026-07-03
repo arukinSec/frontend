@@ -677,14 +677,25 @@ export default function MembersList() {
                             message: `Are you sure you want to disconnect ${member.name}? They will lose access.`,
                             requireInput: false,
                             action: async () => {
+                              const auditorId = localStorage.getItem('auditor_id');
                               const { error } = await supabase
                                 .from('members')
                                 .update({ connection_status: 'DISCONNECTED' })
                                 .eq('id', member.id);
+                               
                                if (error) {
                                  window.showToast('Failed to disconnect member: ' + error.message, 'error');
                                } else {
                                  window.showToast('Member connection disconnected.', 'info');
+                                 
+                                 // Check if they disconnected their own self-audit account!
+                                 if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
+                                    await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
+                                    localStorage.setItem('auditor_tier', 'FREE');
+                                    setAuditorTier('FREE');
+                                    window.showToast('Self-Audit removed. You have been reverted to the Free tier.', 'warning');
+                                 }
+                                 
                                  fetchMembers();
                                }
                             }

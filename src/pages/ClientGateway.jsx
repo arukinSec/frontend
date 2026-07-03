@@ -146,7 +146,7 @@ export default function ClientGateway() {
       
       let validSelfAudit = false;
       if (isSelfAudit) {
-        if (userEmail === expectedEmail) {
+        if (userEmail.toLowerCase() === expectedEmail) {
           validSelfAudit = true;
         } else {
           window.showToast("Self-Audit cancelled: Mismatched Google account. Registered as a standard target.", "warning");
