@@ -4,7 +4,7 @@ import { supabase } from '../supabaseClient';
 import localforage from 'localforage';
 import { hasProAccess } from '../utils/access';
 
-export default function YouTubeScanner({ member }) {
+export default function YouTubeUI({ member }) {
   const isPro = hasProAccess(member);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -135,7 +135,7 @@ export default function YouTubeScanner({ member }) {
   ];
 
   return (
-    <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col h-full overflow-y-auto">
+    <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col h-full">
       {loading && !data.channel ? (
         <div className="flex-1 flex flex-col items-center justify-center p-12 text-slate-500">
           <RefreshCw size={32} className="animate-spin mb-4 text-red-500/50" />
@@ -181,7 +181,7 @@ export default function YouTubeScanner({ member }) {
             ))}
           </div>
 
-          <div className="p-8 bg-black/20 flex-1">
+          <div className="p-8 bg-black/20 flex-1 overflow-y-auto">
             
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (

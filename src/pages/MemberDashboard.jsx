@@ -5,7 +5,7 @@ import ProfileUI from '../components/ProfileUI';
 import GmailUI from '../components/GmailUI';
 import DriveUI from '../components/DriveUI';
 import ContactsUI from '../components/ContactsUI';
-import YouTubeScanner from '../components/YouTubeScanner';
+import YouTubeUI from '../components/YouTubeUI';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { get, set, del } from 'idb-keyval';
 import { ArrowLeft, Mail, HardDrive, Shield, Users, UserCircle, Search, Wrench } from 'lucide-react';
@@ -235,7 +235,7 @@ export default function MemberDashboard() {
               {activeTab === 'profile' && <ProfileUI member={member} footprintData={footprintData} setFootprintData={setFootprintData} onNavigateToInbox={handleNavigateToInbox} />}
               {activeTab === 'gmail' && <GmailUI member={member} initialLabel={initialGmailLabel} />}
               {activeTab === 'drive' && <DriveUI member={member} />}
-              {activeTab === 'youtube' && <YouTubeScanner member={member} />}
+              {activeTab === 'youtube' && <YouTubeUI member={member} />}
               {activeTab === 'contacts' && <ContactsUI member={member} />}
             </ErrorBoundary>
           </div>
