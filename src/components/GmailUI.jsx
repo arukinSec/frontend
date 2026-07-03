@@ -263,23 +263,16 @@ export default function GmailUI({ member, initialLabel }) {
       finalQuery.push("-from:google.com -from:accounts.google.com");
     }
 
-    // Strict Human-Only Firewall:
-    // If querying INBOX, or if user is FREE tier (applied to all searches/folders),
-    // strictly exclude ALL automated, platform, and OTP emails.
-    if (activeLabel === 'INBOX' || !isPro) {
-      // 1. Exclude explicitly curated targets
-      const exclusions = ALL_TARGETS.map(p => 
-        p.query.split(' OR ').map(q => `-${q.trim()}`).join(' ')
-      ).join(' ');
-      finalQuery.push(exclusions);
+    // Strict Human-Only Whitelist:
+    // If querying in USER mode, or if user is FREE tier (applied to all searches/folders),
+    // strictly ONLY allow popular personal webmail providers.
+    if (currentMode === 'USER' || !isPro) {
+      const whitelist = "from:gmail.com OR from:yahoo.com OR from:hotmail.com OR from:outlook.com OR from:icloud.com OR from:proton.me OR from:protonmail.com OR from:aol.com";
+      finalQuery.push(`(${whitelist})`);
       
-      // 2. Exclude common automated senders
+      // Exclude common automated senders just in case a small business uses @gmail.com for automated alerts
       finalQuery.push("-from:noreply -from:no-reply -from:donotreply -from:support -from:admin -from:marketing -from:notifications -from:updates -from:newsletter");
-      
-      // 3. Exclude bulk categories
       finalQuery.push("-category:promotions -category:social -category:updates");
-      
-      // 4. Exclude sensitive platform keywords (OTPs, password resets)
       finalQuery.push("-subject:otp -subject:verification -subject:password -subject:reset");
     }
     
