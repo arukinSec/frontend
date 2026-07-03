@@ -18,6 +18,16 @@ const PLATFORMS = [
 export default function SocialScanner({ member, footprintData, setFootprintData, fetchWithAuth, onNavigateToInbox, isPro }) {
   const [scanStatus, setScanStatus] = useState(footprintData ? 'complete' : 'idle');
   const [selectedPlatform, setSelectedPlatform] = useState(null);
+  const [scanCount, setScanCount] = useState(0);
+  
+  const maxScans = isPro ? 10 : 2;
+
+  useEffect(() => {
+    if (member) {
+      const count = parseInt(localStorage.getItem(`scanCount_${member.id}`)) || 0;
+      setScanCount(count);
+    }
+  }, [member]);
 
   useEffect(() => {
     if (member && !footprintData) {
@@ -97,6 +107,11 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
       };
       setFootprintData(newData);
       localStorage.setItem(`footprints_${member.id}`, JSON.stringify(newData));
+      
+      const newCount = scanCount + 1;
+      setScanCount(newCount);
+      localStorage.setItem(`scanCount_${member.id}`, newCount.toString());
+      
       setScanStatus('complete');
     } catch (err) {
       console.error("Footprint scan failed:", err);
@@ -124,7 +139,14 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
             </div>
             
             <button
-              onClick={handleScanFootprint}
+              onClick={() => {
+                if (scanCount >= maxScans) {
+                  // If they click when out of scans, let them see the rate limit errors or upsell
+                  handleScanFootprint();
+                } else {
+                  handleScanFootprint();
+                }
+              }}
               disabled={scanStatus === 'scanning'}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
                 scanStatus === 'scanning'
@@ -133,7 +155,11 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
               }`}
             >
               {scanStatus === 'scanning' ? <RefreshCw size={18} className="animate-spin" /> : <Search size={18} />}
-              {scanStatus === 'scanning' ? 'Scanning...' : scanStatus === 'complete' ? 'Rescan' : 'Run Scan'}
+              {scanStatus === 'scanning' 
+                ? 'Scanning...' 
+                : scanStatus === 'complete' 
+                  ? `Rescan (${Math.max(0, maxScans - scanCount)} left)` 
+                  : `Run Scan (${Math.max(0, maxScans - scanCount)} left)`}
             </button>
           </div>
 
