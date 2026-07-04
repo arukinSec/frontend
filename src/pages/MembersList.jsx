@@ -89,10 +89,10 @@ export default function MembersList() {
     // Fetch active connected members assigned to this manager
     const { data, error } = await supabase
       .from('members')
-      .select('id, name, email, avatar_url, connection_status, created_at, manager_id, provider_id, tier')
+      .select('id, name, email, avatar_url, connection_status, created_at, manager_id, provider_id, tier, slot_no')
       .eq('manager_id', managerId)
       .eq('connection_status', 'CONNECTED')
-      .order('created_at', { ascending: true });
+      .order('slot_no', { ascending: true, nullsFirst: false });
       
     if (error) {
       console.error('Error fetching members:', error);
@@ -539,11 +539,7 @@ export default function MembersList() {
             </div>
           ) : (
             filteredMembers.map((member, idx) => {
-              let maxAllowed = 3;
-              if (managerTier === 'PRO') maxAllowed = 4 + additionalSlots;
-              else if (managerTier === 'TRIAL') maxAllowed = 3;
-              
-              const isLocked = idx >= maxAllowed;
+              const isLocked = member.tier === 'LOCKED';
 
               const handleMemberClick = () => {
                 if (isLocked) {
@@ -586,12 +582,12 @@ export default function MembersList() {
               return (
                 <div 
                   key={member.id} 
-                  className={`border rounded-2xl p-6 backdrop-blur-sm shadow-xl transition-all group relative cursor-pointer ${
+                  className={`border rounded-2xl p-6 backdrop-blur-sm shadow-xl transition-all group relative ${
                     isLocked 
-                      ? 'bg-black/60 border-white/5 opacity-40 hover:opacity-60 select-none' 
-                      : 'bg-black/40 border-white/10 hover:bg-white/[0.03] hover:border-indigo-500/30'
+                      ? 'bg-black/60 border-white/5 opacity-40 hover:opacity-60 select-none cursor-not-allowed' 
+                      : 'bg-black/40 border-white/10 hover:bg-white/[0.03] hover:border-indigo-500/30 cursor-pointer'
                   }`}
-                  onClick={handleMemberClick}
+                  onClick={isLocked ? undefined : handleMemberClick}
                 >
                   {/* 3-Dot Options Dropdown Menu */}
                   <div className="absolute top-4 right-4 z-10" onClick={(e) => e.stopPropagation()}>

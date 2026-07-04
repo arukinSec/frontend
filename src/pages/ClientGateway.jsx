@@ -19,7 +19,8 @@ export default function ClientGateway() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('');
-  const [authId, setAuthId] = useState('');
+  const [authCode, setAuthCode] = useState(['', '', '', '', '', '']);
+  const inputRefs = React.useRef([]);
   const [authError, setAuthError] = useState('');
   const [consentError, setConsentError] = useState('');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -44,12 +45,13 @@ export default function ClientGateway() {
   useEffect(() => {
     const queryId = searchParams.get('authId');
     if (queryId) {
-      // Re-format slightly to make it user friendly: e.g. "123 456"
-      const numbers = queryId.replace(/\D/g, '');
-      if (numbers.length === 6) {
-        setAuthId(numbers.slice(0, 3) + ' ' + numbers.slice(3));
-      } else {
-        setAuthId(queryId);
+      const numbers = queryId.replace(/\D/g, '').slice(0, 6);
+      if (numbers.length > 0) {
+        const newCode = ['', '', '', '', '', ''];
+        for (let i = 0; i < numbers.length; i++) {
+          newCode[i] = numbers[i];
+        }
+        setAuthCode(newCode);
       }
     }
   }, [searchParams]);
@@ -160,9 +162,9 @@ export default function ClientGateway() {
             .select('*', { count: 'exact', head: true })
             .eq('manager_id', parsedManagerId);
 
-          let absoluteMax = 1;
-          if (managerData.tier === 'TRIAL') absoluteMax = 2;
-          if (managerData.tier === 'PRO') absoluteMax = 4 + (managerData.additional_slots || 0);
+          let absoluteMax = 3;
+          if (managerData.tier === 'TRIAL') absoluteMax = 4;
+          if (managerData.tier === 'PRO') absoluteMax = 5 + (managerData.additional_slots || 0);
 
           // We only block if they are adding a NEW account, not reconnecting an existing one
           const { data: existingMember } = await supabase
@@ -252,24 +254,49 @@ export default function ClientGateway() {
     }
   };
 
+  const handleCodeChange = (index, value) => {
+    const cleanValue = value.replace(/\D/g, '').slice(-1);
+    const newCode = [...authCode];
+    newCode[index] = cleanValue;
+    setAuthCode(newCode);
+    setAuthError('');
+    
+    if (cleanValue && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !authCode[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted) {
+      const newCode = [...authCode];
+      for (let i = 0; i < pasted.length; i++) {
+        newCode[i] = pasted[i];
+      }
+      setAuthCode(newCode);
+      const nextIndex = Math.min(pasted.length, 5);
+      inputRefs.current[nextIndex]?.focus();
+    }
+  };
+
   const initiateGoogleAuth = async () => {
-    if (!authId.trim()) {
-      setAuthError('Manager Auth ID is required to connect.');
+    const sanitizedAuthId = authCode.join('');
+    
+    if (sanitizedAuthId.length !== 6) {
+      setAuthError('Please enter the complete 6-digit Manager Auth ID.');
       return;
     }
 
     setLoading(true);
     setLoadingText('Verifying Manager ID...');
     setAuthError('');
-
-    // Sanitize user entry by stripping spaces and dashes (e.g., "123 456" or "123-456" -> "123456")
-    const sanitizedAuthId = authId.trim().replace(/[\s-]/g, '');
-
-    if (!sanitizedAuthId) {
-      setLoading(false);
-      setAuthError('Manager Auth ID is required to connect.');
-      return;
-    }
 
     try {
       const { data, error } = await supabase.rpc('verify_manager_capacity', { auth_code: sanitizedAuthId });
@@ -377,18 +404,30 @@ export default function ClientGateway() {
                 </p>
 
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">
                     Manager Auth ID
                   </label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter Manager's unique ID"
-                    value={authId}
-                    onChange={(e) => { setAuthId(e.target.value); setAuthError(''); }}
-                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-600"
-                  />
+                  <div className="flex justify-center gap-2 sm:gap-3 py-2" onPaste={handlePaste}>
+                    {authCode.map((digit, idx) => (
+                      <React.Fragment key={idx}>
+                        <input
+                          type="text"
+                          maxLength={1}
+                          inputMode="numeric"
+                          value={digit}
+                          ref={(el) => (inputRefs.current[idx] = el)}
+                          onChange={(e) => handleCodeChange(idx, e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(idx, e)}
+                          className="w-10 h-12 sm:w-12 sm:h-14 bg-black/40 border border-white/10 rounded-xl text-center text-lg sm:text-xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-600"
+                        />
+                        {idx === 2 && (
+                          <div className="flex items-center text-slate-500 font-bold">-</div>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
                   {authError && (
-                    <p className="text-red-400 text-xs">{authError}</p>
+                    <p className="text-red-400 text-xs text-center">{authError}</p>
                   )}
                   {consentError && (
                     <p className="text-red-400 text-xs">{consentError}</p>
