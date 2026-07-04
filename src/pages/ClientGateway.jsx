@@ -61,12 +61,12 @@ export default function ClientGateway() {
     try {
       const { data, error } = await supabase
         .from('members')
-        .select('access_token')
+        .select('connection_status')
         .eq('email', email.toLowerCase())
         .maybeSingle();
 
       if (error || !data) return 1;
-      return data.access_token ? 2 : 1;
+      return data.connection_status === 'CONNECTED' ? 2 : 1;
     } catch (err) {
       console.error('Consent check error:', err);
       return 1;

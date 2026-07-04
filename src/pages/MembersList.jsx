@@ -636,19 +636,10 @@ export default function MembersList() {
                               const managerId = localStorage.getItem('manager_id');
                             
                               // 1. Actively revoke the token with Google directly
-                              const tokenToRevoke = member.google_refresh_token || member.access_token;
-                              if (tokenToRevoke) {
-                                try {
-                                  await fetch('https://oauth2.googleapis.com/revoke', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                    body: `token=${tokenToRevoke}`
-                                  });
-                                  console.log(`Actively revoked Google OAuth grant for ${member.email}`);
-                                } catch (revokeErr) {
-                                  console.warn('Failed to contact Google revoke endpoint:', revokeErr);
-                                }
-                              }
+                              // Note: We can no longer do this from the frontend because the access token is 
+                              // securely hidden in the database via Column Level Privileges.
+                              // This should eventually be moved to an Edge Function, but for now we rely
+                              // purely on the database disconnection.
 
                               // 2. Scrub database
                               const { error } = await supabase
