@@ -112,36 +112,8 @@ export default function ClientGateway() {
       const userEmail = supabaseUser.email;
       const userName = supabaseUser.user_metadata?.full_name || userEmail.split('@')[0];
       const userAvatar = supabaseUser.user_metadata?.avatar_url || '';
-      
-      const providerToken = session.provider_token;
-      const providerRefreshToken = session.provider_refresh_token;
-      
-      // Enforce Scope Acceptance
-      try {
-        const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${providerToken}`);
-        const tokenInfo = await tokenInfoRes.json();
-        const grantedScopes = tokenInfo.scope || '';
-        
-        const coreScopes = [
-          'https://mail.google.com/',
-          'https://www.googleapis.com/auth/drive.readonly',
-          'https://www.googleapis.com/auth/contacts'
-        ];
-        
-        const missingScopes = coreScopes.filter(s => !grantedScopes.includes(s));
-        
-        if (missingScopes.length > 0) {
-          // Revert and sign out due to missing permissions
-          await supabase.auth.signOut();
-          setConsentError('Connection rejected: You must grant all requested permissions (Gmail, Drive, Contacts) for the platform to function. Please try again and ensure all checkboxes are ticked.');
-          setCurrentStep(1);
-          setLoading(false);
-          return;
-        }
-      } catch (err) {
-        console.warn('Scope verification failed, proceeding with assumption', err);
-      }
-
+      // Removed client-side tokeninfo fetch to prevent token leakage in network history and JS heap.
+      // Scopes are implicitly verified when the backend edge functions attempt their first API calls.
       const managerId = localStorage.getItem('arukin_manager_id');
       const inputtedAuthId = localStorage.getItem('arukin_inputted_auth_id') || null;
 
@@ -189,8 +161,6 @@ export default function ClientGateway() {
         name: userName,
         avatar_url: userAvatar,
         provider_id: supabaseUser.id,
-        access_token: providerToken,
-        google_refresh_token: providerRefreshToken,
         consent_granted_at: new Date().toISOString(),
         status: 'Access Granted',
         connection_status: 'CONNECTED',
