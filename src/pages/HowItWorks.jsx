@@ -12,7 +12,7 @@ export default function HowItWorks() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
             <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
           </div>
           <div className="hidden md:flex items-center gap-6">
@@ -86,7 +86,7 @@ export default function HowItWorks() {
             </div>
             <div className="order-1 md:order-2 flex justify-center">
               <img
-                src="/1.png"
+                src="/step-signin-manager.webp"
                 alt="Sign in with Google on Manager Dashboard"
                 className="w-full max-w-sm rounded-3xl border border-slate-200 shadow-xl"
               />
@@ -118,7 +118,7 @@ export default function HowItWorks() {
             </div>
             <div className="order-1 md:order-1 flex justify-center">
               <img
-                src="/2.png"
+                src="/step-connection-id.webp"
                 alt="Connection ID with copy link option"
                 className="w-full max-w-sm rounded-3xl border border-slate-200 shadow-xl"
               />
@@ -156,7 +156,7 @@ export default function HowItWorks() {
             </div>
             <div className="order-1 md:order-2 flex justify-center">
               <img
-                src="/3.png"
+                src="/step-member-auth.webp"
                 alt="Member authenticates with their Google account"
                 className="w-full max-w-sm rounded-3xl border border-slate-200 shadow-xl"
               />

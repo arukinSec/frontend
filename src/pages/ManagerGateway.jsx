@@ -90,7 +90,7 @@ export default function ManagerGateway() {
         
         {/* Branding header */}
         <div className="text-center mb-8">
-          <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+          <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
           <h2 className="text-2xl font-black text-white tracking-tight leading-tight">Manager Access</h2>
           <p className="text-slate-400 text-xs mt-2">
             {showReviewerLogin 

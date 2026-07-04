@@ -13,7 +13,7 @@ export default function BetaNotice() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
             <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
               ArukinSec <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>

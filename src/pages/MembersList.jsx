@@ -356,7 +356,7 @@ export default function MembersList() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 shrink-0">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
             <span className="hidden md:block font-bold text-lg tracking-wide text-white">ArukinSec</span>
           </div>
 
