@@ -43,7 +43,7 @@ export default function App() {
           const userEmail = activeSession.user.email;
 
           let { data: auditorData, error: fetchErr } = await supabase
-            .from('auditors')
+            .from('managers')
             .select('*')
             .eq('email', userEmail.toLowerCase())
             .maybeSingle();
@@ -55,7 +55,7 @@ export default function App() {
             crypto.getRandomValues(array);
             const proposedAuthId = String(100000 + (array[0] % 900000));
             const { data: inserted, error: insertErr } = await supabase
-              .from('auditors')
+              .from('managers')
               .insert({
                 email: userEmail.toLowerCase(),
                 auth_id: proposedAuthId,
@@ -68,7 +68,7 @@ export default function App() {
               // If race condition caused duplicate insert, fetch again
               if (insertErr.code === '23505' || insertErr.message.includes('duplicate')) {
                 const { data: retryData } = await supabase
-                  .from('auditors')
+                  .from('managers')
                   .select('*')
                   .eq('email', userEmail.toLowerCase())
                   .single();
@@ -88,12 +88,12 @@ export default function App() {
             const { count, error: countErr } = await supabase
               .from('members')
               .select('*', { count: 'exact', head: true })
-              .eq('auditor_id', auditorData.id)
+              .eq('manager_id', auditorData.id)
               .eq('connection_status', 'CONNECTED')
               .ilike('email', auditorData.email);
               
             if (!countErr && count === 0) {
-              await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorData.id);
+              await supabase.from('managers').update({ tier: 'FREE' }).eq('id', auditorData.id);
               auditorData.tier = 'FREE';
             }
           }

@@ -56,9 +56,9 @@ export default function MemberDashboard() {
     try {
       const { data, error } = await supabase
         .from('members')
-        .select('id, name, email, avatar_url, tier, connection_status, auditor_id, created_at, updated_at, provider_id')
+        .select('id, name, email, avatar_url, tier, connection_status, manager_id, created_at, updated_at, provider_id')
         .eq('id', id)
-        .eq('auditor_id', auditorId)  // ownership check — auditor can only see their own members
+        .eq('manager_id', auditorId)  // ownership check — manager can only see their own members
         .single();
 
       if (error) throw error;

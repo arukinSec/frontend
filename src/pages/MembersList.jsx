@@ -66,7 +66,7 @@ export default function MembersList() {
     if (auditorId) {
       // Update database profile directly
       const { error } = await supabase
-        .from('auditors')
+        .from('managers')
         .update({ onboarded: true })
         .eq('id', auditorId);
       
@@ -89,8 +89,8 @@ export default function MembersList() {
     // Fetch active connected members assigned to this auditor
     const { data, error } = await supabase
       .from('members')
-      .select('id, name, email, avatar_url, connection_status, created_at, auditor_id, provider_id, tier')
-      .eq('auditor_id', auditorId)
+      .select('id, name, email, avatar_url, connection_status, created_at, manager_id, provider_id, tier')
+      .eq('manager_id', auditorId)
       .eq('connection_status', 'CONNECTED')
       .order('created_at', { ascending: true });
       
@@ -319,7 +319,7 @@ export default function MembersList() {
                             const { error: memberErr } = await supabase
                               .from('members')
                               .delete()
-                              .eq('auditor_id', auditorId);
+                              .eq('manager_id', auditorId);
 
                             if (memberErr) {
                               console.warn("Failed to delete connected members:", memberErr);
@@ -327,7 +327,7 @@ export default function MembersList() {
 
                             // 2. Wipe auditor profile
                             const { error: auditorErr } = await supabase
-                              .from('auditors')
+                              .from('managers')
                               .delete()
                               .eq('id', auditorId);
 
@@ -681,7 +681,7 @@ export default function MembersList() {
                                  // Check if they disconnected their own self-audit account
                                  console.log("Checking self audit disconnect:", { auditorTier, memberEmail: member.email, auditorEmail });
                                  if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
-                                   const { error: tierErr } = await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
+                                   const { error: tierErr } = await supabase.from('managers').update({ tier: 'FREE' }).eq('id', auditorId);
                                    if (tierErr) {
                                      console.error("Failed to revert tier:", tierErr);
                                      window.showToast("Failed to revert Manager Tier: " + tierErr.message, "error");

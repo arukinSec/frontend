@@ -17,7 +17,7 @@ export function useAuditor() {
       }
 
       const { data, error } = await supabase
-        .from('auditors')
+        .from('managers')
         .select('id, email, tier, additional_slots, billing_cycle, onboarded')
         .eq('email', user.email)
         .single();

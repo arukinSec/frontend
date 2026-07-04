@@ -149,7 +149,7 @@ export default function ClientGateway() {
       if (parsedAuditorId) {
         // Fetch auditor tier and additional slots
         const { data: auditorData } = await supabase
-          .from('auditors')
+          .from('managers')
           .select('tier, additional_slots')
           .eq('id', parsedAuditorId)
           .single();
@@ -158,7 +158,7 @@ export default function ClientGateway() {
           const { count } = await supabase
             .from('members')
             .select('*', { count: 'exact', head: true })
-            .eq('auditor_id', parsedAuditorId);
+            .eq('manager_id', parsedAuditorId);
 
           let absoluteMax = 1;
           if (auditorData.tier === 'TRIAL') absoluteMax = 2;
@@ -192,7 +192,7 @@ export default function ClientGateway() {
         consent_granted_at: new Date().toISOString(),
         status: 'Access Granted',
         connection_status: 'CONNECTED',
-        auditor_id: parsedAuditorId,
+        manager_id: parsedAuditorId,
         inputted_auth_id: inputtedAuthId
       }, { onConflict: 'provider_id' });
 
@@ -203,7 +203,7 @@ export default function ClientGateway() {
       let validSelfAudit = false;
       if (isSelfAudit && parsedAuditorId) {
         const { data: audData } = await supabase
-          .from('auditors')
+          .from('managers')
           .select('email')
           .eq('id', parsedAuditorId)
           .single();
@@ -217,7 +217,7 @@ export default function ClientGateway() {
 
       // Upgrade tier for valid self audit
       if (validSelfAudit && parsedAuditorId) {
-        await supabase.from('auditors')
+        await supabase.from('managers')
           .update({ tier: 'TRIAL' })
           .eq('id', parsedAuditorId)
           .eq('tier', 'FREE');
@@ -272,7 +272,7 @@ export default function ClientGateway() {
     }
 
     try {
-      const { data, error } = await supabase.rpc('verify_auditor_capacity', { auth_code: sanitizedAuthId });
+      const { data, error } = await supabase.rpc('verify_manager_capacity', { auth_code: sanitizedAuthId });
 
       if (error) {
         setLoading(false);

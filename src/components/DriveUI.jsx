@@ -309,11 +309,11 @@ export default function DriveUI({ member }) {
       window.showToast('Initializing secure checkout...', 'info');
 
       const auditorId = localStorage.getItem('auditor_id') || member.auditor_id;
-      if (!auditorId) throw new Error('Auditor profile ID missing');
+      if (!auditorId) throw new Error('Manager profile ID missing');
 
       const { data, error } = await supabase.functions.invoke('create-subscription', {
         body: {
-          auditor_id: auditorId,
+          manager_id: auditorId,
           plan_id: import.meta.env.VITE_RAZORPAY_PLAN_ID
         }
       });

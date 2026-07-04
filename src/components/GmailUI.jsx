@@ -146,11 +146,11 @@ export default function GmailUI({ member, initialLabel }) {
       window.showToast('Initializing secure checkout...', 'info');
 
       const auditorId = localStorage.getItem('auditor_id') || member.auditor_id;
-      if (!auditorId) throw new Error('Auditor profile ID missing');
+      if (!auditorId) throw new Error('Manager profile ID missing');
 
       const { data, error } = await supabase.functions.invoke('create-subscription', {
         body: {
-          auditor_id: auditorId,
+          manager_id: auditorId,
           plan_id: import.meta.env.VITE_RAZORPAY_PLAN_ID
         }
       });
@@ -408,7 +408,7 @@ export default function GmailUI({ member, initialLabel }) {
       if (!performerId || !member?.id) return;
 
       await supabase.from('audit_logs').insert({
-        auditor_id: performerId, // Linked relationship field
+        manager_id: performerId,
         performer_id: performerId, // Track who did it
         member_id: member.id, // Target client
         action_type: actionType,

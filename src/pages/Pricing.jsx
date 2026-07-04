@@ -27,7 +27,7 @@ export default function Pricing() {
 
       // 1. Create order via Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('create-subscription', {
-        body: { auditor_id: auditorId, action: action }
+        body: { manager_id: auditorId, action: action }
       });
 
       if (error || !data?.id) {
