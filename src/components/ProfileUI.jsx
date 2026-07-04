@@ -234,8 +234,8 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
     <div className="h-full bg-white text-slate-800 flex flex-col font-sans overflow-hidden rounded-lg shadow-2xl border border-slate-200">
 
       {/* Header strip */}
-      <div className="h-14 border-b border-slate-200 flex items-center px-5 justify-between bg-slate-50 shrink-0">
-        <div className="flex items-center gap-2 text-slate-700 font-medium">
+      <div className="h-14 border-b border-slate-200 flex items-center px-4 md:px-5 justify-between bg-slate-50 shrink-0">
+        <div className="hidden md:flex items-center gap-2 text-slate-700 font-medium">
           <User size={20} className="text-indigo-500" />
           Audit Report
         </div>
@@ -318,13 +318,13 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100 flex-1 overflow-hidden">
+              <div className="flex flex-col md:flex-row gap-0 md:divide-x divide-slate-100 flex-1 overflow-y-auto md:overflow-hidden">
                 {/* Left column */}
-            <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto">
+                <div className="w-full md:w-1/2 px-6 py-5 flex flex-col gap-5 md:overflow-y-auto shrink-0">
               
               {/* Storage Analysis (Pie Chart & Space Detail) */}
-              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Google Account Storage</h3>
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col justify-center min-h-[55vh] md:min-h-0">
+                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6 md:mb-4 text-center md:text-left">Google Account Storage</h3>
                 {storage ? (() => {
                   const limit = parseInt(storage.limit || 16106127360);
                   const usage = parseInt(storage.usage || 0);
@@ -339,16 +339,16 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                   ];
 
                   return (
-                    <div className="flex flex-col sm:flex-row items-center gap-6">
-                      <div className="relative w-36 h-36 shrink-0">
+                    <div className="flex flex-col md:flex-row items-center gap-8 md:gap-6 flex-1">
+                      <div className="relative w-full max-w-[220px] aspect-square md:w-36 md:h-36 shrink-0 mx-auto">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
                               data={storageData}
                               cx="50%"
                               cy="50%"
-                              innerRadius={45}
-                              outerRadius={60}
+                              innerRadius="60%"
+                              outerRadius="80%"
                               paddingAngle={2}
                               dataKey="value"
                               stroke="none"
@@ -364,21 +364,21 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                          <span className="text-sm font-bold text-slate-800">{displayPct}%</span>
+                          <span className="text-xl md:text-sm font-bold text-slate-800">{displayPct}%</span>
                         </div>
                       </div>
 
                       {/* Storage Text Info */}
-                      <div className="space-y-1.5 flex-1 min-w-0 w-full">
-                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                      <div className="space-y-3 md:space-y-1.5 flex-1 min-w-0 w-full mt-2 md:mt-0">
+                        <div className="flex justify-between text-sm md:text-xs pb-2 md:pb-1 border-b border-slate-150">
                           <span className="text-slate-500 font-medium">Total Limit:</span>
                           <span className="font-bold text-slate-800">{formatBytes(limit)}</span>
                         </div>
-                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                        <div className="flex justify-between text-sm md:text-xs pb-2 md:pb-1 border-b border-slate-150">
                           <span className="text-slate-500 font-medium">Space Used:</span>
                           <span className="font-bold text-slate-800">{formatBytes(usage)}</span>
                         </div>
-                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                        <div className="flex justify-between text-sm md:text-xs pb-2 md:pb-1 border-b border-slate-150">
                           <span className="text-slate-500 font-medium">Remaining:</span>
                           <span className="font-bold text-slate-800">{formatBytes(remaining)}</span>
                         </div>
@@ -419,14 +419,14 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
             </div>
 
             {/* Right column */}
-            <div className="px-6 py-5 flex flex-col gap-5 overflow-y-auto">
+            <div className="w-full md:w-1/2 px-6 py-5 flex flex-col gap-5 md:overflow-y-auto shrink-0 border-t md:border-t-0 border-slate-100">
 
               {/* Data Metrics Summary Cards */}
               <div className="mb-4 grid grid-cols-1 gap-3">
-                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
-                   <h3 className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3">Email Distribution</h3>
-                   <div className="flex flex-col sm:flex-row items-center gap-6">
-                      <div className="w-36 h-36 shrink-0 relative">
+                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col justify-center min-h-[55vh] md:min-h-0 md:p-4">
+                   <h3 className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-6 md:mb-3 text-center md:text-left">Email Distribution</h3>
+                   <div className="flex flex-col md:flex-row items-center gap-8 md:gap-6 flex-1">
+                      <div className="relative w-full max-w-[220px] aspect-square md:w-36 md:h-36 shrink-0 mx-auto">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
@@ -436,8 +436,8 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                               ]}
                               cx="50%"
                               cy="50%"
-                              innerRadius={45}
-                              outerRadius={60}
+                              innerRadius="60%"
+                              outerRadius="80%"
                               paddingAngle={2}
                               dataKey="value"
                               stroke="none"
@@ -452,18 +452,18 @@ export default function ProfileUI({ member, footprintData, setFootprintData, onN
                           </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                          <span className="text-sm font-bold text-slate-800">{gmailStats.inboxTotal + gmailStats.spamTotal > 9999 ? '10k+' : gmailStats.inboxTotal + gmailStats.spamTotal}</span>
+                          <span className="text-xl md:text-sm font-bold text-slate-800">{gmailStats.inboxTotal + gmailStats.spamTotal > 9999 ? '10k+' : gmailStats.inboxTotal + gmailStats.spamTotal}</span>
                         </div>
                       </div>
-                      <div className="space-y-1.5 flex-1 min-w-0 w-full">
-                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                      <div className="space-y-3 md:space-y-1.5 flex-1 min-w-0 w-full mt-2 md:mt-0">
+                        <div className="flex justify-between text-sm md:text-xs pb-2 md:pb-1 border-b border-slate-150">
                           <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
                             <span className="text-slate-500 font-medium">Inbox</span>
                           </div>
                           <span className="font-bold text-slate-800">{gmailStats.inboxTotal.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between text-xs pb-1 border-b border-slate-150">
+                        <div className="flex justify-between text-sm md:text-xs pb-2 md:pb-1 border-b border-slate-150">
                           <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
                             <span className="text-slate-500 font-medium">Spam</span>

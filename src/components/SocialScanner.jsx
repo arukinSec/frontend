@@ -8,7 +8,7 @@ const PLATFORMS = [
   { id: 'facebook', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook' },
   { id: 'instagram', name: 'Instagram', icon: 'https://cdn.simpleicons.org/instagram' },
   { id: 'twitter', name: 'X (Twitter)', icon: 'https://cdn.simpleicons.org/x' },
-  { id: 'linkedin', name: 'LinkedIn', icon: 'https://cdn.simpleicons.org/linkedin' },
+  { id: 'linkedin', name: 'LinkedIn', icon: null },
   { id: 'tiktok', name: 'TikTok', icon: 'https://cdn.simpleicons.org/tiktok' },
   { id: 'reddit', name: 'Reddit', icon: 'https://cdn.simpleicons.org/reddit' },
   { id: 'discord', name: 'Discord', icon: 'https://cdn.simpleicons.org/discord' },
@@ -140,14 +140,14 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
   };
 
   return (
-    <div className="p-8 bg-slate-50 min-h-full flex flex-col">
+    <div className="p-4 md:p-8 bg-slate-50 min-h-full flex flex-col overflow-y-auto">
       <div className="max-w-5xl mx-auto w-full flex-1 flex flex-col">
         
         {/* Digital Footprint Scanner */}
         <div className="flex flex-col flex-1">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
             <div>
-              <div className="flex items-center gap-3 mb-1">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 mb-2 md:mb-1">
                 <h2 className="text-xl font-bold text-slate-800">Digital Footprint Scanner</h2>
                 <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200">
                   Last scanned: {footprintData?.lastScan ? new Date(footprintData.lastScan).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : 'Never'}
@@ -158,8 +158,8 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
               </p>
             </div>
             
-            <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-slate-500 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+            <span className="text-xs font-bold text-slate-500 bg-white px-3 py-2.5 rounded-lg border border-slate-200 shadow-sm text-center">
               {scanCount}/{maxScans} Scans Used
             </span>
             <button
@@ -172,7 +172,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
                 }
               }}
               disabled={scanStatus === 'scanning'}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
+              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
                 scanStatus === 'scanning'
                 ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                 : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
@@ -207,8 +207,11 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
                           {scanStatus === 'complete' && (result?.status === 'not_found' || result?.status === 'rate_limited') && <XCircle size={18} className="text-rose-500 shrink-0" />}
                           
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
-                              <img src={platform.icon} alt={platform.name} className="w-5 h-5 object-contain" />
+                            <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
+                              {platform.icon
+                                ? <img src={platform.icon} alt={platform.name} className="w-5 h-5 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                : null}
+                              <span className={`text-xs font-bold text-slate-500 ${platform.icon ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}>{platform.name.charAt(0)}</span>
                             </div>
                            <div>
                              <p className="text-sm font-bold text-slate-800">{platform.name}</p>
@@ -226,7 +229,7 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
                           </div>
                         </div>
                         {scanStatus === 'complete' && result?.status === 'rate_limited' && result?.details && (
-                          <span className="text-xs text-rose-600 font-bold bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-md">
+                          <span className="text-[10px] sm:text-xs text-rose-600 font-bold bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-md shrink max-w-[120px] sm:max-w-none truncate text-right ml-2" title={result.details}>
                             {result.details}
                           </span>
                         )}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert, Zap, Heart, Trash2, Mailbox, ShieldCheck, Menu, X, ArrowRight } from 'lucide-react';
+import { ShieldAlert, Zap, Heart, Trash2, Mailbox, ShieldCheck, Menu, X, ArrowRight, Key, Landmark, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
@@ -13,7 +13,7 @@ export default function UseCases() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin <span className="text-emerald-600 font-medium hidden sm:inline">Security Console</span></span>
+            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin</span>
           </div>
 
           {/* Desktop Nav */}
@@ -23,6 +23,9 @@ export default function UseCases() {
             <Link to="/use-cases" className="text-sm font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">Use Cases</Link>
             <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">About</Link>
             <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Pricing</Link>
+            <a href="https://github.com/arukinSec" target="_blank" rel="noreferrer" className="flex items-center justify-center w-8 h-8 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors ml-2" title="Star on GitHub">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path></svg>
+            </a>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -49,89 +52,94 @@ export default function UseCases() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-16 animate-fade-in">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 text-center">Who is Arukin For?</h1>
-        <p className="text-slate-600 text-lg leading-relaxed mb-16 text-center max-w-2xl mx-auto">
-          While Arukin was originally engineered as a compliance and security auditing engine, its powerful API integrations make it the ultimate power tool for a wide variety of users.
-        </p>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-20 animate-fade-in">
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-6 leading-tight">Caring for someone's<br/><span className="text-emerald-600">digital life</span></h1>
+          <p className="text-slate-600 text-lg md:text-xl leading-relaxed">
+            Arukin lets you oversee someone else's Google account — helping you keep their email, files, and personal data safe. Whether you're helping a family member, managing a public figure's online presence, or looking after someone less familiar with technology.
+          </p>
+        </div>
 
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           
-          {/* Use Case 1: Power User */}
-          <div className="bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-            <div className="h-14 w-14 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-500/30">
-              <Zap size={28} />
+          {/* Use Case 1: For Children & Teenagers */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900 mb-8 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+              <Heart size={24} />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-3">The Power User: Unified Dashboard</h3>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Tired of switching Google profiles in your browser just to check an inbox? Anyone with multiple Google accounts can use Arukin as a personal command center.
-              </p>
-              <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Connect your personal, work, side-hustle, and spam accounts to a single dashboard.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Search emails, preview Drive files (and download PDFs), and manage contacts across all profiles without ever logging in and out.</li>
-              </ul>
-            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">For Children & Teenagers</h3>
+            <p className="text-slate-600 leading-relaxed mb-8">
+              Kids today grow up with Google accounts — school emails, shared Drives, YouTube. They're not equipped to spot a sophisticated phishing attack or understand why a random file in Drive is dangerous.
+            </p>
+            <ul className="space-y-4 text-sm text-slate-700">
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Review their inbox for scam emails without needing their password or prying into private conversations.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Check their Drive for suspicious shared files or inappropriate content they may have been sent.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Spot if they've signed up for services or platforms they shouldn't have access to.</span></li>
+            </ul>
           </div>
 
-          {/* Use Case 2: Privacy Advocate */}
-          <div className="bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
-            <div className="h-14 w-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-500/30">
-              <Trash2 size={28} />
+          {/* Use Case 2: For Elderly Parents & Relatives */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900 mb-8 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+              <Users size={24} />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-3">The Privacy Advocate: Inbox Zero & Cloud Cleanse</h3>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Want to clean up your own digital life? Use Arukin’s bulk tools to get your accounts organized.
-              </p>
-              <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Use the <strong>Batch Threat Cleaner</strong> to instantly delete or trash entire thousands of spam emails at once.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Clear out your entire email history in seconds.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-emerald-600" /> Detect and revoke rogue third-party applications secretly accessing your data.</li>
-              </ul>
-            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">For Elderly Parents & Relatives</h3>
+            <p className="text-slate-600 leading-relaxed mb-8">
+              Older family members are frequent targets of phone scams, phishing emails, and account takeovers. They may not recognize the warning signs, and they often don't know how to check if their account has been compromised.
+            </p>
+            <ul className="space-y-4 text-sm text-slate-700">
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Quietly oversee their account for unusual activity without bothering them with technical questions.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Detect phishing emails impersonating banks, government agencies, or familiar services.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Help them manage their contacts and spot suspicious entries they may have accidentally added.</span></li>
+            </ul>
           </div>
 
-          {/* Use Case 3: Guardian */}
-          <div className="bg-gradient-to-r from-teal-500/10 to-transparent border border-teal-500/20 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
-            <div className="h-14 w-14 rounded-2xl bg-purple-500/20 flex items-center justify-center text-teal-600 shrink-0 border border-purple-500/30">
-              <Heart size={28} />
+          {/* Use Case 3: For Public Figures & Executives */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900 mb-8 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+              <ShieldCheck size={24} />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-3">The Guardian: Family Protection</h3>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Built to give you the tools you need to protect vulnerable or elderly relatives from online scams and financial fraud.
-              </p>
-              <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-teal-600" /> Find and remove scam emails before your family members accidentally click on them.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-teal-600" /> Keep their passwords safe. You get access to help them, but you never need to ask for their login details.</li>
-              </ul>
-            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">For Public Figures & Executives</h3>
+            <p className="text-slate-600 leading-relaxed mb-8">
+              Politicians, celebrities, and high-profile executives are prime targets for spear-phishing, social engineering, and targeted hacking. A compromised account can leak sensitive communications or destroy a career.
+            </p>
+            <ul className="space-y-4 text-sm text-slate-700">
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">A manager, assistant, or accountant can oversee the account without ever knowing the password.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Detect unauthorized financial accounts, crypto exchange sign-ups, or password reset attempts.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Scan Drive for sensitive documents that may have been shared publicly or with the wrong people.</span></li>
+            </ul>
           </div>
 
-          {/* Use Case 4: Ops Manager (Roadmap) */}
-          <div className="bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
-            <div className="h-14 w-14 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-600 shrink-0 border border-amber-500/30">
-              <Mailbox size={28} />
+          {/* Use Case 5: For the Less Tech-Savvy */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900 mb-8 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+              <ShieldAlert size={24} />
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <h3 className="text-2xl font-bold text-slate-900">The Operations Hub</h3>
-                <span className="text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-600 border border-amber-500/20 px-2 py-0.5 rounded-full">Roadmap</span>
-              </div>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                Arukin is evolving into an automated communications and relay hub, adding massive value for small teams and power users.
-              </p>
-              <ul className="space-y-2 text-sm text-slate-700">
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-amber-600" /> <strong>Batch Email Sender:</strong> Dispatch scheduled newsletters, alerts, or RSVPs from any connected account.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-amber-600" /> <strong>OTP Interception & Relays:</strong> Forward time-sensitive 2FA verification codes to your dashboard instantly.</li>
-                <li className="flex items-center gap-2"><ArrowRight size={14} className="text-amber-600" /> <strong>Email Forwarding:</strong> Automatically route important threads from connected members to a central address.</li>
-              </ul>
+            <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">For Anyone Less Tech-Savvy</h3>
+            <p className="text-slate-600 leading-relaxed mb-8">
+              Not everyone grew up with the internet. Many people have Google accounts set up for them by someone else and have no idea how to manage privacy settings, spot phishing, or check what's in their Drive.
+            </p>
+            <ul className="space-y-4 text-sm text-slate-700">
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Set it up once with a simple 6-digit code — no password sharing required.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Monitor their account health from your own dashboard without needing to access their device.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-600 shrink-0 mt-0.5" /> <span className="leading-relaxed">Intervene early if something looks wrong — before it becomes a real problem.</span></li>
+            </ul>
+          </div>
+
+          {/* Use Case 6: Account Takeover Monitoring */}
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group md:col-span-2">
+            <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center text-white mb-8 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+              <Landmark size={24} />
             </div>
+            <h3 className="text-2xl font-bold text-white mb-4 tracking-tight">Account Takeover Monitoring</h3>
+            <p className="text-slate-400 leading-relaxed mb-8">
+              Total account loss happens quickly. The moment a hacker gains partial access, their first move is to lock you out of other connected services. Early detection is everything.
+            </p>
+            <ul className="space-y-4 text-sm text-slate-300">
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-500 shrink-0 mt-0.5" /> <span className="leading-relaxed"><strong>Reset Detection:</strong> Instantly detect if a password reset has been triggered for a critical service.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-500 shrink-0 mt-0.5" /> <span className="leading-relaxed"><strong>Early Intervention:</strong> Step in before a compromised account leads to data loss or identity theft.</span></li>
+              <li className="flex items-start gap-3"><ArrowRight size={18} className="text-emerald-500 shrink-0 mt-0.5" /> <span className="leading-relaxed"><strong>Connected Accounts Scan:</strong> See what third-party services have access to their Google account.</span></li>
+            </ul>
           </div>
 
         </div>

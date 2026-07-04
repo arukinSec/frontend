@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
-import { Search, Users, RefreshCw, Mail, Phone, Building2, BarChart2, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
+import { Search, Users, RefreshCw, Mail, Phone, Building2, BarChart2, AlertTriangle, ChevronDown, ChevronRight, X, Menu } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { googleProxyFetch } from '../utils/googleProxy';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
@@ -13,6 +13,7 @@ export default function ContactsUI({ member }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('contacts'); // 'contacts' | 'companies' | 'stats'
   const [expandedOrgs, setExpandedOrgs] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleUpgrade = async () => {
     try {
@@ -207,8 +208,15 @@ export default function ContactsUI({ member }) {
     <div className="h-full bg-white text-slate-800 flex flex-col font-sans relative overflow-hidden rounded-lg shadow-2xl border border-slate-200">
 
       {/* Top Header */}
-      <div className="h-16 border-b border-slate-200 flex items-center px-4 justify-between bg-slate-50 shrink-0">
-        <div className="flex items-center gap-4">
+      <div className="h-14 border-b border-slate-200 flex items-center px-4 justify-between bg-slate-50 shrink-0">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="md:hidden p-1.5 hover:bg-slate-200 rounded-md text-slate-600 transition-colors -ml-1 mr-1"
+            title="Toggle Menu"
+          >
+            <Menu size={20} />
+          </button>
           <div className="flex items-center gap-2 text-slate-700 font-medium text-lg">
             <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" fill="#1A73E8"/>
@@ -216,11 +224,11 @@ export default function ContactsUI({ member }) {
             Contacts
           </div>
           {activeTab === 'contacts' && (
-            <div className="relative ml-4 md:ml-8 flex-1 max-w-[12rem] md:max-w-xs">
+            <div className="relative ml-2 md:ml-8 flex-1 max-w-[10rem] md:max-w-xs">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search contacts"
+                placeholder="Search"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
@@ -228,16 +236,48 @@ export default function ContactsUI({ member }) {
             </div>
           )}
         </div>
-        <div className="flex items-center gap-3">
-          <button onClick={fetchContacts} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Refresh">
-            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-          </button>
-        </div>
+        <button onClick={fetchContacts} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors" title="Refresh">
+          <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+        </button>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-full md:w-56 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50 flex flex-col py-4 pb-6 shrink-0 overflow-y-auto max-h-48 md:max-h-none">
+      {/* Mobile full-screen sidebar overlay */}
+      {isSidebarOpen && (
+        <div className="md:hidden absolute inset-0 z-50 bg-white flex flex-col">
+          <div className="flex items-center justify-between px-4 h-14 border-b border-slate-200 bg-slate-50 shrink-0">
+            <div className="flex items-center gap-2 text-slate-700 font-semibold">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" fill="#1A73E8"/></svg>
+              Contacts Menu
+            </div>
+            <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors"><X size={20} /></button>
+          </div>
+          <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <nav className="px-2 space-y-0.5 mb-6">
+              {[['contacts', <Users />, 'Contacts', total], ['companies', <Building2 />, 'Companies', withCompany > 0 ? companyGroups.filter(([k]) => k !== '__none__').length : undefined], ['stats', <BarChart2 />, 'Stats', undefined]].map(([tab, icon, label, count]) => (
+                <button key={tab} onClick={() => { setActiveTab(tab); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-full text-sm transition-colors ${activeTab === tab ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-100'}`}>
+                  {React.cloneElement(icon, { size: 18, className: activeTab === tab ? 'text-blue-600' : 'text-slate-400' })}
+                  {label}
+                  {count != null && <span className="ml-auto text-xs font-semibold text-slate-400">{count || ''}</span>}
+                </button>
+              ))}
+            </nav>
+            {!isPro && (
+              <div className="mx-3 p-3.5 bg-gradient-to-tr from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl text-left space-y-2.5 shadow-sm">
+                <div>
+                  <span className="text-[9px] font-extrabold text-white bg-indigo-600 px-1.5 py-0.5 rounded uppercase tracking-wider">PRO Feature Locked</span>
+                  <h5 className="font-bold text-xs text-slate-800 mt-2">Viewing emails and phone numbers is not available on the free plan</h5>
+                  <p className="text-[10px] text-slate-500 mt-1 leading-normal">Upgrade to PRO to unmask contact details.</p>
+                </div>
+                <button onClick={handleUpgrade} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold py-2 rounded-lg transition-all">Upgrade to PRO</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-row flex-1 overflow-hidden">
+        {/* Desktop sidebar - always visible on md+ */}
+        <div className="hidden md:flex w-56 border-r border-slate-200 bg-slate-50 flex-col py-4 pb-6 shrink-0 overflow-y-auto">
           <nav className="px-2 space-y-0.5 mb-6">
             {navBtn('contacts', <Users />, 'Contacts', total)}
             {navBtn('companies', <Building2 />, 'Companies', withCompany > 0 ? companyGroups.filter(([k]) => k !== '__none__').length : undefined)}
@@ -287,62 +327,58 @@ export default function ContactsUI({ member }) {
               ) : filtered.length === 0 ? (
                 <div className="p-8 text-center text-slate-400 text-sm">No contacts match your search.</div>
               ) : (
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
-                    <tr>
-                      <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Name</th>
-                      <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Email</th>
-                      <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Phone</th>
-                      <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Company</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
+                <div className="w-full text-sm">
+                  <div className="hidden md:grid bg-slate-50 border-b border-slate-200 sticky top-0 z-10 px-5 py-3 grid-cols-4 gap-4">
+                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Name</div>
+                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Email</div>
+                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Phone</div>
+                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Company</div>
+                  </div>
+                  <div className="divide-y divide-slate-100">
                     {filtered.map(contact => {
                       const isIncomplete = !contact.name;
                       return (
-                        <tr key={contact.id} className={`hover:bg-slate-50 group transition-colors ${isIncomplete ? 'bg-amber-50/50' : ''}`}>
-                          <td className="px-5 py-3">
-                            <div>
-                              <span className={`font-medium ${isIncomplete ? 'text-amber-700 italic' : 'text-slate-700'}`}>
-                                {contact.name || 'No name'}
-                              </span>
-                              {isIncomplete && (
-                                <div className="flex items-center gap-1 mt-0.5">
-                                  <AlertTriangle size={11} className="text-amber-500" />
-                                  <span className="text-xs text-amber-500">Incomplete</span>
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-5 py-3">
+                        <div key={contact.id} className={`hover:bg-slate-50 group transition-colors flex flex-col md:grid md:grid-cols-4 md:gap-4 px-5 py-3 md:items-center ${isIncomplete ? 'bg-amber-50/50' : ''}`}>
+                          <div className="mb-1 md:mb-0">
+                            <span className={`font-medium ${isIncomplete ? 'text-amber-700 italic' : 'text-slate-700'}`}>
+                              {contact.name || 'No name'}
+                            </span>
+                            {isIncomplete && (
+                              <div className="flex items-center gap-1 mt-0.5">
+                                <AlertTriangle size={11} className="text-amber-500" />
+                                <span className="text-xs text-amber-500">Incomplete</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="mb-1 md:mb-0 text-xs md:text-sm">
                             {contact.email ? (
                               <div className="flex items-center gap-2 text-slate-600">
-                                <Mail size={13} className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                                <span className="truncate max-w-xs">{contact.email}</span>
+                                <Mail size={13} className="text-slate-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                                <span className="truncate max-w-[200px] md:max-w-xs">{contact.email}</span>
                               </div>
-                            ) : <span className="text-slate-300">—</span>}
-                          </td>
-                          <td className="px-5 py-3">
+                            ) : <span className="text-slate-300 hidden md:inline">—</span>}
+                          </div>
+                          <div className="mb-1 md:mb-0 text-xs md:text-sm">
                             {contact.phone ? (
                               <div className="flex items-center gap-2 text-slate-600">
-                                <Phone size={13} className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                                <Phone size={13} className="text-slate-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                                 <span>{contact.phone}</span>
                               </div>
-                            ) : <span className="text-slate-300">—</span>}
-                          </td>
-                          <td className="px-5 py-3">
+                            ) : <span className="text-slate-300 hidden md:inline">—</span>}
+                          </div>
+                          <div className="text-xs md:text-sm">
                             {contact.company ? (
                               <div className="flex items-center gap-2 text-slate-600">
-                                <Building2 size={13} className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                                <span>{contact.jobTitle ? `${contact.jobTitle}, ` : ''}{contact.company}</span>
+                                <Building2 size={13} className="text-slate-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                                <span className="truncate">{contact.jobTitle ? `${contact.jobTitle}, ` : ''}{contact.company}</span>
                               </div>
-                            ) : <span className="text-slate-300">—</span>}
-                          </td>
-                        </tr>
+                            ) : <span className="text-slate-300 hidden md:inline">—</span>}
+                          </div>
+                        </div>
                       );
                     })}
-                  </tbody>
-                </table>
+                  </div>
+                </div>
               )}
             </>
           )}

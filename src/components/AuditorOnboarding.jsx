@@ -18,7 +18,7 @@ export default function AuditorOnboarding({ auditorAuthId, onClose }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const inviteMessage = `Hello! I am setting up our family safety workspace on Arukin. Please open this link: ${window.location.origin}/client and enter my Auditor Auth ID: ${formattedId} to link your account so I can check for security alerts.`;
+  const inviteMessage = `Hello! I am setting up our family safety workspace on Arukin. Please open this link: ${window.location.origin}/client and enter my Manager Auth ID: ${formattedId} to link your account so I can check for security alerts.`;
 
   const handleShare = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(inviteMessage)}`;
@@ -31,7 +31,7 @@ export default function AuditorOnboarding({ auditorAuthId, onClose }) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Onboarding Container - Wide horizontal layout with strict no-scroll constraints */}
-      <div className="w-full max-w-3xl bg-[#0E0E12] border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden flex flex-col justify-between h-[360px]">
+      <div className="w-full max-w-3xl bg-[#0E0E12] border border-white/10 rounded-3xl p-4 md:p-10 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[360px] max-h-[85vh]">
         
         {/* Top Indicators */}
         <div className="flex items-center justify-between shrink-0 mb-4">
@@ -54,7 +54,7 @@ export default function AuditorOnboarding({ auditorAuthId, onClose }) {
         </div>
 
         {/* Content Slides - Structured horizontally using grid layouts */}
-        <div className="flex-1 flex flex-col justify-center min-h-0">
+        <div className="flex-1 flex flex-col justify-start overflow-y-auto min-h-0">
           
           {/* Step 1: Welcome */}
           {step === 1 && (
@@ -124,7 +124,7 @@ export default function AuditorOnboarding({ auditorAuthId, onClose }) {
                   <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl flex gap-2 items-center">
                     <User size={14} className="text-indigo-400 shrink-0" />
                     <div>
-                      <h4 className="font-semibold text-xs text-white">Auditor (You)</h4>
+                      <h4 className="font-semibold text-xs text-white">Manager (You)</h4>
                       <p className="text-[9px] text-slate-500">Reviews console feeds.</p>
                     </div>
                   </div>
@@ -204,7 +204,7 @@ export default function AuditorOnboarding({ auditorAuthId, onClose }) {
                 <div className="grid grid-cols-3 gap-2.5 mt-2">
                   <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl">
                     <span className="text-[10px] text-indigo-400 font-bold block">1. Share ID</span>
-                    <p className="text-[9px] text-slate-500 mt-0.5">Send them your Auditor ID key.</p>
+                    <p className="text-[9px] text-slate-500 mt-0.5">Send them your Manager ID key.</p>
                   </div>
                   <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl">
                     <span className="text-[10px] text-indigo-400 font-bold block">2. Input Token</span>
@@ -228,12 +228,12 @@ export default function AuditorOnboarding({ auditorAuthId, onClose }) {
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Your Auditor Auth ID</h2>
+                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Your Manager Auth ID</h2>
                 
                 {/* Security ID Badge */}
                 <div className="p-4 bg-white/[0.02] border border-indigo-500/20 rounded-2xl flex items-center justify-between gap-4 mt-2">
                   <div>
-                    <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider block mb-0.5">Your Auditor ID</span>
+                    <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider block mb-0.5">Your Manager ID</span>
                     <span className="text-lg font-mono font-bold text-white tracking-wider">{formattedId}</span>
                   </div>
                   <div className="flex gap-2">

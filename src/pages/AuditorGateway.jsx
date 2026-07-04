@@ -91,7 +91,7 @@ export default function AuditorGateway() {
         {/* Branding header */}
         <div className="text-center mb-8">
           <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-          <h2 className="text-2xl font-black text-white tracking-tight leading-tight">Auditor Access</h2>
+          <h2 className="text-2xl font-black text-white tracking-tight leading-tight">Manager Access</h2>
           <p className="text-slate-400 text-xs mt-2">
             {showReviewerLogin 
               ? 'Access the portal using your authorized reviewer credentials.'
@@ -169,7 +169,7 @@ export default function AuditorGateway() {
         </div>
 
         <p className="text-center text-slate-600 text-[10px] mt-8">
-          Arukin Security Portal • Authorized auditors only
+          Arukin Security Portal • Authorized Managers only
         </p>
       </div>
     </div>

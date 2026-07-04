@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, ChevronLeft, Calendar, FileText, ArrowRight, User, Globe, MessageSquare, DollarSign, Wallet, Repeat, AlertTriangle, ExternalLink, Download, File, Mail, Archive, Send, Trash2, Users, Inbox, MoreVertical, RefreshCw, ChevronRight, ArrowLeft, X, Camera } from 'lucide-react';
+import { Search, ChevronLeft, Menu, Calendar, FileText, ArrowRight, User, Globe, MessageSquare, DollarSign, Wallet, Repeat, AlertTriangle, ExternalLink, Download, File, Mail, Archive, Send, Trash2, Users, Inbox, MoreVertical, RefreshCw, ChevronRight, ArrowLeft, X, Camera } from 'lucide-react';
 import { hasProAccess } from '../utils/access';
 import { supabase } from '../supabaseClient';
 import { googleProxyFetch } from '../utils/googleProxy';
@@ -10,7 +10,7 @@ const SOCIAL_PLATFORMS = [
   { id: 'facebook', label: 'FACEBOOK', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook', query: 'from:facebookmail.com OR from:facebook.com' },
   { id: 'instagram', label: 'INSTAGRAM', name: 'Instagram', icon: 'https://cdn.simpleicons.org/instagram', query: 'from:instagram.com OR from:mail.instagram.com' },
   { id: 'twitter', label: 'TWITTER', name: 'Twitter / X', icon: 'https://cdn.simpleicons.org/x', query: 'from:twitter.com OR from:x.com' },
-  { id: 'linkedin', label: 'LINKEDIN', name: 'LinkedIn', icon: 'https://cdn.simpleicons.org/linkedin', query: 'from:linkedin.com' },
+  { id: 'linkedin', label: 'LINKEDIN', name: 'LinkedIn', icon: null, query: 'from:linkedin.com' },
   { id: 'tiktok', label: 'TIKTOK', name: 'TikTok', icon: 'https://cdn.simpleicons.org/tiktok', query: 'from:tiktok.com' },
   { id: 'reddit', label: 'REDDIT', name: 'Reddit', icon: 'https://cdn.simpleicons.org/reddit', query: 'from:reddit.com OR from:redditmail.com' },
   { id: 'discord', label: 'DISCORD', name: 'Discord', icon: 'https://cdn.simpleicons.org/discord', query: 'from:discord.com' },
@@ -18,27 +18,27 @@ const SOCIAL_PLATFORMS = [
 ];
 
 const BANKING_PLATFORMS = [
-  { id: 'sbi', label: 'SBI', name: 'SBI', icon: 'https://cdn.simpleicons.org/statebankofindia', query: 'from:sbi.co.in OR from:onlinesbi.com' },
+  { id: 'sbi', label: 'SBI', name: 'SBI', icon: null, query: 'from:sbi.co.in OR from:onlinesbi.com' },
   { id: 'hdfc', label: 'HDFC', name: 'HDFC Bank', icon: 'https://cdn.simpleicons.org/hdfcbank', query: 'from:hdfcbank.net OR from:hdfcbank.com OR from:hdfcbank.bank.in' },
   { id: 'icici', label: 'ICICI', name: 'ICICI Bank', icon: 'https://cdn.simpleicons.org/icicibank', query: 'from:icicibank.com OR from:icici.bank.in' },
   { id: 'axis', label: 'AXIS', name: 'Axis Bank', icon: 'https://cdn.simpleicons.org/axisbank', query: 'from:axisbank.com OR from:axis.bank.in' },
-  { id: 'kotak', label: 'KOTAK', name: 'Kotak Bank', icon: 'https://cdn.simpleicons.org/kotakmahindrabank', query: 'from:kotak.com' },
-  { id: 'pnb', label: 'PNB', name: 'PNB', icon: 'https://cdn.simpleicons.org/punjabnationalbank', query: 'from:pnb.co.in' },
-  { id: 'boi', label: 'BOI', name: 'BOI', icon: 'https://cdn.simpleicons.org/bankofindia', query: 'from:bankofindia.co.in OR from:bankofindia.bank.in' },
-  { id: 'ubi', label: 'UBI', name: 'Union Bank', icon: 'https://cdn.simpleicons.org/unionbankofindia', query: 'from:unionbankofindia.bank' },
+  { id: 'kotak', label: 'KOTAK', name: 'Kotak Bank', icon: null, query: 'from:kotak.com' },
+  { id: 'pnb', label: 'PNB', name: 'PNB', icon: null, query: 'from:pnb.co.in' },
+  { id: 'boi', label: 'BOI', name: 'BOI', icon: null, query: 'from:bankofindia.co.in OR from:bankofindia.bank.in' },
+  { id: 'ubi', label: 'UBI', name: 'Union Bank', icon: null, query: 'from:unionbankofindia.bank' },
   { id: 'chase', label: 'CHASE', name: 'Chase', icon: 'https://cdn.simpleicons.org/chase', query: 'from:chase.com' },
   { id: 'bofa', label: 'BOFA', name: 'Bank of America', icon: 'https://cdn.simpleicons.org/bankofamerica', query: 'from:bankofamerica.com' },
   { id: 'barclays', label: 'BARCLAYS', name: 'Barclays', icon: 'https://cdn.simpleicons.org/barclays', query: 'from:barclays.com OR from:barclays.co.uk' },
-  { id: 'citi', label: 'CITI', name: 'Citi', icon: 'https://cdn.simpleicons.org/citi', query: 'from:citi.com' }
+  { id: 'citi', label: 'CITI', name: 'Citi', icon: null, query: 'from:citi.com' }
 ];
 
 const WALLET_PLATFORMS = [
   { id: 'paytm', label: 'PAYTM', name: 'Paytm', icon: 'https://cdn.simpleicons.org/paytm', query: 'from:paytm.com OR from:one97.com' },
   { id: 'phonepe', label: 'PHONEPE', name: 'PhonePe', icon: 'https://cdn.simpleicons.org/phonepe', query: 'from:phonepe.com' },
-  { id: 'cred', label: 'CRED', name: 'CRED', icon: 'https://cdn.simpleicons.org/cred', query: 'from:cred.club' },
-  { id: 'mobikwik', label: 'MOBIKWIK', name: 'MobiKwik', icon: 'https://cdn.simpleicons.org/mobikwik', query: 'from:mobikwik.com' },
-  { id: 'freecharge', label: 'FREECHARGE', name: 'Freecharge', icon: 'https://cdn.simpleicons.org/freecharge', query: 'from:freecharge.in' },
-  { id: 'fampay', label: 'FAMPAY', name: 'FamPay', icon: 'https://cdn.simpleicons.org/wechat', query: 'from:fampay.in OR from:famapp.in' },
+  { id: 'cred', label: 'CRED', name: 'CRED', icon: null, query: 'from:cred.club' },
+  { id: 'mobikwik', label: 'MOBIKWIK', name: 'MobiKwik', icon: null, query: 'from:mobikwik.com' },
+  { id: 'freecharge', label: 'FREECHARGE', name: 'Freecharge', icon: null, query: 'from:freecharge.in' },
+  { id: 'fampay', label: 'FAMPAY', name: 'FamPay', icon: null, query: 'from:fampay.in OR from:famapp.in' },
   { id: 'paypal', label: 'PAYPAL', name: 'PayPal', icon: 'https://cdn.simpleicons.org/paypal', query: 'from:paypal.com' },
   { id: 'cashapp', label: 'CASHAPP', name: 'Cash App', icon: 'https://cdn.simpleicons.org/cashapp', query: 'from:cash.app OR from:square.com' },
   { id: 'stripe', label: 'STRIPE', name: 'Stripe', icon: 'https://cdn.simpleicons.org/stripe', query: 'from:stripe.com' },
@@ -52,13 +52,13 @@ const EXCHANGE_PLATFORMS = [
   { id: 'zerodha', label: 'ZERODHA', name: 'Zerodha', icon: 'https://cdn.simpleicons.org/zerodha', query: 'from:zerodha.com OR from:zerodha.net' },
   { id: 'groww', label: 'GROWW', name: 'Groww', icon: 'https://cdn.simpleicons.org/groww', query: 'from:groww.in' },
   { id: 'upstox', label: 'UPSTOX', name: 'Upstox', icon: 'https://cdn.simpleicons.org/upstox', query: 'from:upstox.com' },
-  { id: 'angelone', label: 'ANGELONE', name: 'Angel One', icon: 'https://cdn.simpleicons.org/wechat', query: 'from:angelone.in OR from:angelbroking.com' },
+  { id: 'angelone', label: 'ANGELONE', name: 'Angel One', icon: null, query: 'from:angelone.in OR from:angelbroking.com' },
   { id: 'wazirx', label: 'WAZIRX', name: 'WazirX', icon: 'https://cdn.simpleicons.org/wazirx', query: 'from:wazirx.com' },
-  { id: 'coindcx', label: 'COINDCX', name: 'CoinDCX', icon: 'https://cdn.simpleicons.org/wechat', query: 'from:coindcx.com' },
+  { id: 'coindcx', label: 'COINDCX', name: 'CoinDCX', icon: null, query: 'from:coindcx.com' },
   { id: 'binance', label: 'BINANCE', name: 'Binance', icon: 'https://cdn.simpleicons.org/binance', query: 'from:binance.com' },
   { id: 'coinbase', label: 'COINBASE', name: 'Coinbase', icon: 'https://cdn.simpleicons.org/coinbase', query: 'from:coinbase.com' },
   { id: 'kraken', label: 'KRAKEN', name: 'Kraken', icon: 'https://cdn.simpleicons.org/kraken', query: 'from:kraken.com' },
-  { id: 'cryptocom', label: 'CRYPTOCOM', name: 'Crypto.com', icon: 'https://cdn.simpleicons.org/crypto.com', query: 'from:crypto.com' },
+  { id: 'cryptocom', label: 'CRYPTOCOM', name: 'Crypto.com', icon: 'https://cdn.simpleicons.org/cryptocom', query: 'from:crypto.com' },
   { id: 'robinhood', label: 'ROBINHOOD', name: 'Robinhood', icon: 'https://cdn.simpleicons.org/robinhood', query: 'from:robinhood.com' }
 ];
 
@@ -121,6 +121,7 @@ export default function GmailUI({ member, initialLabel }) {
   const [selectedEmailIds, setSelectedEmailIds] = useState([]);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [multiActionLoading, setMultiActionLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -877,76 +878,191 @@ export default function GmailUI({ member, initialLabel }) {
   return (
     <div className="h-full bg-white text-slate-800 flex flex-col font-sans relative overflow-hidden rounded-lg shadow-2xl border border-slate-200">
       
-      {/* Top Header */}
-      <div className="h-16 border-b border-slate-200 flex items-center px-4 justify-between bg-slate-50 shrink-0">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-slate-700 font-medium text-lg">
-            <svg className="w-6 h-6 shrink-0" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="url(#gmail_grad_a)" d="M146 44h38v110c0 6.627-5.373 12-12 12h-20a6 6 0 0 1-6-6z"/>
-              <path fill="#fc413d" d="M46 44H8v110c0 6.627 5.373 12 12 12h20a6 6 0 0 0 6-6z"/>
-              <path fill="url(#gmail_grad_b)" d="M39.226 30.456c-8.033-6.752-20.018-5.714-26.77 2.319-6.752 8.032-5.714 20.017 2.319 26.77l76.078 63.949a8 8 0 0 0 10.295 0l76.078-63.95c8.032-6.752 9.07-18.737 2.318-26.77-6.752-8.032-18.737-9.07-26.769-2.318L96 78.18z"/>
-              <defs>
-                <linearGradient id="gmail_grad_a" x1="165" x2="165" y1="44" y2="166" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#60d673"/>
-                  <stop offset=".17" stopColor="#42c868"/>
-                  <stop offset=".39" stopColor="#0ebc5f"/>
-                  <stop offset=".62" stopColor="#00a9bb"/>
-                  <stop offset=".86" stopColor="#3c90ff"/>
-                  <stop offset="1" stopColor="#3186ff"/>
-                </linearGradient>
-                <linearGradient id="gmail_grad_b" x1="8" x2="184" y1="46.13" y2="46.13" gradientUnits="userSpaceOnUse">
-                  <stop offset=".08" stopColor="#ff63a0"/>
-                  <stop offset=".3" stopColor="#fc413d"/>
-                  <stop offset=".5" stopColor="#fc413d"/>
-                  <stop offset=".65" stopColor="#fc413d"/>
-                  <stop offset=".72" stopColor="#fc5c30"/>
-                  <stop offset=".86" stopColor="#feb10c"/>
-                  <stop offset=".91" stopColor="#fec700"/>
-                  <stop offset=".96" stopColor="#ffdb0f"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            Gmail
-          </div>
-          {!selectedEmail && (
-            <div className="relative ml-4 md:ml-8 flex-1 max-w-xs md:max-w-md">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search mail"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-white transition-all shadow-inner"
-              />
-            </div>
-          )}
+      {/* Top Header - clean on mobile, just logo + search + hamburger */}
+      <div className="flex items-center px-3 md:px-4 h-14 md:h-16 gap-3 border-b border-slate-200 bg-slate-50 shrink-0">
+        <div className="flex items-center gap-2 text-slate-700 font-medium text-lg shrink-0">
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+            className="md:hidden p-1.5 hover:bg-slate-200 rounded-md text-slate-600 transition-colors -ml-1 mr-1"
+            title="Toggle Menu"
+          >
+            <Menu size={20} />
+          </button>
+          <svg className="w-6 h-6 shrink-0" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill="url(#gmail_grad_a)" d="M146 44h38v110c0 6.627-5.373 12-12 12h-20a6 6 0 0 1-6-6z"/>
+            <path fill="#fc413d" d="M46 44H8v110c0 6.627 5.373 12 12 12h20a6 6 0 0 0 6-6z"/>
+            <path fill="url(#gmail_grad_b)" d="M39.226 30.456c-8.033-6.752-20.018-5.714-26.77 2.319-6.752 8.032-5.714 20.017 2.319 26.77l76.078 63.949a8 8 0 0 0 10.295 0l76.078-63.95c8.032-6.752 9.07-18.737 2.318-26.77-6.752-8.032-18.737-9.07-26.769-2.318L96 78.18z"/>
+            <defs>
+              <linearGradient id="gmail_grad_a" x1="165" x2="165" y1="44" y2="166" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#60d673"/>
+                <stop offset=".17" stopColor="#42c868"/>
+                <stop offset=".39" stopColor="#0ebc5f"/>
+                <stop offset=".62" stopColor="#00a9bb"/>
+                <stop offset=".86" stopColor="#3c90ff"/>
+                <stop offset="1" stopColor="#3186ff"/>
+              </linearGradient>
+              <linearGradient id="gmail_grad_b" x1="8" x2="184" y1="46.13" y2="46.13" gradientUnits="userSpaceOnUse">
+                <stop offset=".08" stopColor="#ff63a0"/>
+                <stop offset=".3" stopColor="#fc413d"/>
+                <stop offset=".5" stopColor="#fc413d"/>
+                <stop offset=".65" stopColor="#fc413d"/>
+                <stop offset=".72" stopColor="#fc5c30"/>
+                <stop offset=".86" stopColor="#feb10c"/>
+                <stop offset=".91" stopColor="#fec700"/>
+                <stop offset=".96" stopColor="#ffdb0f"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          Gmail
         </div>
-
-        <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
+        {!selectedEmail && (
+          <div className="relative flex-1 ml-2 md:ml-6 max-w-full md:max-w-md">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Search mail"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-slate-300 focus:bg-white transition-all shadow-inner"
+            />
+          </div>
+        )}
+        {/* Mode switcher - desktop only in header */}
+        <div className="hidden md:flex items-center gap-1 bg-white border border-slate-200 rounded-lg p-1 shadow-sm ml-auto shrink-0">
           <button 
             onClick={() => { setCurrentMode('USER'); setActiveLabel('INBOX'); }}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'USER' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'USER' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             User Inbox
           </button>
           <button 
             onClick={() => { setCurrentMode('STANDARD'); setActiveLabel('INBOX'); }}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'STANDARD' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'STANDARD' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             Standard Platforms
           </button>
           <button 
             onClick={() => { setCurrentMode('PREMIUM'); setActiveLabel('TARGET_INBOX'); }}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'PREMIUM' ? 'bg-purple-50 text-purple-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-bold rounded-md flex items-center justify-center transition-colors ${currentMode === 'PREMIUM' ? 'bg-purple-50 text-purple-700 shadow-sm' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             Target Monitor {!isPro && <span className="ml-1.5 flex h-2 w-2 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>}
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative">
-        {/* Sidebar */}
-        <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50 flex flex-col py-4 shrink-0 overflow-y-auto max-h-48 md:max-h-none custom-scrollbar">
+      {/* Mobile full-screen sidebar overlay - covers entire Gmail card */}
+      {isSidebarOpen && (
+        <div className="md:hidden absolute inset-0 z-50 bg-slate-50 flex flex-col">
+          {/* Overlay header with close button */}
+          <div className="flex items-center justify-between px-4 h-14 border-b border-slate-200 bg-white shrink-0">
+            <div className="flex items-center gap-2 text-slate-700 font-semibold">
+              <svg className="w-5 h-5" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill="url(#gmail_mob_a)" d="M146 44h38v110c0 6.627-5.373 12-12 12h-20a6 6 0 0 1-6-6z"/>
+                <path fill="#fc413d" d="M46 44H8v110c0 6.627 5.373 12 12 12h20a6 6 0 0 0 6-6z"/>
+                <path fill="url(#gmail_mob_b)" d="M39.226 30.456c-8.033-6.752-20.018-5.714-26.77 2.319-6.752 8.032-5.714 20.017 2.319 26.77l76.078 63.949a8 8 0 0 0 10.295 0l76.078-63.95c8.032-6.752 9.07-18.737 2.318-26.77-6.752-8.032-18.737-9.07-26.769-2.318L96 78.18z"/>
+                <defs>
+                  <linearGradient id="gmail_mob_a" x1="165" x2="165" y1="44" y2="166" gradientUnits="userSpaceOnUse"><stop stopColor="#60d673"/><stop offset="1" stopColor="#3186ff"/></linearGradient>
+                  <linearGradient id="gmail_mob_b" x1="8" x2="184" y1="46.13" y2="46.13" gradientUnits="userSpaceOnUse"><stop offset=".08" stopColor="#ff63a0"/><stop offset=".5" stopColor="#fc413d"/><stop offset=".96" stopColor="#ffdb0f"/></linearGradient>
+                </defs>
+              </svg>
+              Gmail Menu
+            </div>
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors"
+              title="Close menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            {/* Inbox Type */}
+            <div className="mx-4 mb-4">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-1">Inbox Type</p>
+              <div className="flex flex-col gap-1 bg-white border border-slate-200 rounded-xl p-1.5 shadow-sm">
+                <button 
+                  onClick={() => { setCurrentMode('USER'); setActiveLabel('INBOX'); }}
+                  className={`w-full text-left px-3 py-2.5 text-sm font-bold rounded-lg transition-colors ${currentMode === 'USER' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  User Inbox
+                </button>
+                <button 
+                  onClick={() => { setCurrentMode('STANDARD'); setActiveLabel('INBOX'); }}
+                  className={`w-full text-left px-3 py-2.5 text-sm font-bold rounded-lg transition-colors ${currentMode === 'STANDARD' ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  Standard Platforms
+                </button>
+                <button 
+                  onClick={() => { setCurrentMode('PREMIUM'); setActiveLabel('TARGET_INBOX'); }}
+                  className={`w-full text-left px-3 py-2.5 text-sm font-bold rounded-lg transition-colors flex items-center justify-between ${currentMode === 'PREMIUM' ? 'bg-purple-50 text-purple-700' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  Target Monitor
+                  {!isPro && <span className="flex h-2 w-2 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span></span>}
+                </button>
+              </div>
+            </div>
+
+            <div className="h-px bg-slate-200 mx-4 mb-4" />
+
+            {/* Compose */}
+            <button 
+              onClick={() => { if (!isPro) { window.showToast('PRO Feature: Upgrade to compose and send emails.', 'error'); } else { setIsComposing(true); setIsSidebarOpen(false); } }}
+              className="mx-4 mb-4 w-[calc(100%-2rem)] bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all rounded-2xl py-3.5 px-6 flex items-center justify-center gap-2 font-medium"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" className="fill-current"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg>
+              Compose
+            </button>
+
+            <div className="h-px bg-slate-200 mx-4 mb-2" />
+
+            {/* Labels nav */}
+            <nav className="px-2 space-y-0.5">
+              {currentMode === 'USER' && (
+                <>
+                  <button onClick={() => { setActiveLabel('INBOX'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'INBOX' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Inbox size={18} /> Inbox</button>
+                  <button onClick={() => { setActiveLabel('SENT'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SENT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Send size={18} /> Sent</button>
+                  <button onClick={() => { setActiveLabel('STARRED'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'STARRED' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Starred</button>
+                  <button onClick={() => { setActiveLabel('IMPORTANT'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'IMPORTANT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l4.3 4.3v11.4L12 22l-4.3-4.3V6.3z"></path></svg> Important</button>
+                  <button onClick={() => { setActiveLabel('DRAFT'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'DRAFT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><File size={18} /> Drafts</button>
+                  <button onClick={() => { setActiveLabel('UNREAD'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'UNREAD' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Mail size={18} /> Unread</button>
+                  <div className="h-px bg-slate-200 my-2 mx-4"></div>
+                  <button onClick={() => { setActiveLabel('SPAM'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SPAM' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Archive size={18} /> Spam</button>
+                  <button onClick={() => { setActiveLabel('TRASH'); setSelectedEmail(null); setIsSidebarOpen(false); }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'TRASH' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Trash2 size={18} /> Trash</button>
+                </>
+              )}
+              {currentMode === 'STANDARD' && (
+                <>
+                  <button onClick={() => { if(isPro) { setActiveLabel('INBOX'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'INBOX' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Inbox size={18} /> Inbox</button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('SENT'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SENT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Send size={18} /> Sent</button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('STARRED'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'STARRED' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Starred</button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('IMPORTANT'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'IMPORTANT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l4.3 4.3v11.4L12 22l-4.3-4.3V6.3z"></path></svg> Important</button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('DRAFT'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'DRAFT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><File size={18} /> Drafts</button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('UNREAD'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'UNREAD' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Mail size={18} /> Unread</button>
+                  <div className="h-px bg-slate-200 my-2 mx-4"></div>
+                  <button onClick={() => { if(isPro) { setActiveLabel('SPAM'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SPAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Archive size={18} /> Spam</button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('TRASH'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'TRASH' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Trash2 size={18} /> Trash</button>
+                </>
+              )}
+              {currentMode === 'PREMIUM' && (
+                <>
+                  <button onClick={() => { if(isPro) { setActiveLabel('TARGET_INBOX'); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 px-4 py-3 rounded-r-full font-bold text-sm transition-colors ${activeLabel === 'TARGET_INBOX' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? 'text-purple-600' : 'text-slate-400'} /> Curated Targets</button>
+                  {filteredSocial.length > 0 && (<><div className="pt-4 pb-1 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Social Accounts</div>{filteredSocial.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 pl-4 pr-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><img src={p.icon} alt={p.name} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</button>)}</>)}
+                  {filteredBanking.length > 0 && (<><div className="pt-4 pb-1 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Banking</div>{filteredBanking.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 pl-4 pr-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><img src={p.icon} alt={p.name} onError={e => e.target.style.display='none'} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</button>)}</>)}
+                  {filteredWallet.length > 0 && (<><div className="pt-4 pb-1 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wallets & P2P</div>{filteredWallet.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 pl-4 pr-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><img src={p.icon} alt={p.name} onError={e => e.target.style.display='none'} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</button>)}</>)}
+                  {filteredExchange.length > 0 && (<><div className="pt-4 pb-1 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Exchanges & Trading</div>{filteredExchange.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); setIsSidebarOpen(false); } }} className={`w-full flex items-center gap-4 pl-4 pr-4 py-3 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><img src={p.icon} alt={p.name} onError={e => e.target.style.display='none'} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</button>)}</>)}
+                  {!filteredSocial.length && !filteredBanking.length && !filteredWallet.length && !filteredExchange.length && (<div className="px-6 py-8 text-center text-slate-400 flex flex-col items-center gap-3"><ShieldAlert size={24} className="opacity-50" /><p className="text-sm">No target footprints detected.</p></div>)}
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-row flex-1 overflow-hidden">
+        {/* Desktop sidebar - always visible on md+ */}
+        <div className="hidden md:flex w-64 border-r border-slate-200 bg-slate-50 flex-col py-4 shrink-0 overflow-y-auto custom-scrollbar">
           <button 
             onClick={() => { if (!isPro) { window.showToast('PRO Feature: Upgrade to compose and send emails.', 'error'); } else { setIsComposing(true); } }}
             className="mx-4 mb-6 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:shadow-md transition-all rounded-2xl py-4 px-6 flex items-center justify-center gap-2 font-medium"
@@ -954,275 +1070,43 @@ export default function GmailUI({ member, initialLabel }) {
             <svg width="24" height="24" viewBox="0 0 24 24" className="fill-current"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg>
             Compose
           </button>
-
           <nav className="flex-1 px-2 space-y-0.5">
             {currentMode === 'USER' && (
               <>
-                <button 
-                  onClick={() => { setActiveLabel('INBOX'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'INBOX' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <Inbox size={18} /> Inbox
-                </button>
-                <button 
-                  onClick={() => { setActiveLabel('SENT'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SENT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <Send size={18} /> Sent
-                </button>
-                <button 
-                  onClick={() => { setActiveLabel('STARRED'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'STARRED' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Starred
-                </button>
-                <button 
-                  onClick={() => { setActiveLabel('IMPORTANT'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'IMPORTANT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l4.3 4.3v11.4L12 22l-4.3-4.3V6.3z"></path></svg> Important
-                </button>
-                <button 
-                  onClick={() => { setActiveLabel('DRAFT'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'DRAFT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <File size={18} /> Drafts
-                </button>
-                <button 
-                  onClick={() => { setActiveLabel('UNREAD'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'UNREAD' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <Mail size={18} /> Unread
-                </button>
+                <button onClick={() => { setActiveLabel('INBOX'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'INBOX' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Inbox size={18} /> Inbox</button>
+                <button onClick={() => { setActiveLabel('SENT'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SENT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Send size={18} /> Sent</button>
+                <button onClick={() => { setActiveLabel('STARRED'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'STARRED' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Starred</button>
+                <button onClick={() => { setActiveLabel('IMPORTANT'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'IMPORTANT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l4.3 4.3v11.4L12 22l-4.3-4.3V6.3z"></path></svg> Important</button>
+                <button onClick={() => { setActiveLabel('DRAFT'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'DRAFT' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><File size={18} /> Drafts</button>
+                <button onClick={() => { setActiveLabel('UNREAD'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'UNREAD' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Mail size={18} /> Unread</button>
                 <div className="h-px bg-slate-200 my-2 mx-4"></div>
-                <button 
-                  onClick={() => { setActiveLabel('SPAM'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SPAM' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <Archive size={18} /> Spam
-                </button>
-                <button 
-                  onClick={() => { setActiveLabel('TRASH'); setSelectedEmail(null); }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'TRASH' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <Trash2 size={18} /> Trash
-                </button>
+                <button onClick={() => { setActiveLabel('SPAM'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SPAM' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Archive size={18} /> Spam</button>
+                <button onClick={() => { setActiveLabel('TRASH'); setSelectedEmail(null); }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'TRASH' ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'}`}><Trash2 size={18} /> Trash</button>
               </>
             )}
-
             {currentMode === 'STANDARD' && (
               <>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('INBOX'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'INBOX' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Inbox size={18} /> Inbox
-                </button>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('SENT'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SENT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Send size={18} /> Sent
-                </button>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('STARRED'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'STARRED' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Starred
-                </button>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('IMPORTANT'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'IMPORTANT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l4.3 4.3v11.4L12 22l-4.3-4.3V6.3z"></path></svg> Important
-                </button>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('DRAFT'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'DRAFT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <File size={18} /> Drafts
-                </button>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('UNREAD'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'UNREAD' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Mail size={18} /> Unread
-                </button>
+                <button onClick={() => { if(isPro) { setActiveLabel('INBOX'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'INBOX' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Inbox size={18} /> Inbox</button>
+                <button onClick={() => { if(isPro) { setActiveLabel('SENT'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SENT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Send size={18} /> Sent</button>
+                <button onClick={() => { if(isPro) { setActiveLabel('STARRED'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'STARRED' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Starred</button>
+                <button onClick={() => { if(isPro) { setActiveLabel('IMPORTANT'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'IMPORTANT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l4.3 4.3v11.4L12 22l-4.3-4.3V6.3z"></path></svg> Important</button>
+                <button onClick={() => { if(isPro) { setActiveLabel('DRAFT'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'DRAFT' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><File size={18} /> Drafts</button>
+                <button onClick={() => { if(isPro) { setActiveLabel('UNREAD'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'UNREAD' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Mail size={18} /> Unread</button>
                 <div className="h-px bg-slate-200 my-2 mx-4"></div>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('SPAM'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'SPAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Archive size={18} /> Spam
-                </button>
-                <button 
-                  onClick={() => { if(isPro) { setActiveLabel('TRASH'); setSelectedEmail(null); } }}
-                  className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                    activeLabel === 'TRASH' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                  } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  <Trash2 size={18} /> Trash
-                </button>
-
+                <button onClick={() => { if(isPro) { setActiveLabel('SPAM'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'SPAM' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Archive size={18} /> Spam</button>
+                <button onClick={() => { if(isPro) { setActiveLabel('TRASH'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === 'TRASH' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Trash2 size={18} /> Trash</button>
               </>
             )}
-
             {currentMode === 'PREMIUM' && (
               <>
                 <div className="mb-4">
-                  <button 
-                    onClick={() => { if(isPro) { setActiveLabel('TARGET_INBOX'); setSelectedEmail(null); } }}
-                    className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${
-                      activeLabel === 'TARGET_INBOX' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                    } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    <Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? "text-purple-600" : "text-slate-400"} /> Curated Targets
-                  </button>
+                  <button onClick={() => { if(isPro) { setActiveLabel('TARGET_INBOX'); setSelectedEmail(null); } }} className={`w-full flex items-center gap-4 px-4 py-2.5 rounded-r-full font-bold text-sm transition-colors ${activeLabel === 'TARGET_INBOX' ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><Inbox size={18} className={activeLabel === 'TARGET_INBOX' ? 'text-purple-600' : 'text-slate-400'} /> Curated Targets</button>
                 </div>
-
-                {filteredSocial.length > 0 && (
-                  <>
-                    <div className="pt-2 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Social Accounts
-                    </div>
-                    {filteredSocial.map((platform) => (
-                      <button 
-                        key={platform.id}
-                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
-                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span className="flex items-center gap-4 pl-4">
-                          <img 
-                            src={platform.icon} 
-                            alt={platform.name} 
-                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
-                          />
-                          {platform.name}
-                        </span>
-                      </button>
-                    ))}
-                  </>
-                )}
-                
-                {filteredBanking.length > 0 && (
-                  <>
-                    <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Banking
-                    </div>
-                    {filteredBanking.map((platform) => (
-                      <button 
-                        key={platform.id}
-                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
-                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span className="flex items-center gap-4 pl-4">
-                          <img 
-                            src={platform.icon} 
-                            alt={platform.name} 
-                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                          {platform.name}
-                        </span>
-                      </button>
-                    ))}
-                  </>
-                )}
-
-                {filteredWallet.length > 0 && (
-                  <>
-                    <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Wallets & P2P
-                    </div>
-                    {filteredWallet.map((platform) => (
-                      <button 
-                        key={platform.id}
-                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
-                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span className="flex items-center gap-4 pl-4">
-                          <img 
-                            src={platform.icon} 
-                            alt={platform.name} 
-                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                          {platform.name}
-                        </span>
-                      </button>
-                    ))}
-                  </>
-                )}
-
-                {filteredExchange.length > 0 && (
-                  <>
-                    <div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Exchanges & Trading
-                    </div>
-                    {filteredExchange.map((platform) => (
-                      <button 
-                        key={platform.id}
-                        onClick={() => { if(isPro) { setActiveLabel(platform.label); setSelectedEmail(null); } }}
-                        className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${
-                          activeLabel === platform.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'
-                        } ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span className="flex items-center gap-4 pl-4">
-                          <img 
-                            src={platform.icon} 
-                            alt={platform.name} 
-                            className={`w-4 h-4 object-contain transition-all ${activeLabel === platform.label ? 'opacity-90' : 'grayscale opacity-50'}`} 
-                            onError={(e) => { e.target.style.display = 'none'; }}
-                          />
-                          {platform.name}
-                        </span>
-                      </button>
-                    ))}
-                  </>
-                )}
-
-                {!filteredSocial.length && !filteredBanking.length && !filteredWallet.length && !filteredExchange.length && (
-                  <div className="px-6 py-8 text-center text-slate-400 flex flex-col items-center gap-3">
-                    <ShieldAlert size={24} className="opacity-50" />
-                    <p className="text-sm">No target footprints detected.</p>
-                  </div>
-                )}
+                {filteredSocial.length > 0 && (<><div className="pt-2 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Social Accounts</div>{filteredSocial.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); } }} className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><span className="flex items-center gap-4 pl-4"><img src={p.icon} alt={p.name} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</span></button>)}</>)}
+                {filteredBanking.length > 0 && (<><div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Banking</div>{filteredBanking.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); } }} className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><span className="flex items-center gap-4 pl-4"><img src={p.icon} alt={p.name} onError={e => e.target.style.display='none'} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</span></button>)}</>)}
+                {filteredWallet.length > 0 && (<><div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wallets & P2P</div>{filteredWallet.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); } }} className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><span className="flex items-center gap-4 pl-4"><img src={p.icon} alt={p.name} onError={e => e.target.style.display='none'} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</span></button>)}</>)}
+                {filteredExchange.length > 0 && (<><div className="pt-6 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Exchanges & Trading</div>{filteredExchange.map(p => <button key={p.id} onClick={() => { if(isPro) { setActiveLabel(p.label); setSelectedEmail(null); } }} className={`w-full flex items-center justify-between pr-4 py-2 rounded-r-full font-medium text-sm transition-colors ${activeLabel === p.label ? 'bg-purple-100 text-purple-700' : 'text-slate-600 hover:bg-slate-100'} ${!isPro ? 'opacity-50 cursor-not-allowed' : ''}`}><span className="flex items-center gap-4 pl-4"><img src={p.icon} alt={p.name} onError={e => e.target.style.display='none'} className={`w-4 h-4 object-contain ${activeLabel === p.label ? 'opacity-90' : 'grayscale opacity-50'}`} />{p.name}</span></button>)}</>)}
+                {!filteredSocial.length && !filteredBanking.length && !filteredWallet.length && !filteredExchange.length && (<div className="px-6 py-8 text-center text-slate-400 flex flex-col items-center gap-3"><ShieldAlert size={24} className="opacity-50" /><p className="text-sm">No target footprints detected.</p></div>)}
               </>
             )}
           </nav>
@@ -1238,7 +1122,7 @@ export default function GmailUI({ member, initialLabel }) {
               </div>
               <h2 className="text-xl font-bold text-slate-800 mb-2">Monitor is Locked</h2>
               <p className="text-sm max-w-sm mb-6 text-slate-500">
-                Automated auditing of isolated Standard Platforms and Target accounts is only available to PRO auditors.
+                Automated monitoring of isolated Standard Platforms and Target accounts is only available to PRO Managers.
               </p>
               <div className="bg-white border border-slate-200 rounded-xl p-4 w-80 text-left mb-6 shadow-sm">
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">PRO TIER UPGRADE INCLUDES:</h4>
@@ -1251,7 +1135,7 @@ export default function GmailUI({ member, initialLabel }) {
                 </ul>
               </div>
               <button onClick={handleUpgrade} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium text-sm transition-colors shadow-lg shadow-indigo-600/20">
-                Upgrade to PRO Auditor
+                Upgrade to PRO Manager
               </button>
             </div>
           ) : selectedEmail ? (
@@ -1288,22 +1172,22 @@ export default function GmailUI({ member, initialLabel }) {
                   {selectedEmail.alert && <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-md font-medium uppercase tracking-wide border border-red-200">Alert</span>}
                 </h1>
                 
-                <div className="flex items-start justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-6 md:mb-8 gap-4">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium shadow-sm shrink-0">
                       {selectedEmail.senderName.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <div className="text-sm">
+                    <div className="min-w-0">
+                      <div className="text-sm truncate">
                         <span className="font-bold text-slate-900">{selectedEmail.senderName}</span>
-                        <span className="text-slate-500 ml-2 text-xs">{selectedEmail.senderEmail}</span>
+                        <span className="text-slate-500 md:ml-2 text-xs block md:inline truncate">{selectedEmail.senderEmail}</span>
                       </div>
-                      <div className="text-xs text-slate-500 mt-0.5">
+                      <div className="text-xs text-slate-500 mt-0.5 truncate">
                         to {selectedEmail.to}
                       </div>
                     </div>
                   </div>
-                  <div className="text-xs text-slate-500 font-medium whitespace-nowrap">
+                  <div className="text-xs text-slate-500 font-medium whitespace-nowrap sm:text-right shrink-0">
                     {selectedEmail.fullDate}
                   </div>
                 </div>
@@ -1442,28 +1326,31 @@ export default function GmailUI({ member, initialLabel }) {
                     <div 
                       key={email.id} 
                       onClick={() => handleEmailClick(email)}
-                      className={`flex items-center px-4 py-2.5 border-b border-slate-100 hover:shadow-[inset_1px_0_0_#dadce0,inset_-1px_0_0_#dadce0,0_1px_2px_0_rgba(60,64,67,.3),0_1px_3px_1px_rgba(60,64,67,.15)] cursor-pointer group transition-shadow ${
+                      className={`flex flex-col md:flex-row md:items-center px-4 py-2.5 border-b border-slate-100 hover:shadow-[inset_1px_0_0_#dadce0,inset_-1px_0_0_#dadce0,0_1px_2px_0_rgba(60,64,67,.3),0_1px_3px_1px_rgba(60,64,67,.15)] cursor-pointer group transition-shadow ${
                         email.unread ? 'bg-white font-bold text-slate-900' : 'bg-slate-50/50 font-medium text-slate-600'
                       }`}
                     >
-                      <div className="flex items-center gap-3 w-64 shrink-0" onClick={(e) => e.stopPropagation()}>
-                        <input 
-                          type="checkbox" 
-                          checked={selectedEmailIds.includes(email.id)}
-                          onChange={() => handleToggleSelect(email.id)}
-                          className="rounded border-slate-300 text-blue-500 focus:ring-blue-500 opacity-50 group-hover:opacity-100 transition-opacity cursor-pointer" 
-                        />
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`opacity-20 group-hover:opacity-100 transition-opacity ${email.alert ? 'text-yellow-400 opacity-100 fill-current' : 'text-slate-400'}`}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        <span className={`truncate ${email.alert ? 'text-red-600' : ''}`}>{email.senderName}</span>
+                      <div className="flex items-center justify-between w-full md:w-auto">
+                        <div className="flex items-center gap-3 w-full md:w-64 shrink-0" onClick={(e) => e.stopPropagation()}>
+                          <input 
+                            type="checkbox" 
+                            checked={selectedEmailIds.includes(email.id)}
+                            onChange={() => handleToggleSelect(email.id)}
+                            className="rounded border-slate-300 text-blue-500 focus:ring-blue-500 opacity-50 group-hover:opacity-100 transition-opacity cursor-pointer" 
+                          />
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`opacity-20 group-hover:opacity-100 transition-opacity ${email.alert ? 'text-yellow-400 opacity-100 fill-current' : 'text-slate-400'}`}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                          <span className={`truncate flex-1 ${email.alert ? 'text-red-600' : ''}`}>{email.senderName}</span>
+                          <span className="md:hidden text-xs text-slate-500 font-normal ml-2">{email.time}</span>
+                        </div>
                       </div>
                       
-                      <div className="flex-1 truncate mr-4">
+                      <div className="flex-1 truncate md:mr-4 pl-9 md:pl-0 mt-1 md:mt-0">
                         <span className={`${email.unread ? 'text-slate-900' : 'text-slate-700'}`}>{email.subject}</span>
-                        <span className="text-slate-500 font-normal mx-2">-</span>
-                        <span className="text-slate-500 font-normal truncate inline-block align-bottom max-w-sm">{email.snippet}</span>
+                        <span className="hidden md:inline text-slate-500 font-normal mx-2">-</span>
+                        <span className="block md:inline text-slate-500 font-normal truncate text-xs md:text-sm mt-0.5 md:mt-0 align-bottom md:max-w-sm">{email.snippet}</span>
                       </div>
                       
-                      <div className={`w-20 text-right text-xs flex items-center justify-end gap-2 shrink-0 ${email.unread ? 'text-blue-600 font-bold' : 'text-slate-500 font-medium'}`}>
+                      <div className={`hidden md:flex w-20 text-right text-xs items-center justify-end gap-2 shrink-0 ${email.unread ? 'text-blue-600 font-bold' : 'text-slate-500 font-medium'}`}>
                         {/* Hover Actions */}
                         <div className="hidden group-hover:flex items-center gap-1 -mr-2" onClick={(e) => e.stopPropagation()}>
                           <button onClick={(e) => handleArchive(email.id, e)} className="p-1.5 hover:bg-slate-200 rounded text-slate-600" title="Archive"><Archive size={16}/></button>
@@ -1480,7 +1367,7 @@ export default function GmailUI({ member, initialLabel }) {
 
           {/* Compose Modal */}
           {isComposing && (
-            <div className="absolute bottom-0 right-16 w-[500px] h-[500px] bg-white rounded-t-lg shadow-2xl border border-slate-300 flex flex-col z-50 overflow-hidden">
+            <div className="absolute bottom-0 left-0 md:left-auto right-0 md:right-16 w-full md:w-[500px] h-[80vh] md:h-[500px] bg-white rounded-t-lg shadow-2xl border border-slate-300 flex flex-col z-[60] overflow-hidden">
               <div className="bg-slate-800 text-white px-4 py-3 flex items-center justify-between cursor-pointer">
                 <span className="font-medium text-sm">New Message</span>
                 <button onClick={() => setIsComposing(false)} className="hover:bg-slate-700 p-1 rounded transition-colors"><X size={16} /></button>

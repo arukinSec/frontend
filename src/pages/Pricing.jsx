@@ -6,23 +6,11 @@ import Footer from '../components/Footer';
 
 export default function Pricing() {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
-  const [proCount, setProCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
   const auditorId = localStorage.getItem('auditor_id');
   const auditorEmail = localStorage.getItem('auditor_email');
-
-  useEffect(() => {
-    const fetchProCount = async () => {
-      const { data: count, error } = await supabase.rpc('get_pro_auditor_count');
-      if (!error && count !== null) {
-        setProCount(count);
-      }
-    };
-    fetchProCount();
-    fetchProCount();
-  }, []);
 
   const handleCheckout = async (action) => {
     if (!auditorId) {
@@ -96,7 +84,7 @@ export default function Pricing() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin <span className="text-emerald-600 font-medium hidden sm:inline">Security Console</span></span>
+            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin</span>
           </div>
 
           {/* Desktop Nav */}
@@ -106,6 +94,9 @@ export default function Pricing() {
             <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Use Cases</Link>
             <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">About</Link>
             <Link to="/pricing" className="text-sm font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">Pricing</Link>
+            <a href="https://github.com/arukinSec" target="_blank" rel="noreferrer" className="flex items-center justify-center w-8 h-8 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors ml-2" title="Star on GitHub">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path></svg>
+            </a>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -138,7 +129,7 @@ export default function Pricing() {
         </div>
         <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2 text-center font-sans">Flexible Compliance Plans</h1>
         <p className="text-slate-600 text-sm max-w-lg text-center mb-16">
-          Access basic scans for free, or lock in discounted early bird pricing on our hosted cloud and self-hosted versions during beta.
+          Start with free oversight of one account, or unlock full management features for multiple family members, clients, or high-profile individuals.
         </p>
 
         {/* Pricing Cards Grid */}
@@ -198,7 +189,7 @@ export default function Pricing() {
             </div>
           </div>
 
-          {/* Card 2: Hosted Pro Annual (Dark Contrast Card) */}
+          {/* Card 3: Hosted Pro Annual (Dark Contrast Card) */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 flex flex-col justify-between hover:border-emerald-500/50 transition-colors relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold tracking-wider px-3 py-1 rounded-bl-lg uppercase">
               Best Value
@@ -207,26 +198,12 @@ export default function Pricing() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs font-semibold text-emerald-400 tracking-wider uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Annual Pro</span>
-                <span className="text-[9px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-bold uppercase tracking-wide">Domain Drive</span>
               </div>
               <div className="flex items-baseline gap-2 mt-4">
-                <span className="text-4xl font-bold text-white">₹{proCount < 10 ? '1,280' : '7,890'}</span>
+                <span className="text-4xl font-bold text-white">₹12,999</span>
                 <span className="text-xs text-slate-400">/year</span>
-                {proCount < 10 && <span className="text-xs line-through text-slate-500 font-bold ml-1">₹7,890</span>}
               </div>
-              <p className="text-[10px] text-emerald-400 font-semibold mt-1">One-time payment for 1-year access. No auto-renewal, no commitment.</p>
-
-              {/* Progress bar */}
-              <div className="mt-4 mb-6 bg-slate-800/50 border border-slate-700/50 p-3 rounded-xl">
-                <div className="flex justify-between text-[10px] font-semibold mb-1.5">
-                  <span className="text-emerald-400">Launch Promo (First 10 Seats)</span>
-                  <span className="text-slate-300">{Math.min(10, proCount)} / 10 seats claimed</span>
-                </div>
-                <div className="w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                  <div className="bg-gradient-to-r from-emerald-500 to-teal-400 h-1.5 rounded-full" style={{ width: `${Math.min(100, (proCount / 10) * 100)}%` }}></div>
-                </div>
-                <p className="text-[9px] text-slate-400 mt-2 leading-relaxed">Price reverts to standard ₹7,890/year once slots fill.</p>
-              </div>
+              <p className="text-[10px] text-emerald-400 font-semibold mt-1 mb-6">One-time payment for 1-year access. No auto-renewal, no commitment.</p>
               
               <ul className="space-y-4 text-sm text-slate-300">
                 <li className="flex items-center gap-2"><Check size={16} className="text-emerald-400" /> Active operations (Delete, Compose)</li>
@@ -252,40 +229,63 @@ export default function Pricing() {
         </div>
 
         {/* Scan Limits Disclosure */}
-        <div className="w-full max-w-6xl bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+        <div className="w-full max-w-6xl bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
           <p className="text-xs text-amber-800 font-semibold">
             Monthly Scan Limits: Free accounts get 1 insight scan + 2 footprint scans per month per member. 
             PRO accounts get 5 insight scans + 10 footprint scans per month per member.
           </p>
         </div>
 
-        {/* Self-Hosted Callout Section (Below the grid) */}
+        {/* Feature Disclaimer & Payment Support */}
+        <div className="w-full max-w-6xl bg-slate-100 border border-slate-200 rounded-xl p-4 mb-6">
+          <p className="text-xs text-slate-600 leading-relaxed">
+            <strong className="text-slate-700">Feature Availability:</strong> Not all features listed may work as expected for every Google account due to API restrictions, regional availability, or account configuration. Arukin is in active development — some capabilities may be limited or temporarily unavailable during beta.
+          </p>
+          <p className="text-xs text-slate-600 leading-relaxed mt-2">
+            <strong className="text-slate-700">Payment Issues:</strong> If your payment fails, you are charged but access is not granted, or you experience any other billing problem, please email me at <a href="mailto:dmuolhoi@gmail.com" className="text-emerald-700 hover:text-emerald-600 underline underline-offset-2 font-semibold select-all">dmuolhoi@gmail.com</a> and we will resolve it promptly.
+          </p>
+        </div>
+
+        {/* Self-Hosted / Open Source Callout Section */}
         <div className="w-full max-w-6xl bg-white shadow-sm border border-slate-200 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-start gap-4 w-full">
             <div className="hidden md:flex h-12 w-12 rounded-xl bg-teal-500/10 border border-teal-500/20 items-center justify-center text-teal-600 shrink-0 mt-1">
               <Server size={22} />
             </div>
             <div className="w-full">
-              <span className="inline-block text-[10px] bg-amber-500/15 text-amber-600 border border-amber-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider mb-2">Beta Onboarding</span>
-              <h3 className="text-lg font-bold text-slate-900 mb-2 md:mb-1">Need absolute database isolation?</h3>
+              <span className="inline-block text-[10px] bg-teal-500/15 text-teal-700 border border-teal-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider mb-2">100% Open Source</span>
+              <h3 className="text-lg font-bold text-slate-900 mb-2 md:mb-1">Self-host for free, or let us build it for you.</h3>
               <p className="text-slate-600 text-xs leading-relaxed max-w-xl">
-                <strong>Self-Hosted Enterprise Pass (₹28,600 one-time):</strong> Run the platform on your own cloud database. Includes a lifetime usage license and setup assistance. <strong>Only 5 setup slots remaining</strong> for early bird onboarding. Google sandbox unverified app limits (max 100 member accounts) apply.
+                Arukin is fully open-source. You can deploy it on your own infrastructure completely for <strong>free</strong> for absolute database isolation. 
+                <br/><br/>
+                If you prefer a white-glove experience, you can request the <strong>Enterprise Setup Service (₹28,600 one-time)</strong>, and our team will configure your custom private cloud instance for you.
               </p>
             </div>
           </div>
-          <button 
-            onClick={() => setShowInquiryModal(true)}
-            className="w-full md:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 rounded-xl text-sm font-semibold transition-colors shrink-0 cursor-pointer text-center"
-          >
-            Request Self-Hosted Setup
-          </button>
+          <div className="flex flex-col gap-3 w-full md:w-auto shrink-0">
+            <a 
+              href="https://github.com/arukinSec" 
+              target="_blank" 
+              rel="noreferrer"
+              className="w-full md:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 rounded-xl text-sm font-semibold transition-colors cursor-pointer text-center flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path></svg>
+              View on GitHub
+            </a>
+            <button 
+              onClick={() => setShowInquiryModal(true)}
+              className="w-full md:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 rounded-xl text-sm font-semibold transition-colors cursor-pointer text-center"
+            >
+              Request Setup Service
+            </button>
+          </div>
         </div>
       </main>
 
       {/* Inquiry Form Modal */}
       {showInquiryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#0E0E10] border border-slate-200 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Self-Hosted Setup Request</h3>
@@ -301,7 +301,7 @@ export default function Pricing() {
 
             <div className="space-y-4">
               <p className="text-slate-700 text-sm leading-relaxed">
-                Include the following in your email:
+                Email me at <strong className="text-slate-900 select-all">dmuolhoi@gmail.com</strong> and include the following:
               </p>
               <ul className="space-y-2 text-xs text-slate-600 list-disc list-inside">
                 <li>Your contact email</li>
@@ -309,7 +309,7 @@ export default function Pricing() {
                 <li>Scope &amp; purpose of your deployment</li>
               </ul>
               <a
-                href="mailto:support@arukin.app?subject=Self-Hosted%20Setup%20Request&body=Hi%2C%0A%0AI%20am%20interested%20in%20the%20Arukin%20Self-Hosted%20Enterprise%20Pass.%0A%0AHosting%20environment%3A%20%0APurpose%3A%20"
+                href="mailto:dmuolhoi@gmail.com?subject=Self-Hosted%20Setup%20Request&body=Hi%2C%0A%0AI%20am%20interested%20in%20the%20Arukin%20Self-Hosted%20Enterprise%20Pass.%0A%0AHosting%20environment%3A%20%0APurpose%3A%20"
                 className="w-full py-3 bg-emerald-600 hover:bg-indigo-500 text-slate-900 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 mt-2 cursor-pointer"
               >
                 <Mail size={16} /> Open Email Client

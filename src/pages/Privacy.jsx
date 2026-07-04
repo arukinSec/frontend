@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, Lock, Eye, FileText, ArrowLeft, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, FileText, ArrowLeft, ShieldAlert, Menu, X } from 'lucide-react';
 
 export default function Privacy() {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-slate-300 font-sans flex flex-col">
@@ -17,14 +18,38 @@ export default function Privacy() {
               Arukin <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>
           </div>
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold cursor-pointer"
-          >
-            <ArrowLeft size={14} />
-            <span>Go Back</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate(-1)}
+              className="hidden md:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold cursor-pointer"
+            >
+              <ArrowLeft size={14} />
+              <span>Go Back</span>
+            </button>
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-slate-400 hover:text-white transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-[#0E0E12] border-t border-white/10 px-6 py-4 space-y-3 animate-fade-in">
+            <Link to="/" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+            <Link to="/privacy" className="block text-sm font-semibold text-indigo-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Privacy Policy</Link>
+            <Link to="/terms" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Terms of Service</Link>
+            <Link to="/beta-notice" className="block text-sm font-semibold text-amber-400/70 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Beta Notice</Link>
+            <Link to="/disclaimer" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Disclaimer Statement</Link>
+            <button 
+              onClick={() => { navigate(-1); setIsMobileMenuOpen(false); }}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+            >
+              <ArrowLeft size={14} />
+              <span>Go Back</span>
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Main Body */}
@@ -47,42 +72,39 @@ export default function Privacy() {
         {/* Content sections */}
         <div className="space-y-10 text-sm leading-relaxed">
           
-          {/* Prototype Disclosure warning */}
-          <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 flex items-start gap-4">
-            <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={20} />
-            <div>
-              <h4 className="text-white font-bold text-xs mb-1">PROTOTYPE COMPLIANCE WARNING</h4>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                This portal is currently operating as a prototype. While we design all database boundaries and token exchanges to comply with strict data safety models, temporary technical shortfalls may exist. Do not connect critical production accounts.
-              </p>
-            </div>
+          {/* Beta Release Notice - ref to dedicated page */}
+          <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 flex items-start gap-3">
+            <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={16} />
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Arukin is currently in beta. See our <Link to="/beta-notice" className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
+            </p>
           </div>
 
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
               <Eye size={18} className="text-indigo-400" />
-              <span>1. Company Privacy Policy (The Ideal Path)</span>
+              <span>1. Arukin's Privacy Policy</span>
             </h2>
             <p className="text-slate-400">
-              Arukin is built on the principle of complete data minimization. Under both **India's Digital Personal Data Protection Act, 2023 (DPDP)** and the **EU GDPR**, we process data strictly to provide security telemetry. 
+              Arukin is built on the principle of complete data minimization. Under both <strong>India's Digital Personal Data Protection Act, 2023 (DPDP)</strong> and the <strong>EU GDPR</strong>, we process data strictly to provide security telemetry. 
             </p>
             <p className="text-slate-400 mt-2">
-              <strong>Our Commitment:</strong> We never copy, cache, or store the contents of your emails, files, calendar entries, or contacts in our databases. All reads occur ephemerally in memory and are discarded once the session terminates. Because this is a prototype, some security modules (such as KMS token rotation) are simulated; we recommend testing with non-critical accounts.
+              <strong>Our Commitment:</strong> We never copy, cache, or store the contents of your emails, files, calendar entries, or contacts in our databases. All reads occur ephemerally in memory via our edge functions and are discarded once the session terminates. Data fetched to your dashboard is cached locally on your device using Web Crypto AES-GCM encryption.
             </p>
           </section>
 
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
               <Lock size={18} className="text-indigo-400" />
-              <span>2. Auditor Guidelines & Responsibilities</span>
+              <span>2. Manager Guidelines & Responsibilities</span>
             </h2>
             <p className="text-slate-400">
-              Auditors logging into the Arukin console must comply with the following privacy boundaries:
+              Managers logging into the Arukin console must comply with the following privacy boundaries:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-400 mt-2">
-              <li><strong>Prior Consent Required:</strong> Auditors must obtain explicit consent from the member before requesting an account connection.</li>
-              <li><strong>Purpose Limitation:</strong> Audited email subjects, file catalogs, and contact lists must be reviewed strictly for threat detection and compliance. No personal communication details should be copied or utilized elsewhere.</li>
-              <li><strong>Secure Console Practices:</strong> Auditors must log out of active sessions on shared devices to prevent credential leakage.</li>
+              <li><strong>Prior Consent Required:</strong> Managers must obtain explicit consent from the member before requesting an account connection.</li>
+              <li><strong>Purpose Limitation:</strong> Reviewed email subjects, file catalogs, and contact lists must be reviewed strictly for threat detection and compliance. No personal communication details should be copied or utilized elsewhere.</li>
+              <li><strong>Secure Console Practices:</strong> Managers must log out of active sessions on shared devices to prevent credential leakage.</li>
             </ul>
           </section>
 
@@ -96,7 +118,7 @@ export default function Privacy() {
             </p>
             <ul className="list-disc pl-5 space-y-2.5 text-slate-400 mt-2">
               <li><strong>Instant Revocation:</strong> You can disconnect and sever active tokens instantly. Once disconnected, your connection metadata is permanently deleted.</li>
-              <li><strong>Immutable Performer Tracking:</strong> Every auditor view action (e.g. previewing a file or trashing a mail thread) is logged with the auditor's performer ID, ensuring you can review exactly how they monitored your account.</li>
+              <li><strong>Immutable Performer Tracking:</strong> Every Manager view action (e.g. previewing a file or trashing a mail thread) is logged with the Manager's performer ID, ensuring you can review exactly how they monitored your account.</li>
               <li><strong>Sandboxed API Relays:</strong> The console operations process metadata securely to prevent unauthorized background modifications while granting explicit, user-triggered management over threats.</li>
             </ul>
           </section>
@@ -111,7 +133,7 @@ export default function Privacy() {
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-slate-400 mt-2">
               <li>By selecting the "Disconnect" option in your client portal.</li>
-              <li>By removing Arukin's app permissions in your Google Account Security Dashboard under <a href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer" className="text-indigo-400 hover:underline">Google Connections</a>.</li>
+              <li>By removing Arukin's app permissions in your Google Account Security Dashboard by visiting <a href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer" className="text-indigo-400 hover:underline">https://myaccount.google.com/connections</a>.</li>
             </ul>
           </section>
 
@@ -120,7 +142,7 @@ export default function Privacy() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600 shrink-0 mt-12 bg-black/20">
-        <p>© 2026 Arukin Platform. Built for digital guardian compliance and anti-fraud operations.</p>
+        <p>© 2026 Arukin Platform. Built for Google account oversight and digital caregiving.</p>
       </footer>
 
     </div>

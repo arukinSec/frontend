@@ -3,7 +3,29 @@
 > **Experimental R&D Phase:**
 > ArukinSec is currently a highly experimental prototype. None of the beta features listed below are fixed. The purpose of this prototype is to determine which features are actually used, requested, and which ones can be removed. The architecture, feature set, and roadmap are entirely fluid and subject to major pivots.
 
-ArukinSec Frontend is the internal auditing dashboard used to securely monitor and manage connected user accounts (Gmail, Google Drive, Google Contacts) for threat protection and security auditing.
+ArukinSec Frontend is the internal dashboard used to securely monitor and manage connected user accounts (Gmail, Google Drive, Google Contacts) for threat protection and security oversight.
+
+---
+
+## Terminology Note: Auditor → Manager
+
+**"Auditor" is the old terminology. "Manager" is the new terminology.** They mean the same thing — the person who logs into the Arukin dashboard to oversee connected accounts.
+
+All **user-facing text** in the frontend has been updated from "Auditor" to "Manager". However, the following **backend artifacts still use the old "auditor" naming** and should be migrated in a future refactor:
+
+| Artifact | Location |
+|---------|----------|
+| Database table `auditors` | `arukin-supabase/supabase/migrations/*.sql` |
+| Column `auditor_id` (on `members`, `audit_logs`, `usage_logs`) | `arukin-supabase/supabase/migrations/*.sql` |
+| RPC function `verify_auditor_capacity` | `arukin-supabase/supabase/migrations/*.sql` |
+| RPC function `get_pro_auditor_count` | `arukin-supabase/supabase/migrations/*.sql` |
+| PostgreSQL RLS policy names (e.g. "Auditors can manage...") | `arukin-supabase/supabase/migrations/*.sql` |
+| Edge Function variable `auditor_id`, `auditor` | `arukin-supabase/supabase/functions/*/index.ts` |
+| Frontend localStorage keys (`auditor_id`, `auditor_tier`, etc.) | `src/App.jsx`, `src/pages/*.jsx` |
+| Frontend hook `useAuditor` + component `AuditorOnboarding` / `AuditorGateway` | `src/utils/useAuditor.js`, `src/pages/*.jsx` |
+| Route path `/auditor` | `src/App.jsx` |
+
+> These remain functional as-is but use the legacy naming. A coordinated migration (database migration + frontend rename) is required to fully complete the transition.
 
 ---
 
@@ -11,9 +33,10 @@ ArukinSec Frontend is the internal auditing dashboard used to securely monitor a
 
 ### 1. Architecture & Security
 - **Zero-Install Security**: Integrates directly with Google Cloud OAuth. Vulnerable users do not need to install mobile apps or software.
-- **Silent Token Refresh**: Implements a highly robust `fetchWithAuth` wrapper. If a Google Access Token expires, the UI pauses, seamlessly invokes a Supabase Edge Function (`refresh-google-token`), updates the token securely, and retries the original request. The user experiences zero interruption.
+- **Server-Side API Proxying**: To eliminate token leakage, the frontend never connects to Google APIs directly. All requests are routed through a backend Supabase Edge Function proxy which injects the access token securely.
+- **AES-GCM Client Caching**: Uses Web Crypto API to securely encrypt cached API responses in the browser's IndexedDB, bound to the user's active session.
 - **Database Security**: Locked down with strict PostgreSQL Row-Level Security (RLS) policies and `search_path` hardened RPC functions.
-- **Content Security Policy (CSP)**: Employs strict meta tags to neutralize Cross-Site Scripting (XSS) threats.
+- **Content Security Policy (CSP)**: Employs strict meta tags to neutralize Cross-Site Scripting (XSS) threats, intentionally blocking raw Google API domains to enforce the proxy.
 
 ### 2. Profile Gateway (`ProfileUI.jsx`)
 The landing view when a member is opened. Fetches the full Google profile via `people/me`.

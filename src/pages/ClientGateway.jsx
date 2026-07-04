@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { Shield, ArrowRight, CheckCircle2, UserCheck, Home, ShieldCheck, Database, Info } from 'lucide-react';
+import { Shield, ArrowRight, ArrowLeft, CheckCircle2, UserCheck, Home, ShieldCheck, Database, Info } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const STANDARD_SCOPES = [
@@ -173,7 +173,7 @@ export default function ClientGateway() {
 
           if (!existingMember && count >= absoluteMax) {
             await supabase.auth.signOut();
-            setConsentError(`Connection rejected: The Auditor console has reached its maximum capacity of ${absoluteMax} connected accounts for its current tier.`);
+            setConsentError(`Connection rejected: The Manager console has reached its maximum capacity of ${absoluteMax} connected accounts for its current tier.`);
             setCurrentStep(1);
             setLoading(false);
             return;
@@ -254,12 +254,12 @@ export default function ClientGateway() {
 
   const initiateGoogleAuth = async () => {
     if (!authId.trim()) {
-      setAuthError('Auditor Auth ID is required to connect.');
+      setAuthError('Manager Auth ID is required to connect.');
       return;
     }
 
     setLoading(true);
-    setLoadingText('Verifying Auditor ID...');
+    setLoadingText('Verifying Manager ID...');
     setAuthError('');
 
     // Sanitize user entry by stripping spaces and dashes (e.g., "123 456" or "123-456" -> "123456")
@@ -267,7 +267,7 @@ export default function ClientGateway() {
 
     if (!sanitizedAuthId) {
       setLoading(false);
-      setAuthError('Auditor Auth ID is required to connect.');
+      setAuthError('Manager Auth ID is required to connect.');
       return;
     }
 
@@ -282,7 +282,7 @@ export default function ClientGateway() {
 
       if (!data.valid) {
         setLoading(false);
-        setAuthError(data.error || 'Invalid Auditor Auth ID. Please check the code and try again.');
+        setAuthError(data.error || 'Invalid Manager Auth ID. Please check the code and try again.');
         return;
       }
 
@@ -295,7 +295,7 @@ export default function ClientGateway() {
       setShowDisclaimer(true);
     } catch (err) {
       setLoading(false);
-      setAuthError('Failed to verify Auditor Auth ID. Please try again.');
+      setAuthError('Failed to verify Manager Auth ID. Please try again.');
     }
   };
 
@@ -341,6 +341,15 @@ export default function ClientGateway() {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
+      {/* Return Home Button */}
+      <button 
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold z-20 cursor-pointer"
+      >
+        <ArrowLeft size={16} />
+        <span>Return Home</span>
+      </button>
+
       <div className="w-full max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl z-10">
         
         {/* Header Branding */}
@@ -369,11 +378,11 @@ export default function ClientGateway() {
 
                 <div className="space-y-2">
                   <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    Auditor Auth ID
+                    Manager Auth ID
                   </label>
                   <input 
                     type="text" 
-                    placeholder="Enter Auditor's unique ID"
+                    placeholder="Enter Manager's unique ID"
                     value={authId}
                     onChange={(e) => { setAuthId(e.target.value); setAuthError(''); }}
                     className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-600"
@@ -452,7 +461,7 @@ export default function ClientGateway() {
                     <ShieldCheck size={16} /> Data Privacy & Storage
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Auditor's specific browser/device, adhering to zero-knowledge principles.
+                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Manager's specific browser/device, adhering to strict privacy protocols.
                   </p>
                 </div>
                 
@@ -461,7 +470,7 @@ export default function ClientGateway() {
                     <UserCheck size={16} /> Authority & Ownership
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    By proceeding, you explicitly confirm that you are the rightful owner of this Google account and possess the legal authority to grant access to its contents to your designated Auditor.
+                    By proceeding, you explicitly confirm that you are the rightful owner of this Google account and possess the legal authority to grant access to its contents to your designated Manager.
                   </p>
                 </div>
 
@@ -470,7 +479,7 @@ export default function ClientGateway() {
                     <Info size={16} /> Agreement Terms
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    By proceeding, you grant read and write access to your account to your designated Auditor. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms of Service</a>.
+                    By proceeding, you grant read and write access to your account to your designated Manager. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms of Service</a>.
                   </p>
                 </div>
               </div>

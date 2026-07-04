@@ -23,9 +23,9 @@ export default function MembersList() {
   const [showDangerZone, setShowDangerZone] = useState(false);
   const navigate = useNavigate();
 
-  const { auditor } = useAuditor();
+  const { auditor, loading: auditorLoading } = useAuditor();
   const [auditorAuthId, setAuditorAuthId] = useState(localStorage.getItem('auditor_auth_id') || 'Unknown');
-  const [auditorTier, setAuditorTier] = useState('FREE');
+  const [auditorTier, setAuditorTier] = useState(null);
   const [billingCycle, setBillingCycle] = useState('yearly');
   const [additionalSlots, setAdditionalSlots] = useState(0);
   const auditorEmail = localStorage.getItem('auditor_email') || '';
@@ -181,7 +181,7 @@ export default function MembersList() {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         order_id: data.id,
         name: 'Arukin Security',
-        description: 'Purchase Additional Auditor Connection Slot',
+        description: 'Purchase Additional Manager Connection Slot',
         prefill: {
           email: localStorage.getItem('auditor_email') || '',
         },
@@ -302,7 +302,7 @@ export default function MembersList() {
               {showDangerZone && (
                 <div className="mt-4 pt-4 border-t border-red-500/10 space-y-3 animate-fade-in">
                   <p className="text-[11px] text-slate-400 leading-relaxed">
-                    Permanently delete your auditor console profile. All connected member connections will be immediately wiped from the database.
+                    Permanently delete your Manager console profile. All connected member connections will be immediately wiped from the database.
                   </p>
                   
                   <button 
@@ -343,7 +343,7 @@ export default function MembersList() {
                     }}
                     className="w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-xs font-semibold py-2.5 rounded-xl transition-all block text-center cursor-pointer"
                   >
-                    Delete Auditor Profile
+                    Delete Manager Profile
                   </button>
                 </div>
               )}
@@ -354,17 +354,17 @@ export default function MembersList() {
       )}
       {/* Top Navigation */}
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3 shrink-0">
             <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-white">Arukin <span className="text-indigo-400 font-medium">Security Console</span></span>
+            <span className="hidden md:block font-bold text-lg tracking-wide text-white">Arukin</span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 md:gap-6 shrink-0 mr-2 md:mr-6">
             {/* Display formatted Auditor ID and Copy Link */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-white/[0.02] border border-white/10 px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider">
-                <span className="text-slate-500">ID:</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="flex items-center gap-1 md:gap-2 bg-white/[0.02] border border-white/10 px-2.5 md:px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider">
+                <span className="hidden md:inline text-slate-500">ID:</span>
                 <strong className="text-white">{formattedAuthId}</strong>
               </div>
               <button
@@ -373,16 +373,16 @@ export default function MembersList() {
                    navigator.clipboard.writeText(shareUrl);
                    window.showToast("Share Link Copied! Send this link to members to connect them instantly.", "success");
                  }}
-                className="p-2 hover:bg-indigo-500/10 hover:text-indigo-400 border border-white/10 rounded-full transition-all text-slate-400 cursor-pointer"
+                className="p-1.5 md:p-2 hover:bg-indigo-500/10 hover:text-indigo-400 border border-white/10 rounded-full transition-all text-slate-400 cursor-pointer"
                 title="Copy Client Share Link"
               >
                 <LinkIcon size={14} />
               </button>
             </div>
 
-            <div className="flex items-center gap-4 relative">
-              <button onClick={fetchMembers} className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-400 hover:text-white" title="Refresh">
-                <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+            <div className="flex items-center gap-2 md:gap-4 relative">
+              <button onClick={fetchMembers} className="p-1.5 md:p-2 hover:bg-white/5 rounded-full transition-colors text-slate-400 hover:text-white" title="Refresh">
+                <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
               </button>
 
               {/* Profile Avatar Trigger Button */}
@@ -393,7 +393,7 @@ export default function MembersList() {
                 {auditorAvatarUrl ? (
                   <img 
                     src={auditorAvatarUrl} 
-                    alt="Auditor Avatar" 
+                    alt="Manager Avatar" 
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -415,7 +415,7 @@ export default function MembersList() {
                   <div className="fixed inset-0 z-40" onClick={() => setShowProfileMenu(false)} />
                   <div className="absolute right-0 mt-2 top-8 w-60 bg-[#0E0E12] border border-white/10 rounded-2xl shadow-2xl p-4 z-50 animate-slide-up text-left">
                     <div className="mb-3.5 pb-3 border-b border-white/5">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">Auditor Account</p>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">Manager Account</p>
                       <p className="text-xs text-white truncate font-medium">{auditorEmail}</p>
                     </div>
                     
@@ -426,7 +426,7 @@ export default function MembersList() {
                           ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
                           : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
                       }`}>
-                        {auditorTier}
+                        {auditorTier ?? '—'}
                       </span>
                     </div>
 
@@ -440,7 +440,7 @@ export default function MembersList() {
                           <span className="flex items-center gap-2"><Zap size={14} /> Unlock Trial</span>
                         </button>
                       )}
-                      {auditorTier !== 'PRO' && (
+                      {!auditorLoading && auditorTier !== 'PRO' && (
                         <button 
                           onClick={handleUpgrade}
                           className="w-full text-left px-4 py-2.5 text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 transition-colors flex items-center justify-between"
@@ -477,12 +477,12 @@ export default function MembersList() {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
         
-        <header className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+        <header className="mb-6 md:mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6">
           <div>
-            <h1 className="text-3xl font-semibold text-white mb-2">Connected Members</h1>
-            <p className="text-slate-400 text-sm md:text-base">Select an authenticated member to view their interactive dashboard.</p>
+            <h1 className="text-2xl md:text-3xl font-semibold text-white mb-1 md:mb-2">Connected Members</h1>
+            <p className="text-slate-400 text-xs md:text-sm">Select an authenticated member to view their interactive dashboard.</p>
           </div>
           <div className="relative group w-full md:w-auto">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
@@ -498,19 +498,19 @@ export default function MembersList() {
 
         {/* Self Audit Banner for FREE tier */}
         {auditorTier === 'FREE' && (
-          <div className="mb-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in shadow-lg">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Zap size={18} className="text-indigo-400" />
+          <div className="mb-6 md:mb-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <Zap size={15} className="text-indigo-400 shrink-0" />
                 <h3 className="text-indigo-300 font-semibold text-sm">Experience PRO Features</h3>
               </div>
-              <p className="text-slate-400 text-xs md:text-sm leading-relaxed">
-                Connect your own Google account to run a self-audit and instantly upgrade to the <strong>Trial Tier</strong>. You'll unlock access to the Target Monitor, Drive Forensics, and Financial Scanners before committing.
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Connect your own Google account to run a self-audit and instantly upgrade to the <strong>Trial Tier</strong>. Unlock Target Monitor, Drive Forensics, and Financial Scanners.
               </p>
             </div>
             <button
               onClick={handleUnlockTrialClick}
-              className="w-full md:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/20 transition-all shrink-0 cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/20 transition-all shrink-0 cursor-pointer"
             >
               Unlock Trial
             </button>
@@ -539,9 +539,9 @@ export default function MembersList() {
             </div>
           ) : (
             filteredMembers.map((member, idx) => {
-              let maxAllowed = 1;
+              let maxAllowed = 3;
               if (auditorTier === 'PRO') maxAllowed = 4 + additionalSlots;
-              else if (auditorTier === 'TRIAL') maxAllowed = 2;
+              else if (auditorTier === 'TRIAL') maxAllowed = 3;
               
               const isLocked = idx >= maxAllowed;
 
@@ -684,7 +684,7 @@ export default function MembersList() {
                                    const { error: tierErr } = await supabase.from('auditors').update({ tier: 'FREE' }).eq('id', auditorId);
                                    if (tierErr) {
                                      console.error("Failed to revert tier:", tierErr);
-                                     window.showToast("Failed to revert Auditor Tier: " + tierErr.message, "error");
+                                     window.showToast("Failed to revert Manager Tier: " + tierErr.message, "error");
                                    } else {
                                      localStorage.setItem('auditor_tier', 'FREE');
                                      window.showToast('Self-Audit removed. You have been reverted to the Free tier. Refreshing...', 'warning');
@@ -830,7 +830,7 @@ export default function MembersList() {
                     <AlertTriangle size={16} /> Important Notice
                   </h4>
                   <ul className="text-xs text-slate-400 leading-relaxed list-disc pl-4 space-y-2">
-                    <li>You must authenticate using your exact Auditor email (<span className="text-white font-medium">{auditorEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
+                    <li>You must authenticate using your exact Manager email (<span className="text-white font-medium">{auditorEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
                     <li>By proceeding, you grant Arukin read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a>.</li>
                     <li>You agree to our <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms and Conditions</a> regarding authorized data access and acceptable use.</li>
                   </ul>

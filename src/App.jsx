@@ -13,6 +13,9 @@ import AuditorGateway from './pages/AuditorGateway';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Disclaimer from './pages/Disclaimer';
+import FAQ from './pages/FAQ';
+import FAQCategory from './pages/FAQCategory';
+import BetaNotice from './pages/BetaNotice';
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -174,6 +177,14 @@ export default function App() {
         element={<UseCases />} 
       />
       <Route 
+        path="/faq" 
+        element={<FAQ />} 
+      />
+      <Route 
+        path="/faq/:categoryId" 
+        element={<FAQCategory />} 
+      />
+      <Route 
         path="/dashboard" 
         element={session ? <MembersList /> : <Navigate to="/" replace />} 
       />
@@ -200,6 +211,10 @@ export default function App() {
       <Route 
         path="/disclaimer" 
         element={<Disclaimer />} 
+      />
+      <Route 
+        path="/beta-notice" 
+        element={<BetaNotice />} 
       />
      </Routes>
     </>

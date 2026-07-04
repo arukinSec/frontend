@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { BookOpen, UserCheck, ShieldAlert, Key, ArrowLeft } from 'lucide-react';
+import { BookOpen, UserCheck, ShieldAlert, Key, ArrowLeft, Menu, X } from 'lucide-react';
 
 export default function Terms() {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-slate-300 font-sans flex flex-col">
@@ -17,14 +18,38 @@ export default function Terms() {
               Arukin <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>
           </div>
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold cursor-pointer"
-          >
-            <ArrowLeft size={14} />
-            <span>Go Back</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate(-1)}
+              className="hidden md:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold cursor-pointer"
+            >
+              <ArrowLeft size={14} />
+              <span>Go Back</span>
+            </button>
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-slate-400 hover:text-white transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-[#0E0E12] border-t border-white/10 px-6 py-4 space-y-3 animate-fade-in">
+            <Link to="/" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+            <Link to="/privacy" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Privacy Policy</Link>
+            <Link to="/terms" className="block text-sm font-semibold text-indigo-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Terms of Service</Link>
+            <Link to="/beta-notice" className="block text-sm font-semibold text-amber-400/70 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Beta Notice</Link>
+            <Link to="/disclaimer" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Disclaimer Statement</Link>
+            <button 
+              onClick={() => { navigate(-1); setIsMobileMenuOpen(false); }}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+            >
+              <ArrowLeft size={14} />
+              <span>Go Back</span>
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Main Body */}
@@ -47,15 +72,12 @@ export default function Terms() {
         {/* Content sections */}
         <div className="space-y-10 text-sm leading-relaxed">
           
-          {/* Prototype Disclosure warning */}
-          <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 flex items-start gap-4">
-            <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={20} />
-            <div>
-              <h4 className="text-white font-bold text-xs mb-1">PROTOTYPE SERVICE TERMS</h4>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Arukin is in active development. By accessing the platform, you acknowledge that features are provided for evaluation and feedback, and are subject to change without notice. We recommend testing with development-only accounts.
-              </p>
-            </div>
+          {/* Beta Release Notice - ref to dedicated page */}
+          <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 flex items-start gap-3">
+            <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={16} />
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Arukin is currently in beta. See our <Link to="/beta-notice" className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
+            </p>
           </div>
 
           <section className="space-y-3">
@@ -74,7 +96,7 @@ export default function Terms() {
               <span>2. Authorized Consent Required</span>
             </h2>
             <p className="text-slate-400">
-              Auditors must obtain explicit consent from the member before mapping their Google Account to the Arukin portal. Connecting third-party accounts without their knowledge or authorization is strictly prohibited and constitutes a violation of these terms, resulting in immediate suspension of auditor credentials.
+              Managers must obtain explicit consent from the member before mapping their Google Account to the Arukin portal. Connecting third-party accounts without their knowledge or authorization is strictly prohibited and constitutes a violation of these terms, resulting in immediate suspension of Manager credentials.
             </p>
           </section>
 
@@ -88,7 +110,7 @@ export default function Terms() {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-400 mt-2">
               <li>Data loss or modifications occurring on Google Services (Gmail, Drive, Contacts).</li>
-              <li>Unauthorized access resulting from auditor credentials leakage.</li>
+              <li>Unauthorized access resulting from Manager credentials leakage.</li>
               <li>Service disruptions caused by API changes or deprecation.</li>
             </ul>
           </section>
@@ -108,7 +130,7 @@ export default function Terms() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600 shrink-0 mt-12 bg-black/20">
-        <p>© 2026 Arukin Platform. Built for digital guardian compliance and anti-fraud operations.</p>
+        <p>© 2026 Arukin Platform. Built for Google account oversight and digital caregiving.</p>
       </footer>
 
     </div>

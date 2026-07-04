@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { hasProAccess } from '../utils/access';
-import { File, FileText, Image, RefreshCw, Download, Trash2, X, Eye, ChevronRight, Film, Music, Shield } from 'lucide-react';
+import { File, FileText, Image, RefreshCw, Download, Trash2, X, Eye, ChevronRight, Film, Music, Shield, Menu } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { googleProxyFetch } from '../utils/googleProxy';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
@@ -169,6 +169,7 @@ export default function DriveUI({ member }) {
   const [folderStack, setFolderStack] = useState([{ id: 'root', name: 'My Drive' }]);
   const [confirm, setConfirm] = useState({ open: false });
   const [viewer, setViewer] = useState({ open: false, file: null, blobUrl: null, textContent: null, previewUrl: null, loading: false });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const showConfirm = (opts) => setConfirm({ open: true, ...opts });
   const hideConfirm = () => setConfirm({ open: false });
@@ -423,6 +424,13 @@ export default function DriveUI({ member }) {
         {/* ── Header ── */}
         <div className="h-14 border-b border-slate-200/80 flex items-center px-5 justify-between bg-[#f8f9fa] shrink-0">
           <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="md:hidden p-1.5 hover:bg-slate-200 rounded-md text-slate-600 transition-colors -ml-1 mr-1"
+              title="Toggle Menu"
+            >
+              <Menu size={20} />
+            </button>
             <DriveIcon size={22} />
             <span className="text-base font-medium text-slate-700">Drive</span>
           </div>
@@ -435,11 +443,61 @@ export default function DriveUI({ member }) {
           </button>
         </div>
 
-        {/* ── Body: sidebar + content ── */}
-        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+        {/* Mobile full-screen sidebar overlay */}
+        {isSidebarOpen && (
+          <div className="md:hidden absolute inset-0 z-50 bg-[#f8f9fa] flex flex-col">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-slate-200/80 bg-[#f8f9fa] shrink-0">
+              <div className="flex items-center gap-2.5">
+                <DriveIcon size={20} />
+                <span className="text-base font-medium text-slate-700">Drive</span>
+              </div>
+              <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-colors"><X size={20} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
+              <nav className="py-2 px-1.5 space-y-0.5">
+                {navItems.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => { switchView(id); setIsSidebarOpen(false); }}
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-full text-sm transition-colors text-left ${
+                      currentView === id ? 'bg-[#c2e7ff] text-[#001d35] font-semibold' : 'text-slate-600 hover:bg-[#eaeef3] font-normal'
+                    }`}
+                  >
+                    <span className={currentView === id ? 'text-[#001d35]' : 'text-slate-500'}><Icon /></span>
+                    {label}
+                  </button>
+                ))}
+              </nav>
+              {!isPro && (
+                <div className="mx-4 mt-4 p-3.5 bg-gradient-to-tr from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl text-left space-y-2.5 shadow-sm">
+                  <div>
+                    <span className="text-[9px] font-extrabold text-white bg-indigo-600 px-1.5 py-0.5 rounded uppercase tracking-wider">PRO Feature Locked</span>
+                    <h5 className="font-bold text-xs text-slate-800 mt-2">Advanced features are not available on the free plan</h5>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">Upgrade to PRO to unlock advanced file access.</p>
+                  </div>
+                  <button onClick={handleUpgrade} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold py-2 rounded-lg transition-all">Upgrade to PRO</button>
+                </div>
+              )}
+              <div className="mt-4 mx-4 px-3 py-4 rounded-2xl border border-slate-200/80 bg-white">
+                <p className="text-[11px] font-semibold text-slate-500 mb-2.5 uppercase tracking-wide">Storage</p>
+                <div className="w-full bg-slate-100 rounded-full h-2 mb-2">
+                  <div className={`h-2 rounded-full transition-all duration-500 ${storagePercent > 85 ? 'bg-red-500' : storagePercent > 60 ? 'bg-yellow-500' : 'bg-blue-500'}`} style={{ width: `${storagePercent}%` }} />
+                </div>
+                {storageQuota ? (
+                  <p className="text-[11px] text-slate-500 leading-snug">{formatStorageBytes(storageQuota.usage)} of {formatStorageBytes(storageQuota.limit)} used</p>
+                ) : (
+                  <p className="text-[11px] text-slate-400">Loading…</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
-          {/* Sidebar */}
-          <div className="w-full md:w-52 border-b md:border-b-0 border-slate-200 bg-[#f8f9fa] flex flex-col shrink-0 overflow-y-auto max-h-40 md:max-h-none">
+        {/* ── Body: sidebar + content ── */}
+        <div className="flex flex-row flex-1 overflow-hidden">
+
+          {/* Desktop sidebar - always visible on md+ */}
+          <div className="hidden md:flex w-52 border-r border-slate-200 bg-[#f8f9fa] flex-col shrink-0 overflow-y-auto">
             <nav className="py-2 px-1.5 space-y-0.5">
               {navItems.map(({ id, label, icon: Icon }) => (
                 <button
@@ -500,7 +558,7 @@ export default function DriveUI({ member }) {
           </div>
 
           {/* Main content - Wrapped in modern rounded canvas */}
-          <div className="flex-1 flex flex-col overflow-hidden p-3 pl-0 bg-[#f8f9fa]">
+          <div className="flex-1 flex flex-col overflow-hidden p-3 pl-3 md:pl-0 bg-[#f8f9fa]">
             <div className="flex-1 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
 
               {/* Breadcrumb */}
@@ -567,7 +625,7 @@ export default function DriveUI({ member }) {
                         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">Files</p>
                         <div className="border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
                           {/* Table header */}
-                          <div className="grid bg-slate-50/80 border-b border-slate-100 px-4 py-2.5" style={{ gridTemplateColumns: '40px 1fr 150px 120px' }}>
+                          <div className="hidden md:grid bg-slate-50/80 border-b border-slate-100 px-4 py-2.5 grid-cols-[40px_1fr_150px_120px]">
                             <div />
                             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Name</p>
                             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">Last Modified</p>
@@ -576,20 +634,24 @@ export default function DriveUI({ member }) {
                           {regularFiles.map((file, idx) => (
                             <div
                               key={file.id}
-                              className={`group grid items-center px-4 py-3 hover:bg-[#f0f4f9]/50 transition-colors cursor-pointer ${idx < regularFiles.length - 1 ? 'border-b border-slate-100' : ''}`}
-                              style={{ gridTemplateColumns: '40px 1fr 150px 120px' }}
+                              className={`group grid items-center px-4 py-3 hover:bg-[#f0f4f9]/50 transition-colors cursor-pointer grid-cols-[40px_1fr] md:grid-cols-[40px_1fr_150px_120px] gap-y-1 md:gap-y-0 ${idx < regularFiles.length - 1 ? 'border-b border-slate-100' : ''}`}
                               onClick={() => isPreviewable(file.mimeType) ? openViewer(file) : window.showToast('Downloading files is coming in a future update!', 'info')}
                             >
                               <FileIcon mimeType={file.mimeType} size={18} />
 
-                              <div className="min-w-0 pr-4">
+                              <div className="min-w-0 pr-4 flex flex-col justify-center">
                                 <p className="text-sm text-slate-700 truncate group-hover:text-blue-700 font-medium transition-colors">{file.name}</p>
+                                <div className="flex md:hidden text-xs text-slate-400 mt-0.5 gap-2">
+                                  <span>{formatDate(file.modifiedTime)}</span>
+                                  <span>•</span>
+                                  <span>{formatSize(file.size)}</span>
+                                </div>
                               </div>
 
-                              <p className="text-xs text-slate-400">{formatDate(file.modifiedTime)}</p>
+                              <p className="hidden md:block text-xs text-slate-400">{formatDate(file.modifiedTime)}</p>
 
                               {/* Size and Action triggers */}
-                              <div className="flex items-center justify-between min-w-0">
+                              <div className="hidden md:flex items-center justify-between min-w-0">
                                 <p className="text-xs text-slate-400 group-hover:hidden transition-all">{formatSize(file.size)}</p>
                                 
                                 {/* Row actions on Hover */}
