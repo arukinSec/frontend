@@ -25,18 +25,18 @@ export default function ClientGateway() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
 
-  // Clear any active auditor variables from local storage immediately when client gateway loads
+  // Clear any active manager variables from local storage immediately when client gateway loads
   // UNLESS this is an active Self-Audit flow, in which case we MUST preserve them.
   useEffect(() => {
     const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
     if (!isSelfAudit) {
       localStorage.removeItem('admin_session');
-      localStorage.removeItem('auditor_id');
-      localStorage.removeItem('auditor_tier');
-      localStorage.removeItem('auditor_auth_id');
-      localStorage.removeItem('auditor_email');
-      localStorage.removeItem('auditor_onboarded');
-      localStorage.removeItem('auditor_role');
+      localStorage.removeItem('manager_id');
+      localStorage.removeItem('manager_tier');
+      localStorage.removeItem('manager_auth_id');
+      localStorage.removeItem('manager_email');
+      localStorage.removeItem('manager_onboarded');
+      localStorage.removeItem('manager_role');
     }
   }, []);
 
@@ -140,29 +140,29 @@ export default function ClientGateway() {
         console.warn('Scope verification failed, proceeding with assumption', err);
       }
 
-      const auditorId = localStorage.getItem('arukin_auditor_id');
+      const managerId = localStorage.getItem('arukin_manager_id');
       const inputtedAuthId = localStorage.getItem('arukin_inputted_auth_id') || null;
 
-      const parsedAuditorId = !auditorId ? null : auditorId;
+      const parsedManagerId = !managerId ? null : managerId;
 
       // ---- ENFORCE MAX CONNECTION LIMITS BEFORE UPSERT ----
-      if (parsedAuditorId) {
-        // Fetch auditor tier and additional slots
-        const { data: auditorData } = await supabase
+      if (parsedManagerId) {
+        // Fetch manager tier and additional slots
+        const { data: managerData } = await supabase
           .from('managers')
           .select('tier, additional_slots')
-          .eq('id', parsedAuditorId)
+          .eq('id', parsedManagerId)
           .single();
 
-        if (auditorData) {
+        if (managerData) {
           const { count } = await supabase
             .from('members')
             .select('*', { count: 'exact', head: true })
-            .eq('manager_id', parsedAuditorId);
+            .eq('manager_id', parsedManagerId);
 
           let absoluteMax = 1;
-          if (auditorData.tier === 'TRIAL') absoluteMax = 2;
-          if (auditorData.tier === 'PRO') absoluteMax = 4 + (auditorData.additional_slots || 0);
+          if (managerData.tier === 'TRIAL') absoluteMax = 2;
+          if (managerData.tier === 'PRO') absoluteMax = 4 + (managerData.additional_slots || 0);
 
           // We only block if they are adding a NEW account, not reconnecting an existing one
           const { data: existingMember } = await supabase
@@ -192,7 +192,7 @@ export default function ClientGateway() {
         consent_granted_at: new Date().toISOString(),
         status: 'Access Granted',
         connection_status: 'CONNECTED',
-        manager_id: parsedAuditorId,
+        manager_id: parsedManagerId,
         inputted_auth_id: inputtedAuthId
       }, { onConflict: 'provider_id' });
 
@@ -201,11 +201,11 @@ export default function ClientGateway() {
       const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
       
       let validSelfAudit = false;
-      if (isSelfAudit && parsedAuditorId) {
+      if (isSelfAudit && parsedManagerId) {
         const { data: audData } = await supabase
           .from('managers')
           .select('email')
-          .eq('id', parsedAuditorId)
+          .eq('id', parsedManagerId)
           .single();
           
         if (audData && audData.email.toLowerCase() === userEmail.toLowerCase()) {
@@ -216,30 +216,30 @@ export default function ClientGateway() {
       }
 
       // Upgrade tier for valid self audit
-      if (validSelfAudit && parsedAuditorId) {
+      if (validSelfAudit && parsedManagerId) {
         await supabase.from('managers')
           .update({ tier: 'TRIAL' })
-          .eq('id', parsedAuditorId)
+          .eq('id', parsedManagerId)
           .eq('tier', 'FREE');
           
-        if (localStorage.getItem('auditor_tier') === 'FREE') {
-          localStorage.setItem('auditor_tier', 'TRIAL');
+        if (localStorage.getItem('manager_tier') === 'FREE') {
+          localStorage.setItem('manager_tier', 'TRIAL');
           window.dispatchEvent(new Event('storage')); // Trigger any listeners
         }
       }
       
       localStorage.removeItem('arukin_pending_flow');
-      localStorage.removeItem('arukin_auditor_id');
+      localStorage.removeItem('arukin_manager_id');
       localStorage.removeItem('arukin_inputted_auth_id');
       localStorage.removeItem('arukin_self_audit');
-      localStorage.removeItem('arukin_auditor_email');
+      localStorage.removeItem('arukin_manager_email');
       
       if (validSelfAudit) {
         navigate('/dashboard');
         return;
       } else {
         // CRITICAL: Immediately log out of Supabase to prevent the member 
-        // session from leaking into the auditor administration dashboard!
+        // session from leaking into the manager administration dashboard!
         await supabase.auth.signOut();
       }
       setUser(supabaseUser);
@@ -286,7 +286,7 @@ export default function ClientGateway() {
         return;
       }
 
-      localStorage.setItem('arukin_auditor_id', data.auditor_id);
+      localStorage.setItem('arukin_manager_id', data.manager_id);
       localStorage.removeItem('arukin_inputted_auth_id');
       localStorage.setItem('arukin_pending_flow', 'standard');
 
@@ -325,7 +325,7 @@ export default function ClientGateway() {
   };
 
   const handleConnectAnother = async () => {
-    localStorage.removeItem('arukin_auditor_id');
+    localStorage.removeItem('arukin_manager_id');
     try {
       await supabase.auth.signOut();
     } catch (err) {
@@ -422,7 +422,7 @@ export default function ClientGateway() {
                   
                   <button 
                     onClick={async () => {
-                      localStorage.removeItem('arukin_auditor_id');
+                      localStorage.removeItem('arukin_manager_id');
                       try { await supabase.auth.signOut(); } catch(e) {}
                       window.location.href = '/';
                     }}

@@ -145,12 +145,12 @@ export default function GmailUI({ member, initialLabel }) {
     try {
       window.showToast('Initializing secure checkout...', 'info');
 
-      const auditorId = localStorage.getItem('auditor_id') || member.auditor_id;
-      if (!auditorId) throw new Error('Manager profile ID missing');
+      const managerId = localStorage.getItem('manager_id') || member.manager_id;
+      if (!managerId) throw new Error('Manager profile ID missing');
 
       const { data, error } = await supabase.functions.invoke('create-subscription', {
         body: {
-          manager_id: auditorId,
+          manager_id: managerId,
           plan_id: import.meta.env.VITE_RAZORPAY_PLAN_ID
         }
       });
@@ -175,7 +175,7 @@ export default function GmailUI({ member, initialLabel }) {
         name: 'Arukin Security',
         description: 'Yearly Premium Security Audit Console',
         prefill: {
-          email: localStorage.getItem('auditor_email') || '',
+          email: localStorage.getItem('manager_email') || '',
         },
         theme: {
           color: '#6366f1'
@@ -404,7 +404,7 @@ export default function GmailUI({ member, initialLabel }) {
 
   const logAuditAction = async (actionType, resourceId, extraMetadata = {}) => {
     try {
-      const performerId = localStorage.getItem('auditor_id');
+      const performerId = localStorage.getItem('manager_id');
       if (!performerId || !member?.id) return;
 
       await supabase.from('audit_logs').insert({

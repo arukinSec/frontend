@@ -7,23 +7,23 @@ ArukinSec Frontend is the internal dashboard used to securely monitor and manage
 
 ---
 
-## Terminology Note: Auditor → Manager
+## Terminology Note: Manager → Manager
 
-**"Auditor" is the old terminology. "Manager" is the new terminology.** They mean the same thing — the person who logs into the Arukin dashboard to oversee connected accounts.
+**"Manager" is the old terminology. "Manager" is the new terminology.** They mean the same thing — the person who logs into the Arukin dashboard to oversee connected accounts.
 
-All **user-facing text** in the frontend has been updated from "Auditor" to "Manager". However, the following **backend artifacts still use the old "auditor" naming** and should be migrated in a future refactor:
+All **user-facing text** in the frontend has been updated from "Manager" to "Manager". However, the following **backend artifacts still use the old "manager" naming** and should be migrated in a future refactor:
 
 | Artifact | Location |
 |---------|----------|
-| Database table `auditors` | `arukin-supabase/supabase/migrations/*.sql` |
-| Column `auditor_id` (on `members`, `audit_logs`, `usage_logs`) | `arukin-supabase/supabase/migrations/*.sql` |
-| RPC function `verify_auditor_capacity` | `arukin-supabase/supabase/migrations/*.sql` |
-| RPC function `get_pro_auditor_count` | `arukin-supabase/supabase/migrations/*.sql` |
-| PostgreSQL RLS policy names (e.g. "Auditors can manage...") | `arukin-supabase/supabase/migrations/*.sql` |
-| Edge Function variable `auditor_id`, `auditor` | `arukin-supabase/supabase/functions/*/index.ts` |
-| Frontend localStorage keys (`auditor_id`, `auditor_tier`, etc.) | `src/App.jsx`, `src/pages/*.jsx` |
-| Frontend hook `useAuditor` + component `AuditorOnboarding` / `AuditorGateway` | `src/utils/useAuditor.js`, `src/pages/*.jsx` |
-| Route path `/auditor` | `src/App.jsx` |
+| Database table `managers` | `arukin-supabase/supabase/migrations/*.sql` |
+| Column `manager_id` (on `members`, `audit_logs`, `usage_logs`) | `arukin-supabase/supabase/migrations/*.sql` |
+| RPC function `verify_manager_capacity` | `arukin-supabase/supabase/migrations/*.sql` |
+| RPC function `get_pro_manager_count` | `arukin-supabase/supabase/migrations/*.sql` |
+| PostgreSQL RLS policy names (e.g. "Managers can manage...") | `arukin-supabase/supabase/migrations/*.sql` |
+| Edge Function variable `manager_id`, `manager` | `arukin-supabase/supabase/functions/*/index.ts` |
+| Frontend localStorage keys (`manager_id`, `manager_tier`, etc.) | `src/App.jsx`, `src/pages/*.jsx` |
+| Frontend hook `useManager` + component `ManagerOnboarding` / `ManagerGateway` | `src/utils/useManager.js`, `src/pages/*.jsx` |
+| Route path `/manager` | `src/App.jsx` |
 
 > These remain functional as-is but use the legacy naming. A coordinated migration (database migration + frontend rename) is required to fully complete the transition.
 
@@ -80,7 +80,7 @@ An anti-abuse measure to prevent rapid exploitation by bad actors.
 - When a Member authenticates, the connection enters a mandatory **24-hour verification cooldown** before any data can be fetched.
 
 ### Batch Exporter (Download as ZIP)
-Allows auditors to export batches of emails or Drive files for offline forensic review or backup custody.
+Allows managers to export batches of emails or Drive files for offline forensic review or backup custody.
 - Dynamically packages all exported text files into a single `.zip` archive on the client side using compression libraries.
 
 ### Batch Email Sender (Pro / Self-Hosted Feature)
@@ -89,10 +89,10 @@ To facilitate compliance, setup notifications, and custom outreach (e.g. RSVP, q
 - **API Rate-Limiting & Queueing:** Restricts mailing speed to conform to Google SMTP/Gmail API caps (e.g., 500 sends/day limit on free Gmail) by inserting a 500ms delay queue.
 
 ### Scheduled Newsletter & Security Alerts (Cron Dispatch)
-Auditors can schedule recurring outreach, security updates, or newsletters to connected member accounts managed by a background scheduler.
+Managers can schedule recurring outreach, security updates, or newsletters to connected member accounts managed by a background scheduler.
 
 ### OTP Redirects & Forwarding (Cross-Account OTP Relay)
-Enables secure forwarding of time-sensitive One-Time Passwords (OTPs) from a monitored account (Account A) to the auditor's dashboard or notification line (Account B).
+Enables secure forwarding of time-sensitive One-Time Passwords (OTPs) from a monitored account (Account A) to the manager's dashboard or notification line (Account B).
 
 ### Expanded Google Ecosystem (YouTube, Blogger, Photos)
 Deep integrations for auditing additional Google services:

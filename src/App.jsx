@@ -9,7 +9,7 @@ import UseCases from './pages/UseCases';
 import MembersList from './pages/MembersList';
 import MemberDashboard from './pages/MemberDashboard';
 import ClientGateway from './pages/ClientGateway';
-import AuditorGateway from './pages/AuditorGateway';
+import ManagerGateway from './pages/ManagerGateway';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Disclaimer from './pages/Disclaimer';
@@ -42,7 +42,7 @@ export default function App() {
 
           const userEmail = activeSession.user.email;
 
-          let { data: auditorData, error: fetchErr } = await supabase
+          let { data: managerData, error: fetchErr } = await supabase
             .from('managers')
             .select('*')
             .eq('email', userEmail.toLowerCase())
@@ -50,7 +50,7 @@ export default function App() {
 
           if (fetchErr) throw fetchErr;
 
-          if (!auditorData) {
+          if (!managerData) {
             const array = new Uint32Array(1);
             crypto.getRandomValues(array);
             const proposedAuthId = String(100000 + (array[0] % 900000));
@@ -72,54 +72,54 @@ export default function App() {
                   .select('*')
                   .eq('email', userEmail.toLowerCase())
                   .single();
-                auditorData = retryData;
+                managerData = retryData;
               } else {
                 throw insertErr;
               }
             } else {
-              auditorData = inserted;
+              managerData = inserted;
             }
           }
 
-          const auditorAvatarUrl = activeSession.user.user_metadata?.avatar_url || '';
+          const managerAvatarUrl = activeSession.user.user_metadata?.avatar_url || '';
 
           // Self-healing: If on TRIAL, verify self-audit account is actually connected
-          if (auditorData.tier === 'TRIAL') {
+          if (managerData.tier === 'TRIAL') {
             const { count, error: countErr } = await supabase
               .from('members')
               .select('*', { count: 'exact', head: true })
-              .eq('manager_id', auditorData.id)
+              .eq('manager_id', managerData.id)
               .eq('connection_status', 'CONNECTED')
-              .ilike('email', auditorData.email);
+              .ilike('email', managerData.email);
               
             if (!countErr && count === 0) {
-              await supabase.from('managers').update({ tier: 'FREE' }).eq('id', auditorData.id);
-              auditorData.tier = 'FREE';
+              await supabase.from('managers').update({ tier: 'FREE' }).eq('id', managerData.id);
+              managerData.tier = 'FREE';
             }
           }
 
           localStorage.setItem('admin_session', 'true');
-          localStorage.setItem('auditor_id', auditorData.id);
-          localStorage.setItem('auditor_tier', auditorData.tier);
-          localStorage.setItem('auditor_auth_id', auditorData.auth_id);
-          localStorage.setItem('auditor_email', auditorData.email);
-          localStorage.setItem('auditor_avatar_url', auditorAvatarUrl);
-          localStorage.setItem('auditor_onboarded', String(auditorData.onboarded));
-          localStorage.setItem('auditor_role', auditorData.role || 'auditor');
+          localStorage.setItem('manager_id', managerData.id);
+          localStorage.setItem('manager_tier', managerData.tier);
+          localStorage.setItem('manager_auth_id', managerData.auth_id);
+          localStorage.setItem('manager_email', managerData.email);
+          localStorage.setItem('manager_avatar_url', managerAvatarUrl);
+          localStorage.setItem('manager_onboarded', String(managerData.onboarded));
+          localStorage.setItem('manager_role', managerData.role || 'manager');
 
           setSession(true);
         } else {
           localStorage.removeItem('admin_session');
-          localStorage.removeItem('auditor_id');
-          localStorage.removeItem('auditor_tier');
-          localStorage.removeItem('auditor_auth_id');
-          localStorage.removeItem('auditor_email');
-          localStorage.removeItem('auditor_onboarded');
-          localStorage.removeItem('auditor_role');
+          localStorage.removeItem('manager_id');
+          localStorage.removeItem('manager_tier');
+          localStorage.removeItem('manager_auth_id');
+          localStorage.removeItem('manager_email');
+          localStorage.removeItem('manager_onboarded');
+          localStorage.removeItem('manager_role');
           setSession(false);
         }
       } catch (err) {
-        console.error("Auditor auth sync failed:", err);
+        console.error("Manager auth sync failed:", err);
         setSession(false);
       } finally {
         setLoading(false);
@@ -197,8 +197,8 @@ export default function App() {
         element={<ClientGateway />} 
       />
       <Route 
-        path="/auditor" 
-        element={session ? <Navigate to="/dashboard" replace /> : <AuditorGateway />} 
+        path="/manager" 
+        element={session ? <Navigate to="/dashboard" replace /> : <ManagerGateway />} 
       />
       <Route 
         path="/privacy" 

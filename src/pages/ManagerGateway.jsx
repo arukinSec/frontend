@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import { ShieldAlert, ArrowRight, ArrowLeft, Mail, Key } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function AuditorGateway() {
+export default function ManagerGateway() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showReviewerLogin, setShowReviewerLogin] = useState(false);
@@ -16,7 +16,7 @@ export default function AuditorGateway() {
     setError(null);
 
     try {
-      // Flag this as an explicit auditor admin login flow 
+      // Flag this as an explicit manager admin login flow 
       localStorage.setItem('admin_session', 'true');
 
       const { error } = await supabase.auth.signInWithOAuth({

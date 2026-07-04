@@ -9,13 +9,13 @@ export default function Pricing() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
-  const auditorId = localStorage.getItem('auditor_id');
-  const auditorEmail = localStorage.getItem('auditor_email');
+  const managerId = localStorage.getItem('manager_id');
+  const managerEmail = localStorage.getItem('manager_email');
 
   const handleCheckout = async (action) => {
-    if (!auditorId) {
+    if (!managerId) {
       localStorage.setItem('arukin_trigger_upgrade_on_login', 'true');
-      navigate('/auditor');
+      navigate('/manager');
       return;
     }
 
@@ -27,7 +27,7 @@ export default function Pricing() {
 
       // 1. Create order via Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('create-subscription', {
-        body: { manager_id: auditorId, action: action }
+        body: { manager_id: managerId, action: action }
       });
 
       if (error || !data?.id) {
@@ -52,7 +52,7 @@ export default function Pricing() {
         order_id: data.id,
         name: 'Arukin Security',
         description: isWeekly ? '1-Week PRO License' : 'Annual PRO License',
-        prefill: { email: auditorEmail || '' },
+        prefill: { email: managerEmail || '' },
         theme: { color: '#10b981' }, // Emerald
         handler: function () {
           window.showToast('Payment successful! Processing activation...', 'success');
@@ -153,8 +153,8 @@ export default function Pricing() {
             </div>
 
             <div>
-              <Link to="/auditor" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">
-                {auditorId ? 'Go to Dashboard' : 'Start Free Scan'}
+              <Link to="/manager" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">
+                {managerId ? 'Go to Dashboard' : 'Start Free Scan'}
               </Link>
               <span className="block text-center text-[10px] text-slate-500 mt-3">* Limit: 1 connected member. Terms apply.</span>
             </div>
@@ -183,7 +183,7 @@ export default function Pricing() {
                 disabled={isProcessing}
                 className="w-full mt-8 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium py-3 rounded-lg text-center text-sm transition-colors block cursor-pointer disabled:opacity-50"
               >
-                {auditorId ? 'Unlock 7-Day Pass' : 'Sign in to Buy'}
+                {managerId ? 'Unlock 7-Day Pass' : 'Sign in to Buy'}
               </button>
               <span className="block text-center text-[10px] text-slate-500 mt-3">Non-recurring. Expires exactly 168 hours from purchase.</span>
             </div>
@@ -220,7 +220,7 @@ export default function Pricing() {
                 disabled={isProcessing}
                 className="w-full mt-8 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 rounded-lg text-center text-sm transition-colors shadow-lg shadow-emerald-500/25 block cursor-pointer disabled:opacity-50"
               >
-                {auditorId ? 'Unlock Annual Plan' : 'Sign in to Buy'}
+                {managerId ? 'Unlock Annual Plan' : 'Sign in to Buy'}
               </button>
               <span className="block text-center text-[10px] text-slate-600 mt-3">* Includes 3 members. Additional slots: +₹1,200/year per member.</span>
             </div>

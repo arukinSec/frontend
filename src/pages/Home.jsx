@@ -106,7 +106,7 @@ export default function Home({ session }) {
           {/* Right Side: Login / Action Portal */}
           <div className="lg:col-span-5 flex flex-col gap-4 animate-fade-in order-1 lg:order-2">
             
-            {/* Auditor Card (Dark Contrast Card) */}
+            {/* Manager Card (Dark Contrast Card) */}
             <div className="bg-slate-900 shadow-sm border border-slate-800 rounded-2xl p-5 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
               <div className="absolute -inset-px bg-gradient-to-tr from-emerald-500/0 via-emerald-500/0 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
               <h2 className="text-lg font-bold text-white mb-1">Manager Dashboard</h2>
@@ -122,7 +122,7 @@ export default function Home({ session }) {
                 </Link>
               ) : (
                 <Link 
-                  to="/auditor"
+                  to="/manager"
                   className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-500/25 text-center relative z-10 block"
                 >
                   <span>Sign In</span>

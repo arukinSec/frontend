@@ -197,7 +197,7 @@ export default function HowItWorks() {
             Sign up for free and start looking after someone's digital safety in under a minute.
           </p>
           <Link
-            to="/auditor"
+            to="/manager"
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/25 text-sm"
           >
             Start Looking After Them

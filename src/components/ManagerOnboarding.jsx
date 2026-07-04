@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Shield, Copy, Check, ArrowRight, Share2, Sparkles, User, Users, Lock, Eye } from 'lucide-react';
 
-export default function AuditorOnboarding({ auditorAuthId, onClose }) {
+export default function ManagerOnboarding({ managerAuthId, onClose }) {
   const [step, setStep] = useState(1);
   const [copied, setCopied] = useState(false);
 
   const totalSteps = 7;
 
   // Format code to display nicely (e.g., "123 456")
-  const formattedId = auditorAuthId && auditorAuthId.length === 6 
-    ? `${auditorAuthId.substring(0, 3)} ${auditorAuthId.substring(3)}` 
-    : auditorAuthId;
+  const formattedId = managerAuthId && managerAuthId.length === 6 
+    ? `${managerAuthId.substring(0, 3)} ${managerAuthId.substring(3)}` 
+    : managerAuthId;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(formattedId);

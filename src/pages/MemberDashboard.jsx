@@ -51,14 +51,14 @@ export default function MemberDashboard() {
   const fetchMemberDetails = async () => {
     setLoading(true);
     setFetchError(null);
-    const auditorId = localStorage.getItem('auditor_id');
+    const managerId = localStorage.getItem('manager_id');
 
     try {
       const { data, error } = await supabase
         .from('members')
         .select('id, name, email, avatar_url, tier, connection_status, manager_id, created_at, updated_at, provider_id')
         .eq('id', id)
-        .eq('manager_id', auditorId)  // ownership check — manager can only see their own members
+        .eq('manager_id', managerId)  // ownership check — manager can only see their own members
         .single();
 
       if (error) throw error;

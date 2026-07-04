@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-export function useAuditor() {
-  const [auditor, setAuditor] = useState(null);
+export function useManager() {
+  const [manager, setManager] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function useAuditor() {
         .single();
 
       if (!cancelled) {
-        setAuditor(data || null);
+        setManager(data || null);
         setLoading(false);
       }
     }
@@ -32,5 +32,5 @@ export function useAuditor() {
     return () => { cancelled = true; };
   }, []);
 
-  return { auditor, loading };
+  return { manager, loading };
 }

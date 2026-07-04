@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2, Zap, Info
 } from 'lucide-react';
-import AuditorOnboarding from '../components/AuditorOnboarding';
+import ManagerOnboarding from '../components/ManagerOnboarding';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
-import { useAuditor } from '../utils/useAuditor';
+import { useManager } from '../utils/useManager';
 
 export default function MembersList() {
   const [members, setMembers] = useState([]);
@@ -23,55 +23,55 @@ export default function MembersList() {
   const [showDangerZone, setShowDangerZone] = useState(false);
   const navigate = useNavigate();
 
-  const { auditor, loading: auditorLoading } = useAuditor();
-  const [auditorAuthId, setAuditorAuthId] = useState(localStorage.getItem('auditor_auth_id') || 'Unknown');
-  const [auditorTier, setAuditorTier] = useState(null);
+  const { manager, loading: managerLoading } = useManager();
+  const [managerAuthId, setManagerAuthId] = useState(localStorage.getItem('manager_auth_id') || 'Unknown');
+  const [managerTier, setManagerTier] = useState(null);
   const [billingCycle, setBillingCycle] = useState('yearly');
   const [additionalSlots, setAdditionalSlots] = useState(0);
-  const auditorEmail = localStorage.getItem('auditor_email') || '';
-  const auditorAvatarUrl = localStorage.getItem('auditor_avatar_url') || '';
+  const managerEmail = localStorage.getItem('manager_email') || '';
+  const managerAvatarUrl = localStorage.getItem('manager_avatar_url') || '';
 
   // Format 6-digit code with a dash in the middle (e.g., "123-456")
-  const formattedAuthId = auditorAuthId && auditorAuthId.length === 6
-    ? `${auditorAuthId.substring(0, 3)}-${auditorAuthId.substring(3)}`
-    : auditorAuthId;
+  const formattedAuthId = managerAuthId && managerAuthId.length === 6
+    ? `${managerAuthId.substring(0, 3)}-${managerAuthId.substring(3)}`
+    : managerAuthId;
 
   useEffect(() => {
-    if (auditor) {
-      setAuditorTier(auditor.tier);
-      setAdditionalSlots(auditor.additional_slots || 0);
-      setBillingCycle(auditor.billing_cycle || 'yearly');
-      setAuditorAuthId(auditor.auth_id || localStorage.getItem('auditor_auth_id') || 'Unknown');
-      localStorage.setItem('auditor_onboarded', String(auditor.onboarded));
-      localStorage.setItem('auditor_role', auditor.role || 'auditor');
+    if (manager) {
+      setManagerTier(manager.tier);
+      setAdditionalSlots(manager.additional_slots || 0);
+      setBillingCycle(manager.billing_cycle || 'yearly');
+      setManagerAuthId(manager.auth_id || localStorage.getItem('manager_auth_id') || 'Unknown');
+      localStorage.setItem('manager_onboarded', String(manager.onboarded));
+      localStorage.setItem('manager_role', manager.role || 'manager');
 
       const triggerUpgrade = localStorage.getItem('arukin_trigger_upgrade_on_login') === 'true';
-      if (triggerUpgrade && auditor.tier === 'FREE') {
+      if (triggerUpgrade && manager.tier === 'FREE') {
         localStorage.removeItem('arukin_trigger_upgrade_on_login');
         setTimeout(() => { handleUpgrade(); }, 800);
-      } else if (auditor.tier === 'PRO') {
+      } else if (manager.tier === 'PRO') {
         localStorage.removeItem('arukin_trigger_upgrade_on_login');
       }
     }
 
-    const dbOnboarded = localStorage.getItem('auditor_onboarded') === 'true';
+    const dbOnboarded = localStorage.getItem('manager_onboarded') === 'true';
     if (!dbOnboarded) {
       setShowOnboarding(true);
     }
     fetchMembers();
-  }, [auditor]);
+  }, [manager]);
 
   const handleCloseOnboarding = async () => {
-    const auditorId = localStorage.getItem('auditor_id');
-    if (auditorId) {
+    const managerId = localStorage.getItem('manager_id');
+    if (managerId) {
       // Update database profile directly
       const { error } = await supabase
         .from('managers')
         .update({ onboarded: true })
-        .eq('id', auditorId);
+        .eq('id', managerId);
       
       if (!error) {
-        localStorage.setItem('auditor_onboarded', 'true');
+        localStorage.setItem('manager_onboarded', 'true');
       }
     }
     setShowOnboarding(false);
@@ -79,18 +79,18 @@ export default function MembersList() {
 
   const fetchMembers = async () => {
     setLoading(true);
-    const auditorId = localStorage.getItem('auditor_id');
+    const managerId = localStorage.getItem('manager_id');
     
-    if (!auditorId) {
+    if (!managerId) {
       setLoading(false);
       return;
     }
 
-    // Fetch active connected members assigned to this auditor
+    // Fetch active connected members assigned to this manager
     const { data, error } = await supabase
       .from('members')
       .select('id, name, email, avatar_url, connection_status, created_at, manager_id, provider_id, tier')
-      .eq('manager_id', auditorId)
+      .eq('manager_id', managerId)
       .eq('connection_status', 'CONNECTED')
       .order('created_at', { ascending: true });
       
@@ -114,13 +114,13 @@ export default function MembersList() {
 
   const handleSelfAuditAccept = async () => {
     setShowSelfAuditModal(false);
-    const auditorId = localStorage.getItem('auditor_id');
-    if (!auditorId) return;
+    const managerId = localStorage.getItem('manager_id');
+    if (!managerId) return;
 
-    localStorage.setItem('arukin_auditor_id', auditorId);
+    localStorage.setItem('arukin_manager_id', managerId);
     localStorage.setItem('arukin_pending_flow', 'standard');
     localStorage.setItem('arukin_self_audit', 'true');
-    localStorage.setItem('arukin_auditor_email', localStorage.getItem('auditor_email') || '');
+    localStorage.setItem('arukin_manager_email', localStorage.getItem('manager_email') || '');
 
     const STANDARD_SCOPES = [
       'openid',
@@ -138,7 +138,7 @@ export default function MembersList() {
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
-          login_hint: localStorage.getItem('auditor_email') || ''
+          login_hint: localStorage.getItem('manager_email') || ''
         },
         scopes: STANDARD_SCOPES
       }
@@ -156,7 +156,7 @@ export default function MembersList() {
       // 1. Create order via Supabase Edge Function with action 'add-slot'
       const { data, error } = await supabase.functions.invoke('create-subscription', {
         body: {
-          auditor_id: localStorage.getItem('auditor_id'),
+          manager_id: localStorage.getItem('manager_id'),
           action: 'add-slot'
         }
       });
@@ -183,7 +183,7 @@ export default function MembersList() {
         name: 'Arukin Security',
         description: 'Purchase Additional Manager Connection Slot',
         prefill: {
-          email: localStorage.getItem('auditor_email') || '',
+          email: localStorage.getItem('manager_email') || '',
         },
         theme: {
           color: '#6366f1'
@@ -217,11 +217,11 @@ export default function MembersList() {
       console.warn(err);
     }
     localStorage.removeItem('admin_session');
-    localStorage.removeItem('auditor_id');
-    localStorage.removeItem('auditor_tier');
-    localStorage.removeItem('auditor_auth_id');
-    localStorage.removeItem('auditor_email');
-    localStorage.removeItem('auditor_role');
+    localStorage.removeItem('manager_id');
+    localStorage.removeItem('manager_tier');
+    localStorage.removeItem('manager_auth_id');
+    localStorage.removeItem('manager_email');
+    localStorage.removeItem('manager_role');
     localStorage.removeItem('arukin_onboarded_completed');
     window.location.reload();
   };
@@ -245,8 +245,8 @@ export default function MembersList() {
       
       {/* Onboarding Wizard Overlay */}
       {showOnboarding && (
-        <AuditorOnboarding 
-          auditorAuthId={auditorAuthId} 
+        <ManagerOnboarding 
+          managerAuthId={managerAuthId} 
           onClose={handleCloseOnboarding} 
         />
       )}
@@ -276,7 +276,7 @@ export default function MembersList() {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between items-center bg-white/[0.01] border border-white/5 p-3 rounded-xl text-xs">
                 <span className="text-slate-400">Account Owner</span>
-                <span className="text-slate-200 font-medium">{auditorEmail}</span>
+                <span className="text-slate-200 font-medium">{managerEmail}</span>
               </div>
               <div className="flex justify-between items-center bg-white/[0.01] border border-white/5 p-3 rounded-xl text-xs">
                 <span className="text-slate-400">Security Scope</span>
@@ -307,8 +307,8 @@ export default function MembersList() {
                   
                   <button 
                     onClick={async () => {
-                      const auditorId = localStorage.getItem('auditor_id');
-                      if (auditorId) {
+                      const managerId = localStorage.getItem('manager_id');
+                      if (managerId) {
                         setShowConfirmModal({
                           open: true,
                           title: 'Permanently Delete Account',
@@ -319,19 +319,19 @@ export default function MembersList() {
                             const { error: memberErr } = await supabase
                               .from('members')
                               .delete()
-                              .eq('manager_id', auditorId);
+                              .eq('manager_id', managerId);
 
                             if (memberErr) {
                               console.warn("Failed to delete connected members:", memberErr);
                             }
 
-                            // 2. Wipe auditor profile
-                            const { error: auditorErr } = await supabase
+                            // 2. Wipe manager profile
+                            const { error: managerErr } = await supabase
                               .from('managers')
                               .delete()
-                              .eq('id', auditorId);
+                              .eq('id', managerId);
 
-                            if (auditorErr) {
+                            if (managerErr) {
                               window.showToast('Failed to delete account.', 'error');
                             } else {
                               handleLogout();
@@ -361,7 +361,7 @@ export default function MembersList() {
           </div>
 
           <div className="flex items-center gap-3 md:gap-6 shrink-0 mr-2 md:mr-6">
-            {/* Display formatted Auditor ID and Copy Link */}
+            {/* Display formatted Manager ID and Copy Link */}
             <div className="flex items-center gap-1.5 md:gap-2">
               <div className="flex items-center gap-1 md:gap-2 bg-white/[0.02] border border-white/10 px-2.5 md:px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider">
                 <span className="hidden md:inline text-slate-500">ID:</span>
@@ -369,7 +369,7 @@ export default function MembersList() {
               </div>
               <button
                 onClick={() => {
-                   const shareUrl = `${window.location.origin}/client?authId=${auditorAuthId}`;
+                   const shareUrl = `${window.location.origin}/client?authId=${managerAuthId}`;
                    navigator.clipboard.writeText(shareUrl);
                    window.showToast("Share Link Copied! Send this link to members to connect them instantly.", "success");
                  }}
@@ -390,9 +390,9 @@ export default function MembersList() {
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 className="h-8 w-8 rounded-full border border-white/10 bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-xs font-bold text-white uppercase select-none hover:ring-2 ring-indigo-500/30 transition-all cursor-pointer overflow-hidden"
               >
-                {auditorAvatarUrl ? (
+                {managerAvatarUrl ? (
                   <img 
-                    src={auditorAvatarUrl} 
+                    src={managerAvatarUrl} 
                     alt="Manager Avatar" 
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
@@ -400,12 +400,12 @@ export default function MembersList() {
                       e.target.style.display = 'none';
                       // Force letter rendering fallback
                       const textSpan = document.createElement('span');
-                      textSpan.innerText = auditorEmail ? auditorEmail.charAt(0).toUpperCase() : 'A';
+                      textSpan.innerText = managerEmail ? managerEmail.charAt(0).toUpperCase() : 'A';
                       e.target.parentElement.appendChild(textSpan);
                     }}
                   />
                 ) : (
-                  auditorEmail ? auditorEmail.charAt(0).toUpperCase() : 'A'
+                  managerEmail ? managerEmail.charAt(0).toUpperCase() : 'A'
                 )}
               </button>
 
@@ -416,23 +416,23 @@ export default function MembersList() {
                   <div className="absolute right-0 mt-2 top-8 w-60 bg-[#0E0E12] border border-white/10 rounded-2xl shadow-2xl p-4 z-50 animate-slide-up text-left">
                     <div className="mb-3.5 pb-3 border-b border-white/5">
                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">Manager Account</p>
-                      <p className="text-xs text-white truncate font-medium">{auditorEmail}</p>
+                      <p className="text-xs text-white truncate font-medium">{managerEmail}</p>
                     </div>
                     
                     <div className="flex items-center justify-between mb-4 bg-white/[0.02] border border-white/5 p-2 rounded-xl">
                       <span className="text-[10px] font-bold text-slate-400">Security Tier:</span>
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wider ${
-                        auditorTier === 'PRO' 
+                        managerTier === 'PRO' 
                           ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
                           : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
                       }`}>
-                        {auditorTier ?? '—'}
+                        {managerTier ?? '—'}
                       </span>
                     </div>
 
                     {/* Dropdown Options */}
                     <div className="py-2">
-                      {auditorTier === 'FREE' && (
+                      {managerTier === 'FREE' && (
                         <button 
                           onClick={handleUnlockTrialClick}
                           className="w-full text-left px-4 py-2.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors flex items-center justify-between"
@@ -440,7 +440,7 @@ export default function MembersList() {
                           <span className="flex items-center gap-2"><Zap size={14} /> Unlock Trial</span>
                         </button>
                       )}
-                      {!auditorLoading && auditorTier !== 'PRO' && (
+                      {!managerLoading && managerTier !== 'PRO' && (
                         <button 
                           onClick={handleUpgrade}
                           className="w-full text-left px-4 py-2.5 text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 transition-colors flex items-center justify-between"
@@ -497,7 +497,7 @@ export default function MembersList() {
         </header>
 
         {/* Self Audit Banner for FREE tier */}
-        {auditorTier === 'FREE' && (
+        {managerTier === 'FREE' && (
           <div className="mb-6 md:mb-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
@@ -529,7 +529,7 @@ export default function MembersList() {
               <Users size={24} className="mx-auto mb-3 opacity-20" />
               <div>
                 <p className="font-semibold text-slate-400">No members connected yet.</p>
-                <p className="text-xs text-slate-600 mt-1">Provide your Auth ID (<strong>{auditorAuthId}</strong>) to your clients to connect their account.</p>
+                <p className="text-xs text-slate-600 mt-1">Provide your Auth ID (<strong>{managerAuthId}</strong>) to your clients to connect their account.</p>
               </div>
             </div>
           ) : filteredMembers.length === 0 ? (
@@ -540,21 +540,21 @@ export default function MembersList() {
           ) : (
             filteredMembers.map((member, idx) => {
               let maxAllowed = 3;
-              if (auditorTier === 'PRO') maxAllowed = 4 + additionalSlots;
-              else if (auditorTier === 'TRIAL') maxAllowed = 3;
+              if (managerTier === 'PRO') maxAllowed = 4 + additionalSlots;
+              else if (managerTier === 'TRIAL') maxAllowed = 3;
               
               const isLocked = idx >= maxAllowed;
 
               const handleMemberClick = () => {
                 if (isLocked) {
-                  if (auditorTier === 'FREE') {
+                  if (managerTier === 'FREE') {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
                       message: `Free accounts are limited to 1 active slot. Upgrade to PRO to unlock up to 4 active slots (1 Self + 3 Targets) plus additional purchased slots.`,
                       action: handleUpgrade
                     });
-                  } else if (auditorTier === 'TRIAL') {
+                  } else if (managerTier === 'TRIAL') {
                     setShowUpgradeLockModal({
                       open: true,
                       title: 'Upgrade to PRO',
@@ -612,7 +612,7 @@ export default function MembersList() {
                       id={`dropdown-${member.id}`} 
                       className="hidden absolute right-0 mt-1.5 w-32 bg-[#0E0E12] border border-white/10 rounded-xl shadow-2xl py-1 text-xs text-left"
                     >
-                      {auditorTier === 'PRO' && billingCycle === 'yearly' && (
+                      {managerTier === 'PRO' && billingCycle === 'yearly' && (
                         <button
                           onClick={async (e) => {
                             e.preventDefault();
@@ -637,7 +637,7 @@ export default function MembersList() {
                             message: `Are you sure you want to disconnect ${member.name}? They will lose access.`,
                             requireInput: false,
                             action: async () => {
-                              const auditorId = localStorage.getItem('auditor_id');
+                              const managerId = localStorage.getItem('manager_id');
                             
                               // 1. Actively revoke the token with Google directly
                               const tokenToRevoke = member.google_refresh_token || member.access_token;
@@ -679,14 +679,14 @@ export default function MembersList() {
                                  }
                                  
                                  // Check if they disconnected their own self-audit account
-                                 console.log("Checking self audit disconnect:", { auditorTier, memberEmail: member.email, auditorEmail });
-                                 if (auditorTier === 'TRIAL' && member.email.toLowerCase() === auditorEmail.toLowerCase()) {
-                                   const { error: tierErr } = await supabase.from('managers').update({ tier: 'FREE' }).eq('id', auditorId);
+                                 console.log("Checking self audit disconnect:", { managerTier, memberEmail: member.email, managerEmail });
+                                 if (managerTier === 'TRIAL' && member.email.toLowerCase() === managerEmail.toLowerCase()) {
+                                   const { error: tierErr } = await supabase.from('managers').update({ tier: 'FREE' }).eq('id', managerId);
                                    if (tierErr) {
                                      console.error("Failed to revert tier:", tierErr);
                                      window.showToast("Failed to revert Manager Tier: " + tierErr.message, "error");
                                    } else {
-                                     localStorage.setItem('auditor_tier', 'FREE');
+                                     localStorage.setItem('manager_tier', 'FREE');
                                      window.showToast('Self-Audit removed. You have been reverted to the Free tier. Refreshing...', 'warning');
                                      setTimeout(() => {
                                        window.location.reload();
@@ -830,7 +830,7 @@ export default function MembersList() {
                     <AlertTriangle size={16} /> Important Notice
                   </h4>
                   <ul className="text-xs text-slate-400 leading-relaxed list-disc pl-4 space-y-2">
-                    <li>You must authenticate using your exact Manager email (<span className="text-white font-medium">{auditorEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
+                    <li>You must authenticate using your exact Manager email (<span className="text-white font-medium">{managerEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
                     <li>By proceeding, you grant Arukin read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a>.</li>
                     <li>You agree to our <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms and Conditions</a> regarding authorized data access and acceptable use.</li>
                   </ul>
