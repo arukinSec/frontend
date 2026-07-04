@@ -20,10 +20,11 @@ Create the following directories and files to match the standard workspace layou
 - **`README.md`**: Create a README in the workspace root detailing this directory structure so anyone looking at the folder understands how the pieces fit together.
 
 ## 4. Setup Environment Variables
-Copy the provided `.env.example` file in the workspace root to `.env`.
+Copy the provided `.env.example.workspace` file (if you are in the frontend repo) to `.env` in the workspace root.
 - Ask the user to provide the necessary secrets to fill out this `.env` file (e.g., Supabase URL, Google Client IDs, Razorpay keys). 
 - This central `.env` file is used as a master reference and **MUST NEVER BE TRACKED BY GIT**. 
 - You may also create individual `.env` (or `.env.local`) files inside the `frontend/` and `supabase/` directories as needed by the respective frameworks, using the central file as your source of truth.
+- For reference, `frontend/.env.example` and `supabase/.env.example` contain the specific keys needed for those specific sub-directories.
 
 ---
 By following this guide, you ensure the workspace remains clean, version control operates correctly on isolated sub-repositories, and sensitive credentials remain safely untracked on the local machine.
