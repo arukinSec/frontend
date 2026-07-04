@@ -7,27 +7,7 @@ ArukinSec Frontend is the internal dashboard used to securely monitor and manage
 
 ---
 
-## Terminology Note: Manager → Manager
 
-**"Manager" is the old terminology. "Manager" is the new terminology.** They mean the same thing — the person who logs into the Arukin dashboard to oversee connected accounts.
-
-All **user-facing text** in the frontend has been updated from "Manager" to "Manager". However, the following **backend artifacts still use the old "manager" naming** and should be migrated in a future refactor:
-
-| Artifact | Location |
-|---------|----------|
-| Database table `managers` | `arukin-supabase/supabase/migrations/*.sql` |
-| Column `manager_id` (on `members`, `audit_logs`, `usage_logs`) | `arukin-supabase/supabase/migrations/*.sql` |
-| RPC function `verify_manager_capacity` | `arukin-supabase/supabase/migrations/*.sql` |
-| RPC function `get_pro_manager_count` | `arukin-supabase/supabase/migrations/*.sql` |
-| PostgreSQL RLS policy names (e.g. "Managers can manage...") | `arukin-supabase/supabase/migrations/*.sql` |
-| Edge Function variable `manager_id`, `manager` | `arukin-supabase/supabase/functions/*/index.ts` |
-| Frontend localStorage keys (`manager_id`, `manager_tier`, etc.) | `src/App.jsx`, `src/pages/*.jsx` |
-| Frontend hook `useManager` + component `ManagerOnboarding` / `ManagerGateway` | `src/utils/useManager.js`, `src/pages/*.jsx` |
-| Route path `/manager` | `src/App.jsx` |
-
-> These remain functional as-is but use the legacy naming. A coordinated migration (database migration + frontend rename) is required to fully complete the transition.
-
----
 
 ## ⚡ Current Features & Implementations
 
