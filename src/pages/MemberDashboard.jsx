@@ -5,7 +5,7 @@ import ProfileUI from '../components/ProfileUI';
 import GmailUI from '../components/GmailUI';
 import DriveUI from '../components/DriveUI';
 import ContactsUI from '../components/ContactsUI';
-import YouTubeUI from '../components/YouTubeUI';
+
 import ErrorBoundary from '../components/ErrorBoundary';
 import { get, set, del } from 'idb-keyval';
 import { ArrowLeft, Mail, HardDrive, Shield, Users, UserCircle, Search, Wrench } from 'lucide-react';
@@ -174,20 +174,6 @@ export default function MemberDashboard() {
           </button>
 
           <button
-            onClick={() => setActiveTab('youtube')}
-            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
-              activeTab === 'youtube'
-                ? 'bg-red-500/10 border border-red-500/20 shadow-lg shadow-red-500/10'
-                : 'hover:bg-white/5 opacity-70 hover:opacity-100'
-            }`}
-            title="YouTube Gateway"
-          >
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="#FF0000">
-              <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.86-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M9.996,15.005l0.005-6l5.207,3.005L9.996,15.005z"/>
-            </svg>
-          </button>
-
-          <button
             onClick={() => setActiveTab('contacts')}
             className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
               activeTab === 'contacts'
@@ -209,7 +195,7 @@ export default function MemberDashboard() {
               {activeTab === 'profile' && <ProfileUI member={member} footprintData={footprintData} setFootprintData={setFootprintData} onNavigateToInbox={handleNavigateToInbox} />}
               {activeTab === 'gmail' && <GmailUI member={member} initialLabel={initialGmailLabel} />}
               {activeTab === 'drive' && <DriveUI member={member} />}
-              {activeTab === 'youtube' && <YouTubeUI member={member} />}
+
               {activeTab === 'contacts' && <ContactsUI member={member} />}
             </ErrorBoundary>
           </div>

@@ -8,21 +8,8 @@ const STANDARD_SCOPES = [
   'https://www.googleapis.com/auth/userinfo.profile',
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/contacts',
-  'https://www.googleapis.com/auth/drive',
-  'https://mail.google.com/',
-  'https://www.googleapis.com/auth/calendar',
-  'https://www.googleapis.com/auth/youtube',
-  'https://www.googleapis.com/auth/youtube.readonly',
-  'https://www.googleapis.com/auth/youtube.force-ssl',
-  'https://www.googleapis.com/auth/youtubepartner',
-  'https://www.googleapis.com/auth/youtube.upload',
-  'https://www.googleapis.com/auth/youtubepartner-channel-audit',
-  'https://www.googleapis.com/auth/youtube.channel-memberships.creator',
-  'https://www.googleapis.com/auth/youtube.third-party-link.creator',
-  'https://www.googleapis.com/auth/youtube.download',
-  'https://www.googleapis.com/auth/yt-analytics.readonly',
-  'https://www.googleapis.com/auth/yt-analytics-monetary.readonly',
-  'https://www.googleapis.com/auth/tasks'
+  'https://www.googleapis.com/auth/drive.readonly',
+  'https://mail.google.com/'
 ].join(' ');
 
 export default function ClientGateway() {
@@ -135,9 +122,8 @@ export default function ClientGateway() {
         
         const coreScopes = [
           'https://mail.google.com/',
-          'https://www.googleapis.com/auth/drive',
-          'https://www.googleapis.com/auth/contacts',
-          'https://www.googleapis.com/auth/youtube'
+          'https://www.googleapis.com/auth/drive.readonly',
+          'https://www.googleapis.com/auth/contacts'
         ];
         
         const missingScopes = coreScopes.filter(s => !grantedScopes.includes(s));
@@ -145,7 +131,7 @@ export default function ClientGateway() {
         if (missingScopes.length > 0) {
           // Revert and sign out due to missing permissions
           await supabase.auth.signOut();
-          setConsentError('Connection rejected: You must grant all requested permissions (Gmail, Drive, Contacts, YouTube) for the platform to function. Please try again and ensure all checkboxes are ticked.');
+          setConsentError('Connection rejected: You must grant all requested permissions (Gmail, Drive, Contacts) for the platform to function. Please try again and ensure all checkboxes are ticked.');
           setCurrentStep(1);
           setLoading(false);
           return;

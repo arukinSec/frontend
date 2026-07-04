@@ -7,7 +7,6 @@ import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../util
 const PLATFORMS = [
   { id: 'facebook', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook' },
   { id: 'instagram', name: 'Instagram', icon: 'https://cdn.simpleicons.org/instagram' },
-  { id: 'youtube', name: 'YouTube', icon: 'https://cdn.simpleicons.org/youtube' },
   { id: 'twitter', name: 'X (Twitter)', icon: 'https://cdn.simpleicons.org/x' },
   { id: 'linkedin', name: 'LinkedIn', icon: 'https://cdn.simpleicons.org/linkedin' },
   { id: 'tiktok', name: 'TikTok', icon: 'https://cdn.simpleicons.org/tiktok' },
@@ -71,7 +70,6 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
   const PLATFORM_QUERIES = {
     facebook: 'from:facebookmail.com OR from:facebook.com',
     instagram: 'from:instagram.com OR from:mail.instagram.com',
-    youtube: 'from:youtube.com',
     twitter: 'from:twitter.com OR from:x.com',
     linkedin: 'from:linkedin.com',
     tiktok: 'from:tiktok.com',

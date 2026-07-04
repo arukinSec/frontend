@@ -9,8 +9,7 @@ import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../util
 const SOCIAL_PLATFORMS = [
   { id: 'facebook', label: 'FACEBOOK', name: 'Facebook', icon: 'https://cdn.simpleicons.org/facebook', query: 'from:facebookmail.com OR from:facebook.com' },
   { id: 'instagram', label: 'INSTAGRAM', name: 'Instagram', icon: 'https://cdn.simpleicons.org/instagram', query: 'from:instagram.com OR from:mail.instagram.com' },
-  { id: 'youtube', label: 'YOUTUBE', name: 'YouTube', icon: 'https://cdn.simpleicons.org/youtube', query: 'from:youtube.com' },
-  { id: 'twitter', label: 'TWITTER', name: 'X (Twitter)', icon: 'https://cdn.simpleicons.org/x', query: 'from:twitter.com OR from:x.com' },
+  { id: 'twitter', label: 'TWITTER', name: 'Twitter / X', icon: 'https://cdn.simpleicons.org/x', query: 'from:twitter.com OR from:x.com' },
   { id: 'linkedin', label: 'LINKEDIN', name: 'LinkedIn', icon: 'https://cdn.simpleicons.org/linkedin', query: 'from:linkedin.com' },
   { id: 'tiktok', label: 'TIKTOK', name: 'TikTok', icon: 'https://cdn.simpleicons.org/tiktok', query: 'from:tiktok.com' },
   { id: 'reddit', label: 'REDDIT', name: 'Reddit', icon: 'https://cdn.simpleicons.org/reddit', query: 'from:reddit.com OR from:redditmail.com' },
