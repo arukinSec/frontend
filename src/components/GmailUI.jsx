@@ -1244,8 +1244,9 @@ export default function GmailUI({ member, initialLabel }) {
                       onClick={() => setShowActionMenu(!showActionMenu)}
                       className="p-1 hover:bg-slate-100 rounded text-slate-600 transition-colors cursor-pointer"
                       title="Bulk Actions"
+                      disabled={multiActionLoading}
                     >
-                      <MoreVertical size={16} className="hover:text-slate-800" />
+                      {multiActionLoading ? <RefreshCw size={16} className="animate-spin text-indigo-500" /> : <MoreVertical size={16} className="hover:text-slate-800" />}
                     </button>
                     {showActionMenu && (
                       <>
