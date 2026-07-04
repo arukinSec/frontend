@@ -8,12 +8,11 @@ This repository contains the highly secure, React 19 + Vite 8 internal dashboard
 
 ## Technical Documentation
 
-For a comprehensive breakdown of how Arukin operates securely under the hood, please refer to the official documentation located in the root workspace `/docs` directory:
+For a comprehensive breakdown of how Arukin operates securely under the hood, please refer to the official documentation located in the root workspace `docs` repository.
 
-1. **[Frontend Architecture](https://github.com/arukinSec/docs/blob/master/02_frontend_architecture.md)**
-2. **[Backend Architecture](https://github.com/arukinSec/docs/blob/master/03_backend_architecture.md)**
-3. **[Security Model](https://github.com/arukinSec/docs/blob/master/04_security_model.md)**
-4. **[Billing & Tiers](https://github.com/arukinSec/docs/blob/master/05_billing_and_tiers.md)**
+The documentation has been completely restructured into an enterprise knowledge base containing Architecture Decision Records (ADRs) and rigorous security models.
+
+👉 **[ArukinSec Documentation Hub](https://github.com/arukinSec/docs)**
 
 ---
 

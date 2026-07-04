@@ -28,3 +28,6 @@ Copy the provided `.env.example.workspace` file (if you are in the frontend repo
 
 ---
 By following this guide, you ensure the workspace remains clean, version control operates correctly on isolated sub-repositories, and sensitive credentials remain safely untracked on the local machine.
+
+## 5. View the Documentation
+For a deep dive into the system's architecture, security models (Token Lifecycles, CSPs), and integrations, please refer to the comprehensive **[ArukinSec Documentation Hub](https://github.com/arukinSec/docs)**.
