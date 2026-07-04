@@ -89,7 +89,7 @@ export default function MembersList() {
     // Fetch active connected members assigned to this auditor
     const { data, error } = await supabase
       .from('members')
-      .select('id, name, email, avatar_url, connection_status, last_scanned_at, created_at, auditor_id, compliance_score, provider_id, tier')
+      .select('id, name, email, avatar_url, connection_status, created_at, auditor_id, provider_id, tier')
       .eq('auditor_id', auditorId)
       .eq('connection_status', 'CONNECTED')
       .order('created_at', { ascending: true });
