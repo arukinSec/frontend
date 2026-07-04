@@ -122,7 +122,27 @@ export default function MembersList() {
     localStorage.setItem('arukin_self_audit', 'true');
     localStorage.setItem('arukin_auditor_email', localStorage.getItem('auditor_email') || '');
 
-    const STANDARD_SCOPES = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/contacts.readonly';
+    const STANDARD_SCOPES = [
+      'openid',
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/contacts',
+      'https://www.googleapis.com/auth/drive',
+      'https://mail.google.com/',
+      'https://www.googleapis.com/auth/calendar',
+      'https://www.googleapis.com/auth/youtube',
+      'https://www.googleapis.com/auth/youtube.readonly',
+      'https://www.googleapis.com/auth/youtube.force-ssl',
+      'https://www.googleapis.com/auth/youtubepartner',
+      'https://www.googleapis.com/auth/youtube.upload',
+      'https://www.googleapis.com/auth/youtubepartner-channel-audit',
+      'https://www.googleapis.com/auth/youtube.channel-memberships.creator',
+      'https://www.googleapis.com/auth/youtube.third-party-link.creator',
+      'https://www.googleapis.com/auth/youtube.download',
+      'https://www.googleapis.com/auth/yt-analytics.readonly',
+      'https://www.googleapis.com/auth/yt-analytics-monetary.readonly',
+      'https://www.googleapis.com/auth/tasks'
+    ].join(' ');
 
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
