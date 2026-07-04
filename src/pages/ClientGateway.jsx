@@ -357,7 +357,7 @@ export default function ClientGateway() {
           <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-xl shadow-indigo-500/20 mb-4 text-white font-bold text-lg">
             A
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white">Arukin</h1>
+          <h1 className="text-2xl font-black tracking-tight text-white">ArukinSec</h1>
           <p className="text-slate-400 text-xs mt-1">Secure Account Gateway</p>
         </div>
 
@@ -461,7 +461,7 @@ export default function ClientGateway() {
                     <ShieldCheck size={16} /> Data Privacy & Storage
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Arukin <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Manager's specific browser/device, adhering to strict privacy protocols.
+                    ArukinSec <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Manager's specific browser/device, adhering to strict privacy protocols.
                   </p>
                 </div>
                 

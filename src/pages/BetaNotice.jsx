@@ -13,9 +13,9 @@ export default function BetaNotice() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
             <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
-              Arukin <span className="text-indigo-400 font-medium">Compliance Portal</span>
+              ArukinSec <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>
           </div>
           <div className="flex items-center gap-3">
@@ -78,7 +78,7 @@ export default function BetaNotice() {
             <div>
               <h4 className="text-white font-bold text-xs mb-1">CURRENT STATUS: BETA</h4>
               <p className="text-slate-400 text-xs leading-relaxed">
-                Arukin is currently in beta. We recommend using it for personal and family oversight — not for highly sensitive corporate or enterprise accounts at this stage.
+                ArukinSec is currently in beta. We recommend using it for personal and family oversight — not for highly sensitive corporate or enterprise accounts at this stage.
               </p>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function BetaNotice() {
               <span>1. What "Beta" Means For You</span>
             </h2>
             <p className="text-slate-400">
-              Arukin is in active development. Features are provided for personal and family evaluation and are subject to change without notice. We do not support enterprise-level usage at this time.
+              ArukinSec is in active development. Features are provided for personal and family evaluation and are subject to change without notice. We do not support enterprise-level usage at this time.
             </p>
             <p className="text-slate-400 mt-2">
               During beta, you may encounter:
@@ -110,7 +110,7 @@ export default function BetaNotice() {
               <span>2. Account & Connection Limits</span>
             </h2>
             <p className="text-slate-400">
-              Because Arukin operates as a Google Developer Sandbox application, the following limits apply:
+              Because ArukinSec operates as a Google Developer Sandbox application, the following limits apply:
             </p>
             <div className="bg-white/[0.02] border border-white/10 rounded-xl p-4 space-y-3 mt-2">
               <div className="flex items-start gap-3">
@@ -120,7 +120,7 @@ export default function BetaNotice() {
                 <div>
                   <h4 className="text-white font-semibold text-xs">100 Connected User Limit</h4>
                   <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">
-                    Google enforces a hard cap of 100 sensitive-scope user connections for unverified applications. Once this limit is reached, no new members can connect their Google accounts until Arukin completes a CASA Tier 2 security assessment.
+                    Google enforces a hard cap of 100 sensitive-scope user connections for unverified applications. Once this limit is reached, no new members can connect their Google accounts until ArukinSec completes a CASA Tier 2 security assessment.
                   </p>
                 </div>
               </div>
@@ -131,7 +131,7 @@ export default function BetaNotice() {
                 <div>
                   <h4 className="text-white font-semibold text-xs">No Uptime Guarantee</h4>
                   <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">
-                    As a beta service, Arukin does not offer SLA-backed uptime. API changes, infrastructure updates, or security patches may cause temporary interruptions without prior notice.
+                    As a beta service, ArukinSec does not offer SLA-backed uptime. API changes, infrastructure updates, or security patches may cause temporary interruptions without prior notice.
                   </p>
                 </div>
               </div>
@@ -188,7 +188,7 @@ export default function BetaNotice() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600 shrink-0 mt-12 bg-black/20">
-        <p>© 2026 Arukin Platform. Built for Google account oversight and digital caregiving.</p>
+        <p>© 2026 ArukinSec Platform. Built for Google account oversight and digital caregiving.</p>
       </footer>
 
     </div>

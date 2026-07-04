@@ -4,15 +4,15 @@ export const faqCategories = [
   {
     id: 'general',
     title: 'General & Terminology',
-    description: 'The basics of Arukin, how it works, and key terminology.',
+    description: 'The basics of ArukinSec, how it works, and key terminology.',
     questions: [
       {
-        q: "What is Arukin?",
-        a: <>Arukin is a Google account management and oversight tool designed for families and professionals. It lets a trusted person (the Manager) oversee the Google accounts of children, elderly relatives, or high-profile individuals for signs of phishing, scams, and data leaks — without ever needing their passwords.</>
+        q: "What is ArukinSec?",
+        a: <>ArukinSec is a Google account management and oversight tool designed for families and professionals. It lets a trusted person (the Manager) oversee the Google accounts of children, elderly relatives, or high-profile individuals for signs of phishing, scams, and data leaks — without ever needing their passwords.</>
       },
       {
         q: "What is a Manager?",
-        a: <>A Manager is the admin of the Arukin dashboard. This is usually the family member or professional who sets up the system. Managers log in with basic Google profile scopes (just email and profile picture) to access the dashboard and generate Connection IDs for the people they look after.</>
+        a: <>A Manager is the admin of the ArukinSec dashboard. This is usually the family member or professional who sets up the system. Managers log in with basic Google profile scopes (just email and profile picture) to access the dashboard and generate Connection IDs for the people they look after.</>
       },
       {
         q: "What is a Member?",
@@ -20,11 +20,11 @@ export const faqCategories = [
       },
       {
         q: "What is a Self-Audit?",
-        a: <>A Self-Audit is a safe way to test Arukin's capabilities on your own data before inviting family members. By connecting your own email and accepting the necessary scopes to perform a self-audit, you become a Trial member, unlocking PRO features for your own account.</>
+        a: <>A Self-Audit is a safe way to test ArukinSec's capabilities on your own data before inviting family members. By connecting your own email and accepting the necessary scopes to perform a self-audit, you become a Trial member, unlocking PRO features for your own account.</>
       },
       {
         q: "How do I connect a family member's account?",
-        a: <>1. Log into your Manager dashboard.<br/>2. Note your 6-digit Connection ID displayed at the top.<br/>3. Send the person you're helping to the 'Member Portal' link (arukin.pages.dev/client).<br/>4. They log in with their Google account and enter your 6-digit ID.<br/>5. They authorize the Google scopes, and they will instantly appear on your dashboard.</>
+        a: <>1. Log into your Manager dashboard.<br/>2. Note your 6-digit Connection ID displayed at the top.<br/>3. Send the person you're helping to the 'Member Portal' link (arukinsec.web.app/client).<br/>4. They log in with their Google account and enter your 6-digit ID.<br/>5. They authorize the Google scopes, and they will instantly appear on your dashboard.</>
       }
     ]
   },
@@ -46,23 +46,23 @@ export const faqCategories = [
         a: <><p className="mb-2">To prevent API abuse and manage Google quota limits, we enforce monthly scan limits per member.</p><ul className="list-disc pl-5"><li><strong>Free accounts:</strong> 1 insight scan + 2 footprint scans per month.</li><li><strong>PRO accounts:</strong> 5 insight scans + 10 footprint scans per month.</li></ul><p className="mt-2">An 'insight scan' refers to a deep analysis of inbox threats, while a 'footprint scan' looks at overall account health and connected apps.</p></>
       },
       {
-        q: "Is Arukin completely open-source?",
-        a: <>Yes! The core Arukin architecture, including the React frontend and Supabase edge functions, is 100% open-source. Anyone can view the code, audit our security practices, contribute, or self-host the platform. You can find our official repositories at github.com/arukinSec.</>
+        q: "Is ArukinSec completely open-source?",
+        a: <>Yes! The core ArukinSec architecture, including the React frontend and Supabase edge functions, is 100% open-source. Anyone can view the code, audit our security practices, contribute, or self-host the platform. You can find our official repositories at github.com/arukinSec.</>
       },
       {
         q: "If it's free and open-source, why do you charge for pricing plans?",
         a: <>While the software itself is free, the infrastructure required to run it securely is not. Our paid plans cover our <strong>Managed Cloud Hosting</strong>. When you purchase a PRO plan, you are paying for the convenience of high-availability servers, automated updates, ongoing maintenance, and out-of-the-box security without the headache of managing databases and edge functions yourself.</>
       },
       {
-        q: "Can I self-host Arukin?",
-        a: <>Absolutely, and we encourage it for users who require absolute data isolation! You can deploy Arukin on your own AWS, GCP, or VPS infrastructure. If you need enterprise-level assistance setting up a self-hosted instance, we offer a paid <strong>Self-Hosted Enterprise Pass</strong> which provides priority onboarding and setup assistance.</>
+        q: "Can I self-host ArukinSec?",
+        a: <>Absolutely, and we encourage it for users who require absolute data isolation! You can deploy ArukinSec on your own AWS, GCP, or VPS infrastructure. If you need enterprise-level assistance setting up a self-hosted instance, we offer a paid <strong>Self-Hosted Enterprise Pass</strong> which provides priority onboarding and setup assistance.</>
       }
     ]
   },
   {
     id: 'features',
     title: 'Features & Capabilities',
-    description: 'Discover what Arukin can and cannot do to protect accounts.',
+    description: 'Discover what ArukinSec can and cannot do to protect accounts.',
     questions: [
       {
         q: "What data can I actually see as a Manager?",
@@ -70,7 +70,7 @@ export const faqCategories = [
       },
       {
         q: "Can I reply to their emails or delete their files?",
-        a: <>Arukin is designed as an auditing tool, not an email client. You cannot compose new emails or send replies on their behalf. However, on PRO plans, you <em>can</em> use Active Operations to instantly archive or trash malicious emails to prevent the member from clicking them.</>
+        a: <>ArukinSec is designed as an auditing tool, not an email client. You cannot compose new emails or send replies on their behalf. However, on PRO plans, you <em>can</em> use Active Operations to instantly archive or trash malicious emails to prevent the member from clicking them.</>
       },
       {
         q: "Can I download their Google Drive files?",
@@ -88,12 +88,12 @@ export const faqCategories = [
     description: 'How we keep tokens safe and ensure data never leaks.',
     questions: [
       {
-        q: "Does Arukin ask for or store my family member's password?",
-        a: <>Never. Arukin uses standard Google OAuth 2.0. Members log in directly through Google's secure servers. We only receive an access token, which we use to query APIs. We never see, touch, or store their passwords.</>
+        q: "Does ArukinSec ask for or store my family member's password?",
+        a: <>Never. ArukinSec uses standard Google OAuth 2.0. Members log in directly through Google's secure servers. We only receive an access token, which we use to query APIs. We never see, touch, or store their passwords.</>
       },
       {
-        q: "Does Arukin store my family's emails on its servers?",
-        a: <>No. Arukin utilizes a strict <strong>Server-Side Proxy Architecture</strong>. When you view a member's inbox, the request is securely routed through our proxy edge functions straight to Google's API. The data is fetched in real-time and passed to your dashboard. We do not store their emails, drive files, or contacts in our database.</>
+        q: "Does ArukinSec store my family's emails on its servers?",
+        a: <>No. ArukinSec utilizes a strict <strong>Server-Side Proxy Architecture</strong>. When you view a member's inbox, the request is securely routed through our proxy edge functions straight to Google's API. The data is fetched in real-time and passed to your dashboard. We do not store their emails, drive files, or contacts in our database.</>
       },
       {
         q: "How is my dashboard data protected?",
@@ -101,39 +101,39 @@ export const faqCategories = [
       },
       {
         q: "How do I revoke access as a member?",
-        a: <>Go to <a href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline">https://myaccount.google.com/connections</a> with the Google account you authenticated. Search for <strong>Arukin</strong> and simply click "Delete all connections you have with Arukin" at the bottom. This completely revokes Arukin and the Manager's access to your account. Even if the Manager hasn't disconnected you from their dashboard, they will no longer be able to see or view your emails, drive files, or contacts.</>
+        a: <>Go to <a href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline">https://myaccount.google.com/connections</a> with the Google account you authenticated. Search for <strong>ArukinSec</strong> and simply click "Delete all connections you have with ArukinSec" at the bottom. This completely revokes ArukinSec and the Manager's access to your account. Even if the Manager hasn't disconnected you from their dashboard, they will no longer be able to see or view your emails, drive files, or contacts.</>
       },
       {
         q: "Will Google send them a security alert when I connect?",
-        a: <>Yes. As per standard Google security protocols, when a member first connects their account to Arukin and grants access to their Gmail/Drive, Google will send them a security alert email notifying them that a new application was authorized.</>
+        a: <>Yes. As per standard Google security protocols, when a member first connects their account to ArukinSec and grants access to their Gmail/Drive, Google will send them a security alert email notifying them that a new application was authorized.</>
       },
       {
-        q: "Does Arukin sell my family's data to advertisers or third parties?",
-        a: <>Absolutely not. Arukin operates on a strict zero-knowledge, zero-persistence model. We charge for our cloud infrastructure, not by monetizing your data.</>
+        q: "Does ArukinSec sell my family's data to advertisers or third parties?",
+        a: <>Absolutely not. ArukinSec operates on a strict zero-knowledge, zero-persistence model. We charge for our cloud infrastructure, not by monetizing your data.</>
       },
       {
-        q: "Can the Arukin developers or support team see my emails or Drive files?",
+        q: "Can the ArukinSec developers or support team see my emails or Drive files?",
         a: <>No. Our backend utilizes "blind" edge functions. They act only as a secure tunnel between your browser and Google's API. Because the data is never saved to our database, there is physically nothing for our team to look at.</>
       },
       {
-        q: "What stops a hacker from using Arukin as a spyware tool against someone?",
-        a: <>Two things. First, the member must explicitly consent and pass through Google's strict OAuth warning screens. Second, Google sends an immediate security alert to their phone/email the moment Arukin is authorized, making it impossible to install silently.</>
+        q: "What stops a hacker from using ArukinSec as a spyware tool against someone?",
+        a: <>Two things. First, the member must explicitly consent and pass through Google's strict OAuth warning screens. Second, Google sends an immediate security alert to their phone/email the moment ArukinSec is authorized, making it impossible to install silently.</>
       },
       {
-        q: "How long does Arukin retain access to a member's account?",
+        q: "How long does ArukinSec retain access to a member's account?",
         a: <>Access remains valid until either the member manually revokes it or their token expires (Google automatically invalidates tokens if a password is changed or if the app goes unused for 6 months).</>
       },
       {
-        q: "Is Arukin GDPR and CCPA compliant?",
+        q: "Is ArukinSec GDPR and CCPA compliant?",
         a: <>Yes. Because we do not store personal member data on our servers (only the Manager's account email), compliance is inherently built-in. If you request account deletion, all active connection bridges are permanently destroyed within 24 hours.</>
       },
       {
         q: "Why does Google say 'Google hasn't verified this app' when I try to connect?",
-        a: <><p className="mb-2">Because Arukin requests highly sensitive permissions (like reading Gmail and Drive), Google classifies it as a "Restricted Scope" application. To officially remove this warning, Google requires developers to pay for a mandatory third-party security audit (CASA) which costs between $15,000 and $75,000 annually.</p><p>Because Arukin is a free, independent open-source project, we simply cannot afford this corporate assessment fee. The app operates exactly as described and is perfectly safe, but Google will show this warning because we do not have the financial backing of a massive corporation.</p></>
+        a: <><p className="mb-2">Because ArukinSec requests highly sensitive permissions (like reading Gmail and Drive), Google classifies it as a "Restricted Scope" application. To officially remove this warning, Google requires developers to pay for a mandatory third-party security audit (CASA) which costs between $15,000 and $75,000 annually.</p><p>Because ArukinSec is a free, independent open-source project, we simply cannot afford this corporate assessment fee. The app operates exactly as described and is perfectly safe, but Google will show this warning because we do not have the financial backing of a massive corporation.</p></>
       },
       {
         q: "How do I bypass the 'Unverified App' warning?",
-        a: <>When you encounter the "Google hasn't verified this app" screen during login, simply click the <strong>"Advanced"</strong> link at the bottom left of the warning, and then click <strong>"Go to Arukin (unsafe)"</strong>. <br/><br/><em>(Note: If it instead says something like "Go to qxgoxnywwvvzkbgjfhhx.supabase.co (unsafe)", don't worry! That is simply our secure database provider's URL. It shows up because we either haven't officially verified our Google branding yet, or we haven't been able to afford the Supabase Pro tier required for custom domains. It functions exactly the same securely.)</em> <br/><br/>Clicking this will allow you to proceed to the final permissions screen. If you have any concerns, we strongly encourage you to review our fully open-source codebase on GitHub before connecting.</>
+        a: <>When you encounter the "Google hasn't verified this app" screen during login, simply click the <strong>"Advanced"</strong> link at the bottom left of the warning, and then click <strong>"Go to ArukinSec (unsafe)"</strong>. <br/><br/><em>(Note: If it instead says something like "Go to qxgoxnywwvvzkbgjfhhx.supabase.co (unsafe)", don't worry! That is simply our secure database provider's URL. It shows up because we either haven't officially verified our Google branding yet, or we haven't been able to afford the Supabase Pro tier required for custom domains. It functions exactly the same securely.)</em> <br/><br/>Clicking this will allow you to proceed to the final permissions screen. If you have any concerns, we strongly encourage you to review our fully open-source codebase on GitHub before connecting.</>
       }
     ]
   },
@@ -144,7 +144,7 @@ export const faqCategories = [
     questions: [
       {
         q: "Why did a Member's account get disconnected?",
-        a: <><p className="mb-2">There are two main reasons this happens:</p><ol className="list-decimal pl-5"><li><strong>Manual Revocation:</strong> The member went into their Google Account settings and manually revoked Arukin's access.</li><li><strong>Token Expiration/Security Event:</strong> If the member changed their Google password or Google detected suspicious activity on their account, Google will automatically invalidate all third-party OAuth tokens, disconnecting them from Arukin. They will need to reconnect using your Connection ID.</li></ol></>
+        a: <><p className="mb-2">There are two main reasons this happens:</p><ol className="list-decimal pl-5"><li><strong>Manual Revocation:</strong> The member went into their Google Account settings and manually revoked ArukinSec's access.</li><li><strong>Token Expiration/Security Event:</strong> If the member changed their Google password or Google detected suspicious activity on their account, Google will automatically invalidate all third-party OAuth tokens, disconnecting them from ArukinSec. They will need to reconnect using your Connection ID.</li></ol></>
       },
       {
         q: "Why am I seeing 'Rate Limit Exceeded'?",

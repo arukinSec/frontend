@@ -180,7 +180,7 @@ export default function MembersList() {
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         order_id: data.id,
-        name: 'Arukin Security',
+        name: 'ArukinSec Security',
         description: 'Purchase Additional Manager Connection Slot',
         prefill: {
           email: localStorage.getItem('manager_email') || '',
@@ -356,8 +356,8 @@ export default function MembersList() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 shrink-0">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="hidden md:block font-bold text-lg tracking-wide text-white">Arukin</span>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <span className="hidden md:block font-bold text-lg tracking-wide text-white">ArukinSec</span>
           </div>
 
           <div className="flex items-center gap-3 md:gap-6 shrink-0 mr-2 md:mr-6">
@@ -821,7 +821,7 @@ export default function MembersList() {
                     <Info size={16} /> What is a Self-Audit?
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    A Self-Audit involves connecting your <strong>own Google account</strong> to the Arukin console. This allows you to experience the platform from a target's perspective and instantly unlocks Trial Tier features (Target Monitor, Drive Forensics, Financial Scanners). 
+                    A Self-Audit involves connecting your <strong>own Google account</strong> to the ArukinSec console. This allows you to experience the platform from a target's perspective and instantly unlocks Trial Tier features (Target Monitor, Drive Forensics, Financial Scanners). 
                   </p>
                 </div>
                 
@@ -831,7 +831,7 @@ export default function MembersList() {
                   </h4>
                   <ul className="text-xs text-slate-400 leading-relaxed list-disc pl-4 space-y-2">
                     <li>You must authenticate using your exact Manager email (<span className="text-white font-medium">{managerEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
-                    <li>By proceeding, you grant Arukin read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a>.</li>
+                    <li>By proceeding, you grant ArukinSec read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a>.</li>
                     <li>You agree to our <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms and Conditions</a> regarding authorized data access and acceptable use.</li>
                   </ul>
                 </div>
@@ -850,7 +850,7 @@ export default function MembersList() {
                   <CheckCircle2 size={12} className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
                 </div>
                 <label htmlFor="accept-self-audit" className="text-xs text-slate-400 cursor-pointer select-none leading-relaxed">
-                  I have read and agree to the Important Notice and authorize Arukin to connect my account.
+                  I have read and agree to the Important Notice and authorize ArukinSec to connect my account.
                 </label>
               </div>
             </div>

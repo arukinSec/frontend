@@ -90,7 +90,7 @@ export default function ManagerGateway() {
         
         {/* Branding header */}
         <div className="text-center mb-8">
-          <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
+          <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
           <h2 className="text-2xl font-black text-white tracking-tight leading-tight">Manager Access</h2>
           <p className="text-slate-400 text-xs mt-2">
             {showReviewerLogin 
@@ -169,7 +169,7 @@ export default function ManagerGateway() {
         </div>
 
         <p className="text-center text-slate-600 text-[10px] mt-8">
-          Arukin Security Portal • Authorized Managers only
+          ArukinSec Security Portal • Authorized Managers only
         </p>
       </div>
     </div>

@@ -13,9 +13,9 @@ export default function Disclaimer() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
             <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
-              Arukin <span className="text-indigo-400 font-medium">Compliance Portal</span>
+              ArukinSec <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>
           </div>
           <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export default function Disclaimer() {
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 flex items-start gap-3">
             <AlertTriangle className="text-amber-500 shrink-0 mt-0.5" size={16} />
             <p className="text-slate-400 text-xs leading-relaxed">
-              Arukin is currently in beta. See our <Link to="/beta-notice" className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
+              ArukinSec is currently in beta. See our <Link to="/beta-notice" className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
             </p>
           </div>
 
@@ -102,7 +102,7 @@ export default function Disclaimer() {
               <span>2. "As Is" Warranty Disclaimer</span>
             </h2>
             <p className="text-slate-400">
-              All services, utilities, and components on Arukin are provided on an "as is" and "as available" basis. We make no warranties, expressed or implied, regarding system uptime, performance reliability, or the absolute prevention of digital security threats.
+              All services, utilities, and components on ArukinSec are provided on an "as is" and "as available" basis. We make no warranties, expressed or implied, regarding system uptime, performance reliability, or the absolute prevention of digital security threats.
             </p>
           </section>
 
@@ -112,7 +112,7 @@ export default function Disclaimer() {
               <span>3. Google API & Third-Party Actions</span>
             </h2>
             <p className="text-slate-400">
-              Arukin interacts dynamically with third-party service application interfaces (specifically Google APIs). We have no control over, and assume no liability for:
+              ArukinSec interacts dynamically with third-party service application interfaces (specifically Google APIs). We have no control over, and assume no liability for:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-400 mt-2">
               <li>API deprecation, rate-limiting, or service blackouts initiated by Google.</li>
@@ -127,7 +127,7 @@ export default function Disclaimer() {
               <span>4. Limitation of Liability</span>
             </h2>
             <p className="text-slate-400">
-              To the maximum extent permitted by applicable law, in no event shall Arukin, its developers, or affiliates be held liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the compliance gateways.
+              To the maximum extent permitted by applicable law, in no event shall ArukinSec, its developers, or affiliates be held liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the compliance gateways.
             </p>
           </section>
 
@@ -136,7 +136,7 @@ export default function Disclaimer() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600 shrink-0 mt-12 bg-black/20">
-        <p>© 2026 Arukin Platform. Built for Google account oversight and digital caregiving.</p>
+        <p>© 2026 ArukinSec Platform. Built for Google account oversight and digital caregiving.</p>
       </footer>
 
     </div>

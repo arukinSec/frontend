@@ -13,9 +13,9 @@ export default function Terms() {
       <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
             <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
-              Arukin <span className="text-indigo-400 font-medium">Compliance Portal</span>
+              ArukinSec <span className="text-indigo-400 font-medium">Compliance Portal</span>
             </Link>
           </div>
           <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export default function Terms() {
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-4 flex items-start gap-3">
             <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={16} />
             <p className="text-slate-400 text-xs leading-relaxed">
-              Arukin is currently in beta. See our <Link to="/beta-notice" className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
+              ArukinSec is currently in beta. See our <Link to="/beta-notice" className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
             </p>
           </div>
 
@@ -86,7 +86,7 @@ export default function Terms() {
               <span>1. Agreement to Terms</span>
             </h2>
             <p className="text-slate-400">
-              By accessing the Arukin console or connecting a Google Account as a Member, you agree to comply with and be bound by these Terms of Service, all applicable laws, and regulations. If you do not agree with any of these terms, you are prohibited from using the platform's synchronization services.
+              By accessing the ArukinSec console or connecting a Google Account as a Member, you agree to comply with and be bound by these Terms of Service, all applicable laws, and regulations. If you do not agree with any of these terms, you are prohibited from using the platform's synchronization services.
             </p>
           </section>
 
@@ -96,7 +96,7 @@ export default function Terms() {
               <span>2. Authorized Consent Required</span>
             </h2>
             <p className="text-slate-400">
-              Managers must obtain explicit consent from the member before mapping their Google Account to the Arukin portal. Connecting third-party accounts without their knowledge or authorization is strictly prohibited and constitutes a violation of these terms, resulting in immediate suspension of Manager credentials.
+              Managers must obtain explicit consent from the member before mapping their Google Account to the ArukinSec portal. Connecting third-party accounts without their knowledge or authorization is strictly prohibited and constitutes a violation of these terms, resulting in immediate suspension of Manager credentials.
             </p>
           </section>
 
@@ -106,7 +106,7 @@ export default function Terms() {
               <span>3. Disclaimers & Limitations</span>
             </h2>
             <p className="text-slate-400">
-              Arukin functions solely as a metadata transmission relay. We are not liable for:
+              ArukinSec functions solely as a metadata transmission relay. We are not liable for:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-slate-400 mt-2">
               <li>Data loss or modifications occurring on Google Services (Gmail, Drive, Contacts).</li>
@@ -130,7 +130,7 @@ export default function Terms() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600 shrink-0 mt-12 bg-black/20">
-        <p>© 2026 Arukin Platform. Built for Google account oversight and digital caregiving.</p>
+        <p>© 2026 ArukinSec Platform. Built for Google account oversight and digital caregiving.</p>
       </footer>
 
     </div>

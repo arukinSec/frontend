@@ -21,8 +21,8 @@ export default function Home({ session }) {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin</span>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
           </div>
 
           {/* Desktop Nav */}
@@ -167,7 +167,7 @@ export default function Home({ session }) {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Everything You Need to Protect Them</h2>
             <p className="text-slate-600 mt-4 max-w-2xl mx-auto">
-              Arukin connects securely to Google's APIs through our zero-knowledge backend proxy, giving you a safe window into their digital life.
+              ArukinSec connects securely to Google's APIs through our zero-knowledge backend proxy, giving you a safe window into their digital life.
             </p>
           </div>
           

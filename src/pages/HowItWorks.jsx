@@ -12,8 +12,8 @@ export default function HowItWorks() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin</span>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Home</Link>
@@ -49,7 +49,7 @@ export default function HowItWorks() {
             Four Simple Steps
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            How Arukin Works
+            How ArukinSec Works
           </h1>
           <p className="text-slate-600 text-base md:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
             Look after someone's Google account in minutes — with their consent, 

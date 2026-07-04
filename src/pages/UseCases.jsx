@@ -12,8 +12,8 @@ export default function UseCases() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin</span>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
           </div>
 
           {/* Desktop Nav */}
@@ -56,7 +56,7 @@ export default function UseCases() {
         <div className="text-center max-w-3xl mx-auto mb-20">
           <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-6 leading-tight">Caring for someone's<br/><span className="text-emerald-600">digital life</span></h1>
           <p className="text-slate-600 text-lg md:text-xl leading-relaxed">
-            Arukin lets you oversee someone else's Google account — helping you keep their email, files, and personal data safe. Whether you're helping a family member, managing a public figure's online presence, or looking after someone less familiar with technology.
+            ArukinSec lets you oversee someone else's Google account — helping you keep their email, files, and personal data safe. Whether you're helping a family member, managing a public figure's online presence, or looking after someone less familiar with technology.
           </p>
         </div>
 

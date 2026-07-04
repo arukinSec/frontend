@@ -12,8 +12,8 @@ export default function About() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">Arukin</span>
+            <img src="/arukin-logo.jpg" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
+            <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
           </div>
 
           {/* Desktop Nav */}
@@ -63,7 +63,7 @@ export default function About() {
             <div>
               <h4 className="text-amber-800 font-bold text-xs mb-1 uppercase tracking-wider">Beta Release Notice</h4>
               <p className="text-amber-700/80 text-xs leading-relaxed max-w-xl">
-                Arukin is currently in a highly experimental R&D beta phase for personal/family use. Features are rapidly evolving based on threat-intelligence testing. Our roadmap is fluid and subject to major architectural pivots.
+                ArukinSec is currently in a highly experimental R&D beta phase for personal/family use. Features are rapidly evolving based on threat-intelligence testing. Our roadmap is fluid and subject to major architectural pivots.
               </p>
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function About() {
               Almost everyone today has a Google account — for email, school, work, photos, and banking. But not everyone has the digital literacy to spot a sophisticated phishing attack, a malicious file, or an account takeover in progress.
             </p>
             <p>
-              Children, elderly parents, and less tech-savvy family members are especially vulnerable. Meanwhile, politicians, celebrities, and executives face targeted attacks that can destroy careers overnight. We built Arukin to give someone you trust a window into your digital life — without giving them your password.
+              Children, elderly parents, and less tech-savvy family members are especially vulnerable. Meanwhile, politicians, celebrities, and executives face targeted attacks that can destroy careers overnight. We built ArukinSec to give someone you trust a window into your digital life — without giving them your password.
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function About() {
           <div className="bg-white shadow-sm border border-slate-200 rounded-3xl p-8">
             <h4 className="text-slate-900 font-bold mb-3 tracking-tight">Automated Threat Reports</h4>
             <p className="text-slate-600 text-sm leading-relaxed">
-              Arukin will run automated, background API queries to compile PDF threat reports. It will automatically sniff out connected social accounts and suspicious password resets.
+              ArukinSec will run automated, background API queries to compile PDF threat reports. It will automatically sniff out connected social accounts and suspicious password resets.
             </p>
           </div>
 
