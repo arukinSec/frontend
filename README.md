@@ -1,92 +1,46 @@
-# ArukinSec Frontend
+# Arukin Frontend
 
-> **Experimental R&D Phase:**
-> ArukinSec is currently a highly experimental prototype. None of the beta features listed below are fixed. The purpose of this prototype is to determine which features are actually used, requested, and which ones can be removed. The architecture, feature set, and roadmap are entirely fluid and subject to major pivots.
+Arukin is an advanced security monitoring and account management gateway designed for at-risk persons (vulnerable adults, the elderly, or targets of cyberstalking). It provides a "Trusted Guardian" console for managers to safely steward Google Workspace environments.
 
-ArukinSec Frontend is the internal dashboard used to securely monitor and manage connected user accounts (Gmail, Google Drive, Google Contacts) for threat protection and security oversight.
-
----
-
-
-
-## ⚡ Current Features & Implementations
-
-### 1. Architecture & Security
-- **Zero-Install Security**: Integrates directly with Google Cloud OAuth. Vulnerable users do not need to install mobile apps or software.
-- **Server-Side API Proxying**: To eliminate token leakage, the frontend never connects to Google APIs directly. All requests are routed through a backend Supabase Edge Function proxy which injects the access token securely.
-- **AES-GCM Client Caching**: Uses Web Crypto API to securely encrypt cached API responses in the browser's IndexedDB, bound to the user's active session.
-- **Database Security**: Locked down with strict PostgreSQL Row-Level Security (RLS) policies and `search_path` hardened RPC functions.
-- **Content Security Policy (CSP)**: Employs strict meta tags to neutralize Cross-Site Scripting (XSS) threats, intentionally blocking raw Google API domains to enforce the proxy.
-
-### 2. Profile Gateway (`ProfileUI.jsx`)
-The landing view when a member is opened. Fetches the full Google profile via `people/me`.
-- Displays name, photo, job title, company, bio, nickname.
-- All linked email addresses with badges: **Primary**, **Linked** (account-level), or **Contact only**.
-- Audit record: consent date, status, registered email.
-
-### 3. Gmail Gateway (`GmailUI.jsx`)
-A fully featured, paginated email client built directly into the dashboard.
-- **Optimistic Pagination Engine**: Fetches 80 Message IDs at a time, displays 20, and silently preloads the next 20 metadata objects in the background.
-- **Advanced Server-Side Search**: Implements a debounced search directly against the Gmail API, allowing advanced operators (e.g., `from:paypal has:attachment`).
-- **Sanitization**: All HTML email bodies are strictly sanitized via `DOMPurify` before rendering to prevent malicious tracking pixels.
-- **Remediation**: Instant archiving and trashing of malicious emails. Pro users can execute bulk archive/delete operations.
-
-### 4. Google Drive Gateway (`DriveUI.jsx`)
-- **Folder Navigation** with breadcrumb trail — drill into any folder, navigate back via crumbs.
-- **File Viewer Modal**: Inline preview for Google Docs/Sheets/Slides (iframe), images (blob), PDFs (embedded), text/JSON/XML (code block). 
-- **Real Storage Quota** fetched from `drive/v3/about`.
-
-### 5. Google Contacts Gateway (`ContactsUI.jsx`)
-- Built on the Google People API (`connections`).
-- **Three Tabs**: Contacts (searchable list), Companies, Stats.
-- **Incomplete Flagging**: Contacts with no name are highlighted in amber with a warning badge.
-
-### 6. Billing Console
-- **Razorpay Integration**: Dynamic checkout powered by Supabase Edge Functions allowing users to upgrade to PRO or purchase additional connection slots a-la-carte.
+This repository contains the highly secure, React 19 + Vite 8 internal dashboard.
 
 ---
 
-## 🚀 Future Roadmap
+## 📚 Technical Documentation
 
-The following concepts are planned or under consideration for future updates:
+For a comprehensive breakdown of how Arukin operates securely under the hood, please refer to the official documentation located in the root workspace `/docs` directory:
 
-### Audit Report Tab (`AuditReportUI.jsx`)
-A dedicated tab that uses Gmail search to automatically detect and summarize connected external accounts.
-- Runs targeted Gmail API searches against known platform sender domains (e.g. `from:facebookmail.com`, `from:linkedin.com`).
-- Scans email subject lines to auto-detect security events (`⚠️ Suspicious login`, `⚠️ Password changed`).
-
-### 24-Hour Connection Cooldown
-An anti-abuse measure to prevent rapid exploitation by bad actors.
-- When a Member authenticates, the connection enters a mandatory **24-hour verification cooldown** before any data can be fetched.
-
-### Batch Exporter (Download as ZIP)
-Allows managers to export batches of emails or Drive files for offline forensic review or backup custody.
-- Dynamically packages all exported text files into a single `.zip` archive on the client side using compression libraries.
-
-### Batch Email Sender (Pro / Self-Hosted Feature)
-To facilitate compliance, setup notifications, and custom outreach (e.g. RSVP, quarterly security warnings).
-- **CSV Parsing:** Upload a standard `.csv` list with custom header variables.
-- **API Rate-Limiting & Queueing:** Restricts mailing speed to conform to Google SMTP/Gmail API caps (e.g., 500 sends/day limit on free Gmail) by inserting a 500ms delay queue.
-
-### Scheduled Newsletter & Security Alerts (Cron Dispatch)
-Managers can schedule recurring outreach, security updates, or newsletters to connected member accounts managed by a background scheduler.
-
-### OTP Redirects & Forwarding (Cross-Account OTP Relay)
-Enables secure forwarding of time-sensitive One-Time Passwords (OTPs) from a monitored account (Account A) to the manager's dashboard or notification line (Account B).
-
-### Expanded Google Ecosystem (YouTube, Blogger, Photos)
-Deep integrations for auditing additional Google services:
-- **YouTube:** Auditing watch histories and comments for radicalization or malicious links.
-- **Blogger:** Monitoring published content for unauthorized posts.
-- **Google Photos:** Scanning metadata for location anomalies.
+1. **[Frontend Architecture](../docs/02_frontend_architecture.md)**
+2. **[Backend Architecture](../docs/03_backend_architecture.md)**
+3. **[Security Model](../docs/04_security_model.md)**
+4. **[Billing & Tiers](../docs/05_billing_and_tiers.md)**
 
 ---
 
-## 🛠️ Local Development & Deployment
+## ⚡ Key Highlights
+
+### 1. Zero-Install Stewardship
+Integrates directly with Google Cloud OAuth. Vulnerable users do not need to install mobile apps, browser extensions, or endpoint management software, minimizing adoption friction and avoiding "stalkerware" paradigms.
+
+### 2. Maximum Security Architecture
+- **Server-Side API Proxying**: To eliminate token leakage, the frontend never connects to Google APIs directly. All requests are routed through a backend Supabase Edge Function proxy which injects the access token securely on the server.
+- **AES-GCM Client Caching**: Uses the Web Crypto API to securely encrypt cached API responses in the browser's IndexedDB.
+- **Content Security Policy & Sanitization**: Employs strict CSP tags and `DOMPurify` to neutralize Cross-Site Scripting (XSS) threats and block raw Google API domains, enforcing the proxy route.
+
+### 3. Core Capabilities
+- **Gmail Gateway**: An advanced email client featuring a Footprint Scanner to detect linked Social Media and Financial accounts.
+- **Google Drive Gateway**: Drill into folders and securely preview files in a protected iframe.
+- **Contacts & Profile**: Map digital exposure and monitor connected organizations.
+
+---
+
+## 🛠️ Local Development
+
+Ensure you have the backend (Supabase) running locally or configured to point to your cloud instance.
+
 ```bash
 npm install
 npm run dev
 ```
-*Note: Ensure the local Supabase Edge Functions are running (`npx supabase functions serve`) in the backend repository for the token refresh system to work!*
 
-<!-- Trigger Cloudflare Redeploy -->
+*Note: For the authentication and token proxying to work correctly, the Supabase Edge Functions (`npx supabase functions serve`) must be running in the backend repository.*
