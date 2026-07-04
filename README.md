@@ -6,18 +6,18 @@ This repository contains the highly secure, React 19 + Vite 8 internal dashboard
 
 ---
 
-## 📚 Technical Documentation
+## Technical Documentation
 
 For a comprehensive breakdown of how Arukin operates securely under the hood, please refer to the official documentation located in the root workspace `/docs` directory:
 
-1. **[Frontend Architecture](../docs/02_frontend_architecture.md)**
-2. **[Backend Architecture](../docs/03_backend_architecture.md)**
-3. **[Security Model](../docs/04_security_model.md)**
-4. **[Billing & Tiers](../docs/05_billing_and_tiers.md)**
+1. **[Frontend Architecture](https://github.com/arukinSec/docs/blob/master/02_frontend_architecture.md)**
+2. **[Backend Architecture](https://github.com/arukinSec/docs/blob/master/03_backend_architecture.md)**
+3. **[Security Model](https://github.com/arukinSec/docs/blob/master/04_security_model.md)**
+4. **[Billing & Tiers](https://github.com/arukinSec/docs/blob/master/05_billing_and_tiers.md)**
 
 ---
 
-## ⚡ Key Highlights
+## Key Highlights
 
 ### 1. Zero-Install Stewardship
 Integrates directly with Google Cloud OAuth. Vulnerable users do not need to install mobile apps, browser extensions, or endpoint management software, minimizing adoption friction and avoiding "stalkerware" paradigms.
@@ -34,7 +34,7 @@ Integrates directly with Google Cloud OAuth. Vulnerable users do not need to ins
 
 ---
 
-## 🛠️ Local Development
+## Local Development
 
 Ensure you have the backend (Supabase) running locally or configured to point to your cloud instance.
 
