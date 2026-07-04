@@ -8,9 +8,18 @@ export default function Pricing() {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [proPricing, setProPricing] = useState(null);
   const navigate = useNavigate();
   const managerId = localStorage.getItem('manager_id');
   const managerEmail = localStorage.getItem('manager_email');
+
+  useEffect(() => {
+    async function fetchPricing() {
+      const { data } = await supabase.from('tiers').select('slot_price_weekly, slot_price_yearly').eq('id', 'PRO').single();
+      if (data) setProPricing(data);
+    }
+    fetchPricing();
+  }, []);
 
   const handleCheckout = async (action) => {
     if (!managerId) {
@@ -55,9 +64,9 @@ export default function Pricing() {
         prefill: { email: managerEmail || '' },
         theme: { color: '#10b981' }, // Emerald
         handler: function () {
-          window.showToast('Payment successful! Processing activation...', 'success');
+          window.showToast('Thank you for your purchase! Activating PRO features...', 'success');
           setTimeout(() => {
-            navigate('/client'); // Redirect to dashboard
+            navigate('/dashboard'); // Redirect to dashboard
           }, 2500);
         },
         modal: {
@@ -153,7 +162,7 @@ export default function Pricing() {
             </div>
 
             <div>
-              <Link to="/manager" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">
+              <Link to="/dashboard" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">
                 {managerId ? 'Go to Dashboard' : 'Start Free Scan'}
               </Link>
               <span className="block text-center text-[10px] text-slate-500 mt-3">* Limit: 1 connected member. Terms apply.</span>
@@ -165,7 +174,9 @@ export default function Pricing() {
             <div>
               <span className="text-xs font-semibold text-emerald-600 tracking-wider uppercase bg-emerald-50 px-2.5 py-1 rounded-full">Weekly Pass</span>
               <div className="flex items-baseline gap-1 mt-4 mb-6">
-                <span className="text-4xl font-bold text-slate-900">₹499</span>
+                <span className="text-4xl font-bold text-slate-900">
+                  ₹{proPricing ? proPricing.slot_price_weekly.toLocaleString('en-IN') : '***'}
+                </span>
                 <span className="text-xs text-slate-500">one-time</span>
               </div>
               
@@ -200,7 +211,9 @@ export default function Pricing() {
                 <span className="text-xs font-semibold text-emerald-400 tracking-wider uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Annual Pro</span>
               </div>
               <div className="flex items-baseline gap-2 mt-4">
-                <span className="text-4xl font-bold text-white">₹12,999</span>
+                <span className="text-4xl font-bold text-white">
+                  ₹{proPricing ? proPricing.slot_price_yearly.toLocaleString('en-IN') : '***'}
+                </span>
                 <span className="text-xs text-slate-400">/year</span>
               </div>
               <p className="text-[10px] text-emerald-400 font-semibold mt-1 mb-6">One-time payment for 1-year access. No auto-renewal, no commitment.</p>
