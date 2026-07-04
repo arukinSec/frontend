@@ -39,10 +39,10 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
           const { usage } = await res.json();
           setServerUsage(usage);
           
-          const socialLogs = usage.filter(l => l.scan_type === 'social');
+          const socialLogs = usage.filter(l => l.scan_category === 'SOCIALS' && l.scan_depth === 'SIMPLE');
           const platformCounts = {};
           socialLogs.forEach(l => {
-            platformCounts[l.platform] = (platformCounts[l.platform] || 0) + 1;
+            platformCounts[l.platform_id] = (platformCounts[l.platform_id] || 0) + 1;
           });
           const maxScansUsed = Object.values(platformCounts).length > 0 ? Math.max(...Object.values(platformCounts)) : 0;
           setScanCount(maxScansUsed);
