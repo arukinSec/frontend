@@ -39,3 +39,13 @@ export async function setEncryptedItem(key, value) {
 export async function removeEncryptedItem(key) {
   await localforage.removeItem(key);
 }
+
+export async function clearMemberGmailCache(memberId) {
+  try {
+    const keys = await localforage.keys();
+    const targets = keys.filter(k => k.startsWith(`gmail_cache_${memberId}`));
+    await Promise.all(targets.map(k => localforage.removeItem(k)));
+  } catch (e) {
+    console.error("Failed to clear member gmail cache:", e);
+  }
+}

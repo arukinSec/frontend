@@ -154,7 +154,7 @@ export default function MembersList() {
       window.showToast('Initializing slot checkout...', 'info');
 
       // 1. Create order via Supabase Edge Function with action 'add-slot'
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
+      const { data, error } = await supabase.functions.invoke('create-order', {
         body: {
           manager_id: localStorage.getItem('manager_id'),
           action: 'add-slot'

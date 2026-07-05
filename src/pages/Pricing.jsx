@@ -35,7 +35,7 @@ export default function Pricing() {
       window.showToast('Initializing secure checkout...', 'info');
 
       // 1. Create order via Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
+      const { data, error } = await supabase.functions.invoke('create-order', {
         body: { manager_id: managerId, action: action }
       });
 
@@ -63,11 +63,32 @@ export default function Pricing() {
         description: isWeekly ? '1-Week PRO License' : 'Annual PRO License',
         prefill: { email: managerEmail || '' },
         theme: { color: '#10b981' }, // Emerald
-        handler: function () {
-          window.showToast('Thank you for your purchase! Activating PRO features...', 'success');
+        handler: async function (response) {
+          window.showToast('Payment verified! Activating local license...', 'info');
+          try {
+            const durationDays = isWeekly ? 7 : 365;
+            const proExpiresAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
+            
+            const { error: updateErr } = await supabase
+              .from('managers')
+              .update({ 
+                tier: 'PRO', 
+                billing_cycle: isWeekly ? 'weekly' : 'yearly',
+                razorpay_order_id: response.razorpay_order_id || null,
+                pro_expires_at: proExpiresAt
+              })
+              .eq('id', managerId);
+              
+            if (updateErr) throw updateErr;
+            localStorage.setItem('manager_tier', 'PRO');
+            window.showToast('Thank you for your purchase! PRO license activated.', 'success');
+          } catch (e) {
+            console.error("Local activation error:", e);
+            window.showToast('Payment success, but local profile sync failed.', 'warning');
+          }
           setTimeout(() => {
             navigate('/dashboard'); // Redirect to dashboard
-          }, 2500);
+          }, 2000);
         },
         modal: {
           ondismiss: function () {

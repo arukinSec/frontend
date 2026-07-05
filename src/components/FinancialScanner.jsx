@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, RefreshCw, Search, CheckCircle, XCircle } from 'lucide-react';
+import { ShieldAlert, RefreshCw, Search, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import { get, set } from 'idb-keyval';
 
@@ -142,6 +142,12 @@ export default function FinancialScanner({ member, fetchWithAuth, onNavigateToIn
   return (
     <div className="flex-1 flex flex-col bg-slate-50 relative h-full">
       <div className="bg-white border-b border-slate-200 p-6 shrink-0 z-10">
+        {/* Development Banner */}
+        <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-4 py-3.5 rounded-xl flex items-center gap-3 shadow-sm">
+          <AlertTriangle size={18} className="text-amber-500 shrink-0" />
+          <span><strong>Feature in Development</strong>: Financial Diagnostic scans are currently offline for system maintenance. Link monitoring functions remain active.</span>
+        </div>
+
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 mb-2 md:mb-1">
@@ -159,15 +165,13 @@ export default function FinancialScanner({ member, fetchWithAuth, onNavigateToIn
           </div>
 
           <button 
-            onClick={handleScan}
-            disabled={scanStatus === 'scanning'}
-            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm w-full md:w-auto ${
-              scanStatus === 'scanning'
-              ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
-            }`}
+            onClick={() => {
+              window.showToast('Financial Diagnostics are offline for scheduled maintenance.', 'info');
+            }}
+            disabled={true}
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-200 text-slate-500 cursor-not-allowed shadow-sm w-full md:w-auto"
           >
-            {scanStatus === 'scanning' ? <RefreshCw size={18} className="animate-spin" /> : <Search size={18} />}
+            <Search size={18} />
             Scan {activeTab === 'banking' ? 'Banks' : activeTab === 'wallets' ? 'Wallets' : 'Exchanges'}
           </button>
         </div>

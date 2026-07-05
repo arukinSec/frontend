@@ -22,7 +22,7 @@ export default function ContactsUI({ member }) {
       const managerId = localStorage.getItem('manager_id') || member.manager_id;
       if (!managerId) throw new Error('Manager profile ID missing');
 
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
+      const { data, error } = await supabase.functions.invoke('create-order', {
         body: {
           manager_id: managerId,
           plan_id: import.meta.env.VITE_RAZORPAY_PLAN_ID

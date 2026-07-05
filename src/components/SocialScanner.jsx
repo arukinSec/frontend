@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Clock, CheckCircle, XCircle, Search } from 'lucide-react';
+import { RefreshCw, Clock, CheckCircle, XCircle, Search, AlertTriangle } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import DeepDiveModal from './DeepDiveModal';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
@@ -143,6 +143,12 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
     <div className="p-4 md:p-8 bg-slate-50 min-h-full flex flex-col overflow-y-auto">
       <div className="max-w-5xl mx-auto w-full flex-1 flex flex-col">
         
+        {/* Development Banner */}
+        <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-4 py-3.5 rounded-xl flex items-center gap-3 shadow-sm">
+          <AlertTriangle size={18} className="text-amber-500 shrink-0" />
+          <span><strong>Feature in Development</strong>: Social footprint scans are currently offline for API system updates. You can still inspect cached scan footprint targets below.</span>
+        </div>
+
         {/* Digital Footprint Scanner */}
         <div className="flex flex-col flex-1">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
@@ -162,25 +168,16 @@ export default function SocialScanner({ member, footprintData, setFootprintData,
             <span className="text-xs font-bold text-slate-500 bg-white px-3 py-2.5 rounded-lg border border-slate-200 shadow-sm text-center">
               {scanCount}/{maxScans} Scans Used
             </span>
-            <button
-              onClick={() => {
-                if (scanCount >= maxScans) {
-                  // If they click when out of scans, let them see the rate limit errors or upsell
-                  handleScanFootprint();
-                } else {
-                  handleScanFootprint();
-                }
-              }}
-              disabled={scanStatus === 'scanning'}
-              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${
-                scanStatus === 'scanning'
-                ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
-              }`}
-            >
-              {scanStatus === 'scanning' ? <RefreshCw size={18} className="animate-spin" /> : <Search size={18} />}
-              {scanStatus === 'scanning' ? 'Scanning...' : scanStatus === 'complete' ? 'Rescan' : 'Run Scan'}
-            </button>
+             <button
+               onClick={() => {
+                 window.showToast('Scans are temporarily offline for system integration.', 'info');
+               }}
+               disabled={true}
+               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-200 text-slate-500 cursor-not-allowed shadow-sm"
+             >
+               <Search size={18} />
+               Run Scan
+             </button>
             </div>
           </div>
 

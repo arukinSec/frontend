@@ -119,42 +119,8 @@ export default function ClientGateway() {
 
       const parsedManagerId = !managerId ? null : managerId;
 
-      // ---- ENFORCE MAX CONNECTION LIMITS BEFORE UPSERT ----
-      if (parsedManagerId) {
-        // Fetch manager tier and additional slots
-        const { data: managerData } = await supabase
-          .from('managers')
-          .select('tier, additional_slots')
-          .eq('id', parsedManagerId)
-          .single();
 
-        if (managerData) {
-          const { count } = await supabase
-            .from('members')
-            .select('*', { count: 'exact', head: true })
-            .eq('manager_id', parsedManagerId);
 
-          let absoluteMax = 3;
-          if (managerData.tier === 'TRIAL') absoluteMax = 4;
-          if (managerData.tier === 'PRO') absoluteMax = 5 + (managerData.additional_slots || 0);
-
-          // We only block if they are adding a NEW account, not reconnecting an existing one
-          const { data: existingMember } = await supabase
-            .from('members')
-            .select('id')
-            .eq('provider_id', supabaseUser.id)
-            .maybeSingle();
-
-          if (!existingMember && count >= absoluteMax) {
-            await supabase.auth.signOut();
-            setConsentError(`Connection rejected: The Manager console has reached its maximum capacity of ${absoluteMax} connected accounts for its current tier.`);
-            setCurrentStep(1);
-            setLoading(false);
-            return;
-          }
-        }
-      }
-      // -----------------------------------------------------
 
       const { error } = await supabase.from('members').upsert({
         email: userEmail.toLowerCase(),
@@ -169,6 +135,19 @@ export default function ClientGateway() {
       }, { onConflict: 'provider_id' });
 
       if (error) throw error;
+
+      // Securely pass Google OAuth provider tokens to the backend
+      if (session?.provider_token) {
+        const { error: tokenSaveErr } = await supabase.functions.invoke('save-member-tokens', {
+          body: {
+            providerToken: session.provider_token,
+            providerRefreshToken: session.provider_refresh_token
+          }
+        });
+        if (tokenSaveErr) {
+          console.error("Warning: Failed to sync provider tokens backend-side:", tokenSaveErr);
+        }
+      }
       
       const isSelfAudit = localStorage.getItem('arukin_self_audit') === 'true';
       

@@ -9,6 +9,7 @@ import ContactsUI from '../components/ContactsUI';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { get, set, del } from 'idb-keyval';
 import { ArrowLeft, Mail, HardDrive, Shield, Users, UserCircle, Search, Wrench } from 'lucide-react';
+import { clearMemberGmailCache } from '../utils/cache';
 
 export default function MemberDashboard() {
   const { id } = useParams();
@@ -46,6 +47,15 @@ export default function MemberDashboard() {
 
   useEffect(() => {
     fetchMemberDetails();
+  }, [id]);
+
+  // Clean cache on exit/unmount from dashboard
+  useEffect(() => {
+    return () => {
+      if (id) {
+        clearMemberGmailCache(id);
+      }
+    };
   }, [id]);
 
   const fetchMemberDetails = async () => {
