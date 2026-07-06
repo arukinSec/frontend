@@ -1,56 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ShieldAlert, Info, AlertTriangle, ArrowLeft, Menu, X } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ShieldAlert, Info, AlertTriangle } from 'lucide-react';
+import LegalNavbar from '../components/LegalNavbar';
 
 export default function Disclaimer() {
-  const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-slate-300 font-sans flex flex-col">
-      
-      {/* Header / Navigation Bar */}
-      <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
-            <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
-              ArukinSec <span className="text-indigo-400 font-medium">Compliance Portal</span>
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => navigate(-1)}
-              className="hidden md:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold cursor-pointer"
-            >
-              <ArrowLeft size={14} />
-              <span>Go Back</span>
-            </button>
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-slate-400 hover:text-white transition-colors"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-[#0E0E12] border-t border-white/10 px-6 py-4 space-y-3 animate-fade-in">
-            <Link to="/" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-            <Link to="/privacy" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Privacy Policy</Link>
-            <Link to="/terms" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Terms of Service</Link>
-            <Link to="/beta-notice" className="block text-sm font-semibold text-amber-400/70 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Beta Notice</Link>
-            <Link to="/disclaimer" className="block text-sm font-semibold text-indigo-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Disclaimer Statement</Link>
-            <button 
-              onClick={() => { navigate(-1); setIsMobileMenuOpen(false); }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-            >
-              <ArrowLeft size={14} />
-              <span>Go Back</span>
-            </button>
-          </div>
-        )}
-      </nav>
+      <LegalNavbar />
 
       {/* Main Body */}
       <main className="flex-1 max-w-4xl mx-auto px-6 py-12 md:py-16 w-full relative overflow-hidden">
@@ -128,6 +84,32 @@ export default function Disclaimer() {
             </h2>
             <p className="text-slate-400">
               To the maximum extent permitted by applicable law, in no event shall ArukinSec, its developers, or affiliates be held liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the compliance gateways.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
+              <ShieldAlert size={18} className="text-rose-400" />
+              <span>5. Member Protection & Consent Notice (Anti-Stalkerware)</span>
+            </h2>
+            <p className="text-slate-400">
+              ArukinSec is designed strictly for parental oversight, caregiver assistance, or corporate safety monitoring. It must never be used to monitor adults without their active, continuous consent. 
+            </p>
+            <p className="text-slate-400">
+              <strong>Current Limitations:</strong> We currently do not have dedicated internal warning or real-time security warning systems in place to notify monitored members, relying entirely on Google's native authorization warnings during Gmail/Drive API pairing.
+            </p>
+            <p className="text-slate-400">
+              <strong>Planned Mitigations:</strong> We are planning to implement several security constraints to prevent silent installation:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-slate-400 mt-2">
+              <li><strong>24-Hour Consent Wait Time:</strong> Link requests will require a mandatory 24-hour verification delay. Members cannot authenticate or share data until this timer expires, after which the link request is rejected if not manually confirmed.</li>
+              <li><strong>SMS & Email Alerts:</strong> Instant notifications sent directly to the member's personal phone number and alternative email address when monitoring activity begins.</li>
+              <li><strong>Auto Log-Out:</strong> Short session bounds forcing managers to re-authenticate periodically to prevent unauthorized persistent dashboard monitoring.</li>
+              <li><strong>Member-Side Billing:</strong> Transitioning subscription purchases exclusively to the member's portal so that a manager cannot unilaterally pay for and gain access to tracking features.</li>
+              <li><strong>Strict Login OTP Verification:</strong> Requiring the member to authorize a One-Time Password (OTP) challenge sent directly to their device every single time the manager signs into the monitoring dashboard.</li>
+            </ul>
+            <p className="text-slate-500 text-xs mt-4 italic">
+              While all of these roadmap security measures represent active development goals aimed at preventing ArukinSec from functioning as stalkerware, their ultimate efficacy remains to be seen in production environments.
             </p>
           </section>
 

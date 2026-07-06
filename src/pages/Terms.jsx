@@ -1,56 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { BookOpen, UserCheck, ShieldAlert, Key, ArrowLeft, Menu, X } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { BookOpen, UserCheck, ShieldAlert, Key } from 'lucide-react';
+import LegalNavbar from '../components/LegalNavbar';
 
 export default function Terms() {
-  const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-slate-300 font-sans flex flex-col">
-      
-      {/* Header / Navigation Bar */}
-      <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50 shrink-0">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
-            <Link to="/" className="font-bold text-lg tracking-wide text-white hover:text-indigo-400 transition-colors">
-              ArukinSec <span className="text-indigo-400 font-medium">Compliance Portal</span>
-            </Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => navigate(-1)}
-              className="hidden md:flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold cursor-pointer"
-            >
-              <ArrowLeft size={14} />
-              <span>Go Back</span>
-            </button>
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-slate-400 hover:text-white transition-colors"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-[#0E0E12] border-t border-white/10 px-6 py-4 space-y-3 animate-fade-in">
-            <Link to="/" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-            <Link to="/privacy" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Privacy Policy</Link>
-            <Link to="/terms" className="block text-sm font-semibold text-indigo-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Terms of Service</Link>
-            <Link to="/beta-notice" className="block text-sm font-semibold text-amber-400/70 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Beta Notice</Link>
-            <Link to="/disclaimer" className="block text-sm font-semibold text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Disclaimer Statement</Link>
-            <button 
-              onClick={() => { navigate(-1); setIsMobileMenuOpen(false); }}
-              className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
-            >
-              <ArrowLeft size={14} />
-              <span>Go Back</span>
-            </button>
-          </div>
-        )}
-      </nav>
+      <LegalNavbar />
 
       {/* Main Body */}
       <main className="flex-1 max-w-4xl mx-auto px-6 py-12 md:py-16 w-full relative overflow-hidden">

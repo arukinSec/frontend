@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Check, X, Server, Mail, Menu, X as XIcon, Clock } from 'lucide-react';
+import { ShieldAlert, Check, X, Server, Mail, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Footer from '../components/Footer';
+import MarketingNavbar from '../components/MarketingNavbar';
 
 export default function Pricing() {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [proPricing, setProPricing] = useState(null);
   const navigate = useNavigate();
@@ -109,58 +109,30 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col relative">
-      {/* Public Navbar */}
-      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
-          </div>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Home</Link>
-            <Link to="/how-it-works" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">How it works</Link>
-            <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Use Cases</Link>
-            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">About</Link>
-            <Link to="/pricing" className="text-sm font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">Pricing</Link>
-            <a href="https://github.com/arukinSec" target="_blank" rel="noreferrer" className="flex items-center justify-center w-8 h-8 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors ml-2" title="Star on GitHub">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path></svg>
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className="text-slate-600 hover:text-slate-900 focus:outline-none"
-            >
-              {isMobileMenuOpen ? <XIcon size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Nav Dropdown */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-slate-50 border-b border-slate-200 px-6 py-4 space-y-4 shadow-2xl animate-fade-in">
-            <Link to="/" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-            <Link to="/how-it-works" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>How it works</Link>
-            <Link to="/use-cases" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Use Cases</Link>
-            <Link to="/about" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
-            <Link to="/pricing" className="block text-sm font-semibold text-slate-900 hover:text-emerald-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
-          </div>
-        )}
-      </nav>
+      <MarketingNavbar />
 
       {/* Main Content */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-16 animate-fade-in flex flex-col items-center">
         <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20 mb-3 animate-pulse">
           ⚡ Public Beta - Early Bird Access
         </div>
-        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2 text-center font-sans">Flexible Compliance Plans</h1>
-        <p className="text-slate-600 text-sm max-w-lg text-center mb-16">
-          Start with free oversight of one account, or unlock full management features for multiple family members, clients, or high-profile individuals.
+        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2 text-center font-sans">Beta Testing Licenses</h1>
+        <p className="text-slate-600 text-sm max-w-lg text-center mb-8">
+          Support active development and test early features. This is not a finished product yet—we are offering early-bird pricing in exchange for your feedback and beta testing.
         </p>
+
+        {/* Prominent Beta Warning Banner */}
+        <div className="w-full max-w-3xl bg-amber-50 border-2 border-amber-500/40 rounded-2xl p-6 mb-12 shadow-md">
+          <div className="flex gap-3">
+            <ShieldAlert className="text-amber-600 shrink-0 mt-0.5" size={24} />
+            <div>
+              <h3 className="font-bold text-amber-900 text-sm uppercase tracking-wide">Beta Version Disclaimer &amp; Warning</h3>
+              <p className="text-amber-800 text-xs leading-relaxed mt-2 font-medium">
+                <strong>CRITICAL:</strong> ArukinSec is in active beta. <strong>Some features may not work as expected or fail entirely</strong> depending on Google API restrictions, regional configurations, or active account states. By purchasing a beta license, you acknowledge this is a testing environment and agree to help us identify issues. Please review our full <Link to="/disclaimer" className="text-amber-900 font-bold underline hover:text-amber-950 transition-colors">Disclaimer & Member Protection Notice</Link> detailing stalkerware prevention controls and consent requirements before proceeding.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mb-16 items-stretch">

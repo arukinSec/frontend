@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { supabase } from '../supabaseClient';
-import { ShieldAlert, ArrowRight, ShieldCheck, Landmark, Menu, X } from 'lucide-react';
+import { ShieldAlert, ArrowRight, ShieldCheck, Landmark, Mail, FileText, UserCheck, Bell, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import MarketingNavbar from '../components/MarketingNavbar';
 
 export default function Home({ session }) {
   const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // If a session is already present, immediately redirect to dashboard
   React.useEffect(() => {
@@ -17,55 +17,39 @@ export default function Home({ session }) {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-      {/* Public Navbar */}
-      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50 shrink-0">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
-            <span className="font-bold text-lg tracking-wide text-slate-900">ArukinSec</span>
-          </div>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">Home</Link>
-            <Link to="/how-it-works" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">How it works</Link>
-            <Link to="/use-cases" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Use Cases</Link>
-            <Link to="/about" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">About</Link>
-            <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors">Pricing</Link>
-            <a href="https://github.com/arukinSec" target="_blank" rel="noreferrer" className="flex items-center justify-center w-8 h-8 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors ml-2" title="Star on GitHub">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path></svg>
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className="text-slate-600 hover:text-slate-900 focus:outline-none"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Nav Dropdown */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-slate-50 border-b border-slate-200 px-6 py-4 space-y-4 shadow-2xl animate-fade-in">
-            <Link to="/" className="block text-sm font-semibold text-slate-900 hover:text-emerald-600 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-            <Link to="/how-it-works" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>How it works</Link>
-            <Link to="/use-cases" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Use Cases</Link>
-            <Link to="/about" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
-            <Link to="/pricing" className="block text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
-          </div>
-        )}
-      </nav>
+      <MarketingNavbar />
 
       {/* Main Hero Container */}
-      <main className="flex-1 flex flex-col justify-center max-w-7xl mx-auto px-6 py-12 md:py-24">
+      <main className="flex-1 flex flex-col justify-center max-w-7xl w-full mx-auto px-6 py-12 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Side: Pitch */}
-          <div className="lg:col-span-7 space-y-6 text-left order-2 lg:order-1">
+          {/* Column 1: Pitch (First on both mobile and desktop) */}
+          <div className="lg:col-span-7 space-y-6 text-left order-1">
+            {/* Mobile-Only Gateway Portals (appears at the absolute top of the page on mobile) */}
+            <div className="block lg:hidden space-y-4 pb-2">
+              {/* Client Card */}
+              <div className="bg-white shadow-md border border-slate-200 rounded-2xl p-5 text-left relative overflow-hidden group">
+                <span className="text-[9px] font-bold tracking-wider text-indigo-600 uppercase bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20"> Member Pairing </span>
+                <h3 className="text-base font-bold text-slate-900 mt-2 mb-1">Connect Account</h3>
+                <p className="text-slate-500 text-xxs leading-relaxed mb-4">Link your Google account using the code from your manager to activate scans.</p>
+                <Link to="/client" className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-center">
+                  <span>Link Google Account</span>
+                  <ArrowRight size={12} />
+                </Link>
+              </div>
+
+              {/* Manager Card */}
+              <div className="bg-slate-900 shadow-md border border-slate-800 rounded-2xl p-5 text-left relative overflow-hidden group text-white">
+                <span className="text-[9px] font-bold tracking-wider text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20"> Caregiver Portal </span>
+                <h3 className="text-base font-bold text-white mt-2 mb-1">Manager Console</h3>
+                <p className="text-slate-400 text-xxs leading-relaxed mb-4">Configure scans and view alert dashboards for devices under your oversight.</p>
+                <Link to={session ? "/dashboard" : "/manager"} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-center">
+                  <span>{session ? 'Go to Dashboard' : 'Sign in as Manager'}</span>
+                  <ArrowRight size={12} />
+                </Link>
+              </div>
+            </div>
+
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-semibold">
               <ShieldCheck size={14} />
               <span>Google Account Oversight</span>
@@ -103,63 +87,137 @@ export default function Home({ session }) {
             </div>
           </div>
 
-          {/* Right Side: Login / Action Portal */}
-          <div className="lg:col-span-5 flex flex-col gap-4 animate-fade-in order-1 lg:order-2">
-            
-            {/* Manager Card (Dark Contrast Card) */}
-            <div className="bg-slate-900 shadow-sm border border-slate-800 rounded-2xl p-5 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
-              <div className="absolute -inset-px bg-gradient-to-tr from-emerald-500/0 via-emerald-500/0 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
-              <h2 className="text-lg font-bold text-white mb-1">Manager Dashboard</h2>
-              <p className="text-slate-400 text-xs mb-4">Sign in to manage and oversee the Google accounts connected to your care.</p>
-
-               {session ? (
-                <Link 
-                  to="/dashboard"
-                  className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 text-center relative z-10"
-                >
-                  <span>Go to Dashboard</span>
-                  <ArrowRight size={14} />
-                </Link>
-              ) : (
-                <Link 
-                  to="/manager"
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-500/25 text-center relative z-10 block"
-                >
-                  <span>Sign In</span>
-                  <ArrowRight size={14} />
-                </Link>
-              )}
-
-              <p className="text-center text-slate-500 text-[9px] mt-3 leading-relaxed relative z-10">
-                For caregivers and authorized managers. Standard non-sensitive profile scopes requested.
-              </p>
-            </div>
-
-            {/* Client Card */}
-            <div className="bg-white shadow-sm border border-emerald-500/10 rounded-2xl p-5 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
-              <div className="absolute -inset-px bg-gradient-to-tr from-emerald-500/0 via-emerald-500/0 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
+          {/* Column 2: Interactive Mockup Dashboard (Desktop only in Hero) */}
+          <div className="hidden lg:block lg:col-span-5 order-2">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden group">
+              {/* Background glows */}
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-emerald-500/10 blur-2xl rounded-full"></div>
               
-              <h2 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-1.5 relative z-10">
-                <span>Member Connection</span>
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              </h2>
-              <p className="text-slate-600 text-xs mb-4 relative z-10">Received a Connection ID from your manager? Link your account so they can help keep it safe.</p>
+              {/* Mockup Header */}
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Security Scan</span>
+                </div>
+                <div className="h-6 w-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer">
+                  <Bell size={12} />
+                </div>
+              </div>
 
-              <Link 
-                to="/client"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-slate-900/20 text-center relative z-10"
-              >
-                <span>Connect Account</span>
-                <ArrowRight size={14} />
-              </Link>
+              {/* Threat Overview Badge */}
+              <div className="bg-emerald-950/40 border border-emerald-500/20 rounded-2xl p-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <ShieldCheck className="text-emerald-400" size={24} />
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">All Systems Protected</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">2 suspicious files isolated in the last 24h.</p>
+                  </div>
+                </div>
+              </div>
 
-              <p className="text-center text-slate-500 text-[9px] mt-3 leading-relaxed relative z-10">
-                Requires advanced access scopes for Gmail and Google Drive. You can withdraw access at any time.
-              </p>
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="bg-slate-800/40 border border-slate-800 p-3 rounded-xl text-center">
+                  <Mail size={16} className="text-indigo-400 mx-auto mb-1.5" />
+                  <span className="block text-xs font-black text-white">1,489</span>
+                  <span className="block text-[8px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Emails</span>
+                </div>
+                <div className="bg-slate-800/40 border border-slate-800 p-3 rounded-xl text-center">
+                  <FileText size={16} className="text-amber-400 mx-auto mb-1.5" />
+                  <span className="block text-xs font-black text-white">38</span>
+                  <span className="block text-[8px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Drive Files</span>
+                </div>
+                <div className="bg-slate-800/40 border border-slate-800 p-3 rounded-xl text-center">
+                  <UserCheck size={16} className="text-teal-400 mx-auto mb-1.5" />
+                  <span className="block text-xs font-black text-white">89</span>
+                  <span className="block text-[8px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Contacts</span>
+                </div>
+              </div>
+
+              {/* Scanned Alerts Feed */}
+              <h5 className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Live Scanned Feeds</h5>
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between bg-slate-950/60 border border-slate-800/80 rounded-xl p-3">
+                  <div className="flex items-center gap-2.5">
+                    <AlertCircle className="text-rose-400 shrink-0" size={14} />
+                    <div className="text-left">
+                      <p className="text-[10px] font-bold text-white leading-none">Suspicious Payment Link</p>
+                      <p className="text-[8px] text-slate-400 mt-1">Gmail Scanner isolated threat thread</p>
+                    </div>
+                  </div>
+                  <span className="text-[8px] font-bold text-rose-400 uppercase bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">Blocked</span>
+                </div>
+
+                <div className="flex items-center justify-between bg-slate-950/60 border border-slate-800/80 rounded-xl p-3">
+                  <div className="flex items-center gap-2.5">
+                    <FileText className="text-amber-400 shrink-0" size={14} />
+                    <div className="text-left">
+                      <p className="text-[10px] font-bold text-white leading-none">Tax_Return_2026.pdf</p>
+                      <p className="text-[8px] text-slate-400 mt-1">Drive folder shared publicly</p>
+                    </div>
+                  </div>
+                  <span className="text-[8px] font-bold text-amber-400 uppercase bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Restricted</span>
+                </div>
+              </div>
             </div>
-
           </div>
 
+        </div>
+
+        {/* Portal Access Hub Section (Coherent Gateway Entry - Desktop Only below hero) */}
+        <div className="hidden lg:block mt-28 py-16 border-t border-slate-200 text-center">
+          <div className="max-w-2xl mx-auto mb-12">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20 mb-3">
+              Access Portals
+            </span>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Launch ArukinSec Gateway</h2>
+            <p className="text-slate-600 mt-3 text-sm leading-relaxed">
+              Choose the portal based on your action. Managers coordinate security, while family members pair their accounts.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
+            {/* Client Portal Entry Card */}
+            <div className="bg-white shadow-xl border border-slate-200/80 rounded-3xl p-8 flex flex-col justify-between hover:border-indigo-500/30 transition-all text-left relative overflow-hidden group">
+              <div className="absolute -inset-px bg-gradient-to-tr from-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"></div>
+              <div>
+                <span className="text-[10px] font-bold tracking-wider text-indigo-600 uppercase bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20"> Member Pairing </span>
+                <h3 className="text-xl font-bold text-slate-900 mt-4 mb-2">Connect Account</h3>
+                <p className="text-slate-600 text-xs leading-relaxed mb-6">
+                  Received a pairing code or invitation link from your manager? Connect your Google account here to activate real-time scanning.
+                </p>
+              </div>
+              <Link 
+                to="/client"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-slate-900/20 text-center"
+              >
+                <span>Link Google Account</span>
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            {/* Manager Portal Entry Card */}
+            <div className="bg-slate-900 shadow-xl border border-slate-800 rounded-3xl p-8 flex flex-col justify-between hover:border-emerald-500/30 transition-all text-left relative overflow-hidden group">
+              <div className="absolute -inset-px bg-gradient-to-tr from-emerald-500/0 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"></div>
+              <div>
+                <span className="text-[10px] font-bold tracking-wider text-emerald-400 uppercase bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20"> Caregiver Portal </span>
+                <h3 className="text-xl font-bold text-white mt-4 mb-2">Manager Console</h3>
+                <p className="text-slate-400 text-xs leading-relaxed mb-6">
+                  Log in to configure scans, view alert dashboards, and secure connected devices for family members under your oversight.
+                </p>
+              </div>
+              <Link 
+                to={session ? "/dashboard" : "/manager"}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-500/25 text-center"
+              >
+                <span>{session ? 'Go to Dashboard' : 'Sign in as Manager'}</span>
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Features Section */}
