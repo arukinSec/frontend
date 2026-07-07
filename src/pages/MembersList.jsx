@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2, Zap, Info
+  Users, Search, RefreshCw, CheckCircle2, ShieldAlert, LogOut, ShieldCheck, MoreVertical, Settings, AlertTriangle, Link as LinkIcon, Lock, Trash2, Zap, Info, UserCheck, Sparkles
 } from 'lucide-react';
 import ManagerOnboarding from '../components/ManagerOnboarding';
 import { getEncryptedItem, setEncryptedItem, removeEncryptedItem } from '../utils/cache';
@@ -28,8 +28,27 @@ export default function MembersList() {
   const [managerTier, setManagerTier] = useState(null);
   const [billingCycle, setBillingCycle] = useState('yearly');
   const [additionalSlots, setAdditionalSlots] = useState(0);
+  const [slotPrice, setSlotPrice] = useState(1200);
   const managerEmail = localStorage.getItem('manager_email') || '';
   const managerAvatarUrl = localStorage.getItem('manager_avatar_url') || '';
+
+  useEffect(() => {
+    const fetchSlotPrice = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tiers')
+          .select('slot_price_yearly')
+          .eq('id', 'PRO')
+          .maybeSingle();
+        if (!error && data) {
+          setSlotPrice(data.slot_price_yearly);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch slot price:", err);
+      }
+    };
+    fetchSlotPrice();
+  }, []);
 
   // Format 6-digit code with a dash in the middle (e.g., "123-456")
   const formattedAuthId = managerAuthId && managerAuthId.length === 6
@@ -253,12 +272,12 @@ export default function MembersList() {
       {/* Console Settings Modal */}
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-[16px] p-4">
-          <div className="w-full max-w-md bg-[#0E0E12] border border-white/10 rounded-3xl p-6 shadow-2xl relative overflow-hidden animate-slide-up">
+          <div className="w-full max-w-md bg-[#0a0a0c] border border-white/10 rounded-3xl p-6 shadow-2xl relative overflow-hidden animate-slide-up">
             
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-white/5 mb-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Settings size={18} className="text-indigo-400" />
+              <h3 className="font-display text-lg font-bold text-white flex items-center gap-2">
+                <Settings size={18} className="text-emerald-brand" />
                 <span>Console Settings</span>
               </h3>
               <button 
@@ -353,18 +372,18 @@ export default function MembersList() {
         </div>
       )}
       {/* Top Navigation */}
-      <nav className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-white/5 bg-[#0a0a0c]/90 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 shrink-0">
             <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
-            <span className="hidden md:block font-bold text-lg tracking-wide text-white">ArukinSec</span>
+            <span className="hidden md:block font-display font-bold text-base tracking-tight text-white">ArukinSec</span>
           </div>
 
           <div className="flex items-center gap-3 md:gap-6 shrink-0 mr-2 md:mr-6">
             {/* Display formatted Manager ID and Copy Link */}
             <div className="flex items-center gap-1.5 md:gap-2">
-              <div className="flex items-center gap-1 md:gap-2 bg-white/[0.02] border border-white/10 px-2.5 md:px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider">
-                <span className="hidden md:inline text-slate-500">ID:</span>
+              <div className="flex items-center gap-1 md:gap-2 bg-gold/5 border border-gold/25 px-2.5 md:px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider">
+                <span className="hidden md:inline text-gold-soft">ID:</span>
                 <strong className="text-white">{formattedAuthId}</strong>
               </div>
               <button
@@ -373,7 +392,7 @@ export default function MembersList() {
                    navigator.clipboard.writeText(shareUrl);
                    window.showToast("Share Link Copied! Send this link to members to connect them instantly.", "success");
                  }}
-                className="p-1.5 md:p-2 hover:bg-indigo-500/10 hover:text-indigo-400 border border-white/10 rounded-full transition-all text-slate-400 cursor-pointer"
+                className="p-1.5 md:p-2 hover:bg-emerald-brand/10 hover:text-emerald-brand border border-white/10 rounded-full transition-all text-slate-400 cursor-pointer"
                 title="Copy Client Share Link"
               >
                 <LinkIcon size={14} />
@@ -388,7 +407,7 @@ export default function MembersList() {
               {/* Profile Avatar Trigger Button */}
               <button 
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="h-8 w-8 rounded-full border border-white/10 bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-xs font-bold text-white uppercase select-none hover:ring-2 ring-indigo-500/30 transition-all cursor-pointer overflow-hidden"
+                className="h-8 w-8 rounded-full border border-white/10 bg-gradient-to-tr from-emerald-brand to-emerald-deep flex items-center justify-center text-xs font-bold text-white uppercase select-none hover:ring-2 ring-emerald-brand/35 transition-all cursor-pointer overflow-hidden"
               >
                 {managerAvatarUrl ? (
                   <img 
@@ -413,9 +432,9 @@ export default function MembersList() {
               {showProfileMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowProfileMenu(false)} />
-                  <div className="absolute right-0 mt-2 top-8 w-60 bg-[#0E0E12] border border-white/10 rounded-2xl shadow-2xl p-4 z-50 animate-slide-up text-left">
+                  <div className="absolute right-0 mt-2 top-8 w-60 bg-[#0a0a0c] border border-white/10 rounded-2xl shadow-2xl p-4 z-50 animate-slide-up text-left">
                     <div className="mb-3.5 pb-3 border-b border-white/5">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-0.5">Manager Account</p>
+                      <p className="text-[10px] font-bold text-cream/50 uppercase tracking-widest block mb-0.5">Manager Account</p>
                       <p className="text-xs text-white truncate font-medium">{managerEmail}</p>
                     </div>
                     
@@ -423,29 +442,34 @@ export default function MembersList() {
                       <span className="text-[10px] font-bold text-slate-400">Security Tier:</span>
                       <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wider ${
                         managerTier === 'PRO' 
-                          ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' 
+                          ? 'bg-gold/15 text-gold border border-gold/30' 
                           : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
                       }`}>
                         {managerTier ?? '—'}
                       </span>
-                    </div>
-
-                    {/* Dropdown Options */}
+                    </div>                     {/* Dropdown Options */}
                     <div className="py-2">
-                      {managerTier === 'FREE' && (
+                      {/* Show Self-Audit/Unlock Trial if manager hasn't connected their own account yet */}
+                      {!members.some(m => m.email?.toLowerCase() === managerEmail.toLowerCase() && m.connection_status === 'CONNECTED') && (
                         <button 
                           onClick={handleUnlockTrialClick}
-                          className="w-full text-left px-4 py-2.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors flex items-center justify-between"
+                          className="w-full text-left px-4 py-2.5 text-xs font-semibold text-emerald-brand hover:bg-emerald-brand/10 hover:text-white transition-colors flex items-center justify-between rounded-xl"
                         >
-                          <span className="flex items-center gap-2"><Zap size={14} /> Unlock Trial</span>
+                          <span className="flex items-center gap-2">
+                            <UserCheck size={14} /> 
+                            {managerTier === 'PRO' ? 'Start Self-Audit' : 'Unlock Trial'}
+                          </span>
                         </button>
                       )}
+                      
                       {!managerLoading && managerTier !== 'PRO' && (
                         <button 
                           onClick={handleUpgrade}
-                          className="w-full text-left px-4 py-2.5 text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 transition-colors flex items-center justify-between"
+                          className="w-full text-left px-4 py-2.5 text-xs font-semibold text-gold hover:bg-gold/10 hover:text-white transition-colors flex items-center justify-between rounded-xl"
                         >
-                          <span className="flex items-center gap-2"><ShieldCheck size={14} /> Upgrade to PRO</span>
+                          <span className="flex items-center gap-2">
+                            <Sparkles size={14} /> Upgrade to PRO
+                          </span>
                         </button>
                       )}
                     </div>
@@ -481,28 +505,28 @@ export default function MembersList() {
         
         <header className="mb-6 md:mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-4 md:gap-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-semibold text-white mb-1 md:mb-2">Connected Members</h1>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2 tracking-tight">Connected Members</h1>
             <p className="text-slate-400 text-xs md:text-sm">Select an authenticated member to view their interactive dashboard.</p>
           </div>
           <div className="relative group w-full md:w-auto">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-emerald-brand transition-colors" />
             <input 
               type="text" 
               placeholder="Search members..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all w-full md:w-64 placeholder:text-slate-600"
+              className="bg-black/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-brand/50 focus:border-emerald-brand/50 transition-all w-full md:w-64 placeholder:text-slate-600"
             />
           </div>
         </header>
 
         {/* Self Audit Banner for FREE tier */}
         {managerTier === 'FREE' && (
-          <div className="mb-6 md:mb-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg">
+          <div className="mb-6 md:mb-8 rounded-2xl bg-gradient-to-r from-emerald-deep/45 to-[#0a0a0c]/80 border border-emerald-brand/20 p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow-lg">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Zap size={15} className="text-indigo-400 shrink-0" />
-                <h3 className="text-indigo-300 font-semibold text-sm">Experience PRO Features</h3>
+                <Zap size={15} className="text-gold shrink-0" />
+                <h3 className="text-gold font-semibold text-sm">Experience PRO Features</h3>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed">
                 Connect your own Google account to run a self-audit and instantly upgrade to the <strong>Trial Tier</strong>. Unlock Target Monitor, Drive Forensics, and Financial Scanners.
@@ -510,7 +534,7 @@ export default function MembersList() {
             </div>
             <button
               onClick={handleUnlockTrialClick}
-              className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/20 transition-all shrink-0 cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 bg-gold hover:bg-gold-soft text-emerald-deep text-sm font-semibold rounded-xl shadow-lg shadow-black/10 transition-all shrink-0 cursor-pointer"
             >
               Unlock Trial
             </button>
@@ -563,13 +587,13 @@ export default function MembersList() {
                         open: true,
                         title: 'Member Limit Reached',
                         message: `Your 1-Week PRO License is limited to 4 active slots. Upgrade to the Annual PRO License to purchase unlimited additional slots.`,
-                        action: null // No action button
+                        action: null
                       });
                     } else {
                       setShowUpgradeLockModal({
                         open: true,
                         title: 'Member Limit Reached',
-                        message: `Your PRO plan is currently limited to ${4 + additionalSlots} active slots. Purchase an additional active slot for ₹1,200/year to connect this client.`,
+                        message: `Your PRO plan is currently limited to ${4 + additionalSlots} active slots. Purchase an additional active slot for ₹${slotPrice.toLocaleString()}/year to connect this client.`,
                         action: handleAddonSlot
                       });
                     }
@@ -584,8 +608,8 @@ export default function MembersList() {
                   key={member.id} 
                   className={`border rounded-2xl p-6 backdrop-blur-sm shadow-xl transition-all group relative ${
                     isLocked 
-                      ? 'bg-black/60 border-white/5 opacity-40 hover:opacity-60 select-none cursor-not-allowed' 
-                      : 'bg-black/40 border-white/10 hover:bg-white/[0.03] hover:border-indigo-500/30 cursor-pointer'
+                      ? 'bg-black/60 border-white/5 opacity-40 hover:opacity-60 select-none cursor-not-allowed text-slate-400' 
+                      : 'bg-black/40 border-white/10 hover:bg-white/[0.03] hover:border-emerald-brand/35 cursor-pointer text-white'
                   }`}
                   onClick={isLocked ? undefined : handleMemberClick}
                 >
@@ -606,9 +630,9 @@ export default function MembersList() {
                     </button>
                     <div 
                       id={`dropdown-${member.id}`} 
-                      className="hidden absolute right-0 mt-1.5 w-32 bg-[#0E0E12] border border-white/10 rounded-xl shadow-2xl py-1 text-xs text-left"
+                      className="hidden absolute right-0 mt-1.5 w-32 bg-[#0E0E12] border border-white/10 rounded-xl shadow-2xl py-1 text-xs text-left text-slate-300"
                     >
-                      {managerTier === 'PRO' && billingCycle === 'yearly' && (
+                      {managerTier === 'PRO' && billingCycle === 'yearly' && isLocked && (
                         <button
                           onClick={async (e) => {
                             e.preventDefault();
@@ -616,7 +640,7 @@ export default function MembersList() {
                             if (element) element.classList.add('hidden');
                             handleAddonSlot();
                           }}
-                          className="w-full text-left px-3 py-1.5 hover:bg-white/5 text-indigo-400 font-medium transition-colors"
+                          className="w-full text-left px-3.5 py-2 hover:bg-white/5 text-slate-300 hover:text-white font-medium transition-colors"
                         >
                           Purchase Slot
                         </button>
@@ -640,7 +664,7 @@ export default function MembersList() {
                               // securely hidden in the database via Column Level Privileges.
                               // This should eventually be moved to an Edge Function, but for now we rely
                               // purely on the database disconnection.
-
+                              
                               // 2. Scrub database
                               const { error } = await supabase
                                 .from('members')
@@ -688,7 +712,7 @@ export default function MembersList() {
                             }
                           });
                         }}
-                        className="w-full px-3.5 py-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 font-semibold transition-colors block text-left"
+                        className="w-full px-3.5 py-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 font-medium transition-colors block text-left"
                       >
                         Disconnect
                       </button>
@@ -706,7 +730,7 @@ export default function MembersList() {
                             action: () => handleClearCache(member.id)
                           });
                         }}
-                        className="w-full px-3.5 py-2 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 font-semibold transition-colors block text-left border-t border-white/5 mt-1 pt-2"
+                        className="w-full px-3.5 py-2 text-slate-300 hover:bg-white/5 hover:text-white font-medium transition-colors block text-left border-t border-white/5 mt-1 pt-2"
                       >
                         Clear Cache
                       </button>
@@ -792,20 +816,20 @@ export default function MembersList() {
             className="absolute inset-0 bg-[#0A0A0B]/80 backdrop-blur-sm"
             onClick={() => setShowSelfAuditModal(false)}
           ></div>
-          <div className="relative w-full max-w-lg bg-[#12121A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+          <div className="relative w-full max-w-lg bg-[#0a0a0c] border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
             <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 border border-emerald-500/20">
-                <ShieldCheck size={24} className="text-emerald-400" />
+              <div className="w-12 h-12 bg-emerald-brand/10 rounded-2xl flex items-center justify-center mb-6 border border-emerald-brand/20">
+                <ShieldCheck size={24} className="text-emerald-brand" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Unlock Trial via Self-Audit</h3>
+              <h3 className="font-display text-xl font-bold text-white mb-2">Unlock Trial via Self-Audit</h3>
               <p className="text-sm text-slate-400 mb-6 leading-relaxed">
                 Before proceeding, please carefully review what a Self-Audit entails and the terms of accessing the Trial Tier.
               </p>
               
-              <div className="space-y-4 mb-8">
+              <div className="space-y-4 mb-8 text-left">
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
-                    <Info size={16} /> What is a Self-Audit?
+                  <h4 className="text-sm font-semibold text-slate-200 mb-2 flex items-center gap-2">
+                    <Info size={16} className="text-emerald-brand" /> What is a Self-Audit?
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
                     A Self-Audit involves connecting your <strong>own Google account</strong> to the ArukinSec console. This allows you to experience the platform from a target's perspective and instantly unlocks Trial Tier features (Target Monitor, Drive Forensics, Financial Scanners). 
@@ -813,26 +837,26 @@ export default function MembersList() {
                 </div>
                 
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-rose-300 mb-2 flex items-center gap-2">
-                    <AlertTriangle size={16} /> Important Notice
+                  <h4 className="text-sm font-semibold text-slate-200 mb-2 flex items-center gap-2">
+                    <AlertTriangle size={16} className="text-gold" /> Important Notice
                   </h4>
                   <ul className="text-xs text-slate-400 leading-relaxed list-disc pl-4 space-y-2">
                     <li>You must authenticate using your exact Manager email (<span className="text-white font-medium">{managerEmail}</span>). Mismatched accounts will be treated as standard targets and will not unlock Trial features.</li>
-                    <li>By proceeding, you grant ArukinSec read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a>.</li>
-                    <li>You agree to our <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms and Conditions</a> regarding authorized data access and acceptable use.</li>
+                    <li>By proceeding, you grant ArukinSec read-only access to your connected account's metadata as outlined in our <a href="/privacy" target="_blank" className="text-gold hover:underline">Privacy Policy</a>.</li>
+                    <li>You agree to our <a href="/terms" target="_blank" className="text-gold hover:underline">Terms and Conditions</a> regarding authorized data access and acceptable use.</li>
                   </ul>
                 </div>
               </div>
               
               {/* Explicit Checkbox Requirement */}
-              <div className="flex items-start gap-3 mt-4 mb-2 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
+              <div className="flex items-start gap-3 mt-4 mb-2 p-3 rounded-lg border border-white/5 bg-white/[0.02] text-left">
                 <div className="relative flex items-center justify-center mt-0.5">
                   <input 
                     type="checkbox" 
                     id="accept-self-audit"
                     checked={selfAuditAccepted}
                     onChange={(e) => setSelfAuditAccepted(e.target.checked)}
-                    className="peer appearance-none w-4 h-4 rounded border border-slate-600 checked:bg-emerald-500 checked:border-emerald-500 cursor-pointer transition-all"
+                    className="peer appearance-none w-4 h-4 rounded border border-slate-600 checked:bg-emerald-brand checked:border-emerald-brand cursor-pointer transition-all"
                   />
                   <CheckCircle2 size={12} className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
                 </div>
@@ -842,7 +866,7 @@ export default function MembersList() {
               </div>
             </div>
             
-            <div className="p-6 border-t border-white/10 bg-[#0A0A0B]/50 flex justify-end gap-3 shrink-0">
+            <div className="p-6 border-t border-white/10 bg-black/30 flex justify-end gap-3 shrink-0">
               <button 
                 onClick={() => setShowSelfAuditModal(false)}
                 className="px-5 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-colors"
@@ -852,10 +876,10 @@ export default function MembersList() {
               <button 
                 onClick={handleSelfAuditAccept}
                 disabled={!selfAuditAccepted}
-                className={`px-6 py-2.5 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+                className={`px-6 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 ${
                   selfAuditAccepted 
-                    ? 'bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-500/20 cursor-pointer' 
-                    : 'bg-emerald-600/50 cursor-not-allowed opacity-50'
+                    ? 'bg-gold hover:bg-gold-soft text-emerald-deep shadow-lg shadow-black/10 cursor-pointer' 
+                    : 'bg-gold/30 text-emerald-deep/40 cursor-not-allowed opacity-50'
                 }`}
               >
                 I Accept & Continue

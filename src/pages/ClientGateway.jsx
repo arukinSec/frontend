@@ -314,91 +314,112 @@ export default function ClientGateway() {
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-slate-200 font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Background ambient glowing spheres */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-brand/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Return Home Button */}
       <button 
         onClick={() => navigate('/')}
-        className="absolute top-6 left-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold z-20 cursor-pointer"
+        className="absolute top-6 left-6 flex items-center justify-center border border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 p-2.5 rounded-full text-slate-300 hover:text-white transition-all z-20 shadow-sm"
+        title="Return Home"
       >
         <ArrowLeft size={16} />
-        <span>Return Home</span>
       </button>
 
-      <div className="w-full max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl z-10">
+      <div className="w-full max-w-md bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl z-10 text-slate-200 min-h-[475px] flex flex-col justify-between">
         
         {/* Header Branding */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shadow-xl shadow-indigo-500/20 mb-4 text-white font-bold text-lg">
+          <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-emerald-brand to-emerald-deep flex items-center justify-center shadow-xl shadow-black/10 mb-4 text-white font-bold text-lg">
             A
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white">ArukinSec</h1>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-white">ArukinSec</h1>
           <p className="text-slate-400 text-xs mt-1">Secure Account Gateway</p>
         </div>
 
         {/* Loading Screen Overlay */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-slate-400 text-sm">{loadingText}</p>
+            <div className="h-8 w-8 border-4 border-gold border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-cream/70 text-sm">{loadingText}</p>
           </div>
         ) : (
           <>
             {/* View Step 1: Login */}
             {currentStep === 1 && (
-              <div className="space-y-6">
-                <p className="text-slate-400 text-sm text-center">
-                  Link your account to authorize audit and threat monitoring protection.
-                </p>
+              <div className="space-y-6 flex-1 flex flex-col justify-between">
+                <div className="space-y-6">
+                  <p className="text-slate-400 text-sm text-center">
+                    Link your account to authorize audit and threat monitoring protection.
+                  </p>
 
-                <div className="space-y-2">
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                    Manager Auth ID
-                  </label>
-                  <div className="flex justify-center gap-2 sm:gap-3 py-2" onPaste={handlePaste}>
-                    {authCode.map((digit, idx) => (
-                      <React.Fragment key={idx}>
-                        <input
-                          type="text"
-                          maxLength={1}
-                          inputMode="numeric"
-                          value={digit}
-                          ref={(el) => (inputRefs.current[idx] = el)}
-                          onChange={(e) => handleCodeChange(idx, e.target.value)}
-                          onKeyDown={(e) => handleKeyDown(idx, e)}
-                          className="w-10 h-12 sm:w-12 sm:h-14 bg-black/40 border border-white/10 rounded-xl text-center text-lg sm:text-xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-600"
-                        />
-                        {idx === 2 && (
-                          <div className="flex items-center text-slate-500 font-bold">-</div>
-                        )}
-                      </React.Fragment>
-                    ))}
+                  <div className="space-y-2">
+                    <label className="block text-[10px] font-bold text-gold uppercase tracking-wider text-center">
+                      Manager Auth ID
+                    </label>
+                    <div className="flex justify-center gap-2 sm:gap-3 py-2" onPaste={handlePaste}>
+                      {authCode.map((digit, idx) => (
+                        <React.Fragment key={idx}>
+                          <input
+                            type="text"
+                            maxLength={1}
+                            inputMode="numeric"
+                            value={digit}
+                            ref={(el) => (inputRefs.current[idx] = el)}
+                            onChange={(e) => handleCodeChange(idx, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(idx, e)}
+                            className="w-10 h-12 sm:w-12 sm:h-14 bg-white/5 border border-white/10 rounded-xl text-center text-lg sm:text-xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-gold-soft transition-all placeholder:text-slate-600"
+                          />
+                          {idx === 2 && (
+                            <div className="flex items-center text-slate-500 font-bold">-</div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    {authError && (
+                      <p className="text-red-300 text-xs text-center">{authError}</p>
+                    )}
+                    {consentError && (
+                      <p className="text-red-300 text-xs">{consentError}</p>
+                    )}
                   </div>
-                  {authError && (
-                    <p className="text-red-400 text-xs text-center">{authError}</p>
-                  )}
-                  {consentError && (
-                    <p className="text-red-400 text-xs">{consentError}</p>
-                  )}
                 </div>
 
-                <button 
-                  onClick={initiateGoogleAuth}
-                  className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-500/25 cursor-pointer"
-                >
-                  <span>Log in with Google</span>
-                  <ArrowRight size={18} />
-                </button>
+                <div className="space-y-4">
+                  <button 
+                    onClick={initiateGoogleAuth}
+                    className="w-full bg-emerald-brand hover:bg-[#124238] text-white text-sm font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-black/20 cursor-pointer"
+                  >
+                    <span>Log in with Google</span>
+                    <ArrowRight size={16} />
+                  </button>
+
+                  <div className="mt-4 pt-4 border-t border-white/10 space-y-3.5">
+                    <div className="flex gap-3 text-left">
+                      <span className="text-gold font-semibold shrink-0 text-xs">01.</span>
+                      <p className="text-[11px] text-slate-400 leading-normal">
+                        Access requests only require standard non-sensitive profile permissions.
+                      </p>
+                    </div>
+                    <div className="flex gap-3 text-left">
+                      <span className="text-gold font-semibold shrink-0 text-xs">02.</span>
+                      <p className="text-[11px] text-slate-400 leading-normal">
+                        Manage threat vectors, logs, and files safely from your compliance roster.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
             {/* View Step 2: Welcome */}
             {currentStep === 2 && (
-              <div className="text-center py-6 flex flex-col items-center">
-                <CheckCircle2 size={48} className="text-emerald-500 mb-6 animate-pulse" />
-                <h2 className="text-xl font-bold text-white">Secure Connection Established</h2>
-                <p className="text-slate-400 text-sm mt-2">Your account is now linked and monitored for digital safety threats.</p>
+              <div className="text-center py-6 flex flex-col items-center flex-1 justify-between min-h-[300px]">
+                <div className="flex flex-col items-center">
+                  <CheckCircle2 size={48} className="text-emerald-brand mb-6 animate-pulse" />
+                  <h2 className="text-xl font-bold text-white">Secure Connection Established</h2>
+                  <p className="text-slate-400 text-sm mt-2">Your account is now linked and monitored for digital safety threats.</p>
+                </div>
+
                 <div className="flex flex-col gap-2 mt-8 w-full items-center">
                   <button 
                     onClick={handleConnectAnother}
@@ -414,7 +435,7 @@ export default function ClientGateway() {
                       try { await supabase.auth.signOut(); } catch(e) {}
                       window.location.href = '/';
                     }}
-                    className="w-full bg-indigo-600/10 hover:bg-indigo-600/20 border border-indigo-500/20 px-4 py-2.5 rounded-xl text-indigo-400 hover:text-indigo-300 flex items-center justify-center gap-2 text-xs font-semibold transition-colors cursor-pointer"
+                    className="w-full bg-emerald-brand hover:bg-[#124238] text-white px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-semibold transition-colors cursor-pointer shadow-md"
                   >
                     <Home size={14} />
                     Back to Home
@@ -430,23 +451,23 @@ export default function ClientGateway() {
       {showDisclaimer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 
-            className="absolute inset-0 bg-[#0A0A0B]/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#0A0A0B]/85 backdrop-blur-sm"
             onClick={() => setShowDisclaimer(false)}
           ></div>
-          <div className="relative w-full max-w-lg bg-[#12121A] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+          <div className="relative w-full max-w-lg bg-[#0a0a0c] border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
             <div className="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
-              <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 border border-indigo-500/20">
-                <Shield size={24} className="text-indigo-400" />
+              <div className="w-12 h-12 bg-emerald-brand/10 rounded-2xl flex items-center justify-center mb-6 border border-emerald-brand/20">
+                <Shield size={24} className="text-emerald-brand" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Security Authorization</h3>
+              <h3 className="font-display text-xl font-bold text-white mb-2">Security Authorization</h3>
               <p className="text-sm text-slate-400 mb-6 leading-relaxed">
                 Before you connect your account, please carefully review the following privacy and security details.
               </p>
               
-              <div className="space-y-4 mb-8">
+              <div className="space-y-4 mb-8 text-left">
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-emerald-300 mb-2 flex items-center gap-2">
-                    <ShieldCheck size={16} /> Data Privacy & Storage
+                  <h4 className="text-sm font-semibold text-slate-200 mb-2 flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-emerald-brand" /> Data Privacy & Storage
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
                     ArukinSec <strong>does not</strong> store your personal emails, files, or contacts on our central servers. We solely store the secure access tokens required to fetch this data. Any data retrieved by the platform is cached locally and temporarily on your Manager's specific browser/device, adhering to strict privacy protocols.
@@ -454,8 +475,8 @@ export default function ClientGateway() {
                 </div>
                 
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-amber-300 mb-2 flex items-center gap-2">
-                    <UserCheck size={16} /> Authority & Ownership
+                  <h4 className="text-sm font-semibold text-slate-200 mb-2 flex items-center gap-2">
+                    <UserCheck size={16} className="text-emerald-brand" /> Authority & Ownership
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
                     By proceeding, you explicitly confirm that you are the rightful owner of this Google account and possess the legal authority to grant access to its contents to your designated Manager.
@@ -463,24 +484,24 @@ export default function ClientGateway() {
                 </div>
 
                 <div className="p-4 bg-white/5 border border-white/5 rounded-xl">
-                  <h4 className="text-sm font-semibold text-indigo-300 mb-2 flex items-center gap-2">
-                    <Info size={16} /> Agreement Terms
+                  <h4 className="text-sm font-semibold text-slate-200 mb-2 flex items-center gap-2">
+                    <Info size={16} className="text-emerald-brand" /> Agreement Terms
                   </h4>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    By proceeding, you grant read and write access to your account to your designated Manager. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-indigo-400 hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-indigo-400 hover:underline">Terms of Service</a>.
+                    By proceeding, you grant read and write access to your account to your designated Manager. You can revoke this access at any time through your Google Security settings. Read our <a href="/privacy" target="_blank" className="text-gold hover:underline">Privacy Policy</a> and <a href="/terms" target="_blank" className="text-gold hover:underline">Terms of Service</a>.
                   </p>
                 </div>
               </div>
               
               {/* Explicit Checkbox Requirement */}
-              <div className="flex items-start gap-3 mt-4 mb-2 p-3 rounded-lg border border-white/5 bg-white/[0.02]">
+              <div className="flex items-start gap-3 mt-4 mb-2 p-3 rounded-lg border border-white/5 bg-white/[0.02] text-left">
                 <div className="relative flex items-center justify-center mt-0.5">
                   <input 
                     type="checkbox" 
                     id="accept-terms"
                     checked={disclaimerAccepted}
                     onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                    className="peer appearance-none w-4 h-4 rounded border border-slate-600 checked:bg-indigo-500 checked:border-indigo-500 cursor-pointer transition-all"
+                    className="peer appearance-none w-4 h-4 rounded border border-slate-600 checked:bg-emerald-brand checked:border-emerald-brand cursor-pointer transition-all"
                   />
                   <CheckCircle2 size={12} className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
                 </div>
@@ -490,7 +511,7 @@ export default function ClientGateway() {
               </div>
             </div>
             
-            <div className="p-6 border-t border-white/10 bg-[#0A0A0B]/50 flex justify-end gap-3 shrink-0">
+            <div className="p-6 border-t border-white/10 bg-black/30 flex justify-end gap-3 shrink-0">
               <button 
                 onClick={() => setShowDisclaimer(false)}
                 className="px-5 py-2.5 text-xs font-bold text-slate-400 hover:text-white transition-colors"
@@ -500,10 +521,10 @@ export default function ClientGateway() {
               <button 
                 onClick={proceedToGoogleAuth}
                 disabled={!disclaimerAccepted}
-                className={`px-6 py-2.5 text-white text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+                className={`px-6 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 ${
                   disclaimerAccepted 
-                    ? 'bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 cursor-pointer' 
-                    : 'bg-indigo-600/50 cursor-not-allowed opacity-50'
+                    ? 'bg-gold hover:bg-gold-soft text-emerald-deep shadow-lg shadow-black/10 cursor-pointer' 
+                    : 'bg-gold/30 text-emerald-deep/40 cursor-not-allowed opacity-50'
                 }`}
               >
                 I Understand & Accept
