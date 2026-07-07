@@ -28,25 +28,25 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-[16px] p-4 select-none">
       {/* Glow Effects */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-brand/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       {/* Onboarding Container - Wide horizontal layout with strict no-scroll constraints */}
-      <div className="w-full max-w-3xl bg-[#0E0E12] border border-white/10 rounded-3xl p-4 md:p-10 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[360px] max-h-[85vh]">
+      <div className="w-full max-w-3xl bg-[#0a0a0c] border border-white/10 rounded-3xl p-4 md:p-10 shadow-2xl relative z-10 overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[360px] max-h-[85vh]">
         
         {/* Top Indicators */}
         <div className="flex items-center justify-between shrink-0 mb-4">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <div className="h-6 w-6 rounded-lg bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
               <Shield size={12} />
             </div>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Get Started</span>
+            <span className="text-[10px] font-bold text-cream/50 uppercase tracking-widest">Get Started</span>
           </div>
           <div className="flex items-center gap-1.5">
             {Array.from({ length: totalSteps }).map((_, i) => (
               <div 
                 key={i} 
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i + 1 === step ? 'w-6 bg-indigo-500' : 'w-1.5 bg-white/10'
+                  i + 1 === step ? 'w-6 bg-emerald-brand' : 'w-1.5 bg-white/10'
                 }`}
               />
             ))}
@@ -60,12 +60,12 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 1 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Sparkles size={36} />
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Welcome to ArukinSec</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Welcome to ArukinSec</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   Thank you for signing up. This security console helps you protect your family members and loved ones from online scams, phishing, and account takeover attempts.
                 </p>
@@ -80,12 +80,12 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 2 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Shield size={36} />
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">What ArukinSec Does</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">What ArukinSec Does</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   ArukinSec acts as a remote view-and-cleanup link to help you verify security and directory settings on your member's Google account:
                 </p>
@@ -111,25 +111,25 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 3 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Users size={36} />
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Understanding Roles</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Understanding Roles</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   To isolate privileges, ArukinSec keeps roles separated:
                 </p>
                 <div className="grid grid-cols-2 gap-3 mt-1.5">
                   <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl flex gap-2 items-center">
-                    <User size={14} className="text-indigo-400 shrink-0" />
+                    <User size={14} className="text-gold shrink-0" />
                     <div>
                       <h4 className="font-semibold text-xs text-white">Manager (You)</h4>
                       <p className="text-[9px] text-slate-500">Reviews console feeds.</p>
                     </div>
                   </div>
                   <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl flex gap-2 items-center">
-                    <Users size={14} className="text-emerald-400 shrink-0" />
+                    <Users size={14} className="text-emerald-brand shrink-0" />
                     <div>
                       <h4 className="font-semibold text-xs text-white">Member (Loved One)</h4>
                       <p className="text-[9px] text-slate-500">Grants target scopes.</p>
@@ -144,12 +144,12 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 4 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Lock size={36} />
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Gmail & Drive Protection</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Gmail & Drive Protection</h2>
                 <div className="grid grid-cols-2 gap-3 mt-1.5">
                   <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
                     <span className="font-semibold text-xs text-white block mb-0.5">Gmail & Drive Cleanup</span>
@@ -168,12 +168,12 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 5 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Eye size={36} />
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Contacts Auditing</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Contacts Auditing</h2>
                 <div className="grid grid-cols-2 gap-3 mt-1.5">
                   <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
                     <span className="font-semibold text-xs text-white block mb-0.5">Read-Only Contacts</span>
@@ -192,26 +192,26 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 6 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Eye size={36} />
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">How to Connect a Member</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">How to Connect a Member</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   Link your family member or client in three quick steps:
                 </p>
                 <div className="grid grid-cols-3 gap-2.5 mt-2">
                   <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl">
-                    <span className="text-[10px] text-indigo-400 font-bold block">1. Share ID</span>
+                    <span className="text-[10px] text-gold font-bold block">1. Share ID</span>
                     <p className="text-[9px] text-slate-500 mt-0.5">Send them your Manager ID key.</p>
                   </div>
                   <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl">
-                    <span className="text-[10px] text-indigo-400 font-bold block">2. Input Token</span>
+                    <span className="text-[10px] text-gold font-bold block">2. Input Token</span>
                     <p className="text-[9px] text-slate-500 mt-0.5">They enter it on the gateway.</p>
                   </div>
                   <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl">
-                    <span className="text-[10px] text-indigo-400 font-bold block">3. Grant Auth</span>
+                    <span className="text-[10px] text-gold font-bold block">3. Grant Auth</span>
                     <p className="text-[9px] text-slate-500 mt-0.5">They connect their Google account.</p>
                   </div>
                 </div>
@@ -223,17 +223,17 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           {step === 7 && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center animate-slide-up">
               <div className="md:col-span-3 flex justify-center">
-                <div className="h-20 w-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <div className="h-20 w-20 rounded-2xl bg-emerald-brand/10 border border-emerald-brand/20 flex items-center justify-center text-emerald-brand">
                   <Share2 size={36} />
                 </div>
               </div>
-              <div className="md:col-span-9 space-y-2">
-                <h2 className="text-xl font-black text-white tracking-tight leading-tight">Your Manager Auth ID</h2>
+              <div className="md:col-span-9 space-y-2 text-left">
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Your Manager Auth ID</h2>
                 
                 {/* Security ID Badge */}
-                <div className="p-4 bg-white/[0.02] border border-indigo-500/20 rounded-2xl flex items-center justify-between gap-4 mt-2">
+                <div className="p-4 bg-white/[0.02] border border-emerald-brand/20 rounded-2xl flex items-center justify-between gap-4 mt-2">
                   <div>
-                    <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-wider block mb-0.5">Your Manager ID</span>
+                    <span className="text-[9px] font-bold text-gold uppercase tracking-wider block mb-0.5">Your Manager ID</span>
                     <span className="text-lg font-mono font-bold text-white tracking-wider">{formattedId}</span>
                   </div>
                   <div className="flex gap-2">
@@ -241,12 +241,12 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
                       onClick={handleCopy}
                       className="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
                     >
-                      {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                      {copied ? <Check size={12} className="text-emerald-brand" /> : <Copy size={12} />}
                       <span>{copied ? 'Copied' : 'Copy'}</span>
                     </button>
                     <button 
                       onClick={handleShare}
-                      className="bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-lg text-xs font-semibold text-white flex items-center gap-1 transition-colors cursor-pointer"
+                      className="bg-gold hover:bg-gold-soft text-emerald-deep px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-md"
                     >
                       <Share2 size={12} />
                       <span>Invite</span>
@@ -291,7 +291,7 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
           ) : (
             <button 
               onClick={onClose}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-indigo-500/25 cursor-pointer"
+              className="bg-gold hover:bg-gold-soft text-emerald-deep text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-black/10 cursor-pointer"
             >
               Enter Console
             </button>

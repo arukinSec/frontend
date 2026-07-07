@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { supabase } from './supabaseClient';
+import { isSupabaseConfigured, supabase } from './supabaseClient';
 import Home from './pages/Home';
 import About from './pages/About';
 import Pricing from './pages/Pricing';
@@ -23,6 +23,12 @@ export default function App() {
   const isAuthProcessing = React.useRef(false);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setSession(false);
+      setLoading(false);
+      return;
+    }
+
     const handleAuthChange = async () => {
       if (isAuthProcessing.current) return;
       isAuthProcessing.current = true;
