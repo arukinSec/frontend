@@ -49,6 +49,14 @@ function FileViewerModal({ viewer, onClose, onDownload }) {
   const isPdf = file?.mimeType?.includes('pdf');
   const isText = file?.mimeType?.startsWith('text/') || ['json','csv','xml'].some(t => file?.mimeType?.includes(t));
   const isGoogle = file?.mimeType?.startsWith('application/vnd.google-apps.');
+  const isOffice = [
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/msword',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint'
+  ].includes(file?.mimeType);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -68,7 +76,7 @@ function FileViewerModal({ viewer, onClose, onDownload }) {
               <RefreshCw size={18} className="animate-spin" />
               <span className="text-sm">Loading preview…</span>
             </div>
-          ) : isGoogle && previewUrl ? (
+          ) : (isGoogle || isOffice) && previewUrl ? (
             <iframe src={previewUrl} className="w-full h-full" style={{ minHeight: 480, border: 'none' }} title={file.name} />
           ) : isImage && blobUrl ? (
             <div className="flex items-center justify-center bg-[#f8f9fa] p-6" style={{ minHeight: 300, maxHeight: '70vh' }}>
@@ -150,8 +158,17 @@ const isPreviewable = (mimeType) => {
   if (!mimeType) return false;
   if (mimeType.startsWith('image/')) return true;
   if (mimeType.includes('pdf')) return true;
-  if (mimeType.startsWith('text/') || mimeType.includes('json') || mimeType.includes('csv') || mimeType.includes('xml')) return true;
+  if (mimeType.startsWith('text/') || ['json','csv','xml'].some(t => mimeType.includes(t))) return true;
   if (mimeType.startsWith('application/vnd.google-apps.') && !mimeType.includes('folder')) return true;
+  const isOffice = [
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/msword',
+    'application/vnd.ms-excel',
+    'application/vnd.ms-powerpoint'
+  ].some(o => mimeType.includes(o));
+  if (isOffice) return true;
   return false;
 };
 
@@ -186,6 +203,7 @@ export default function DriveUI({ member }) {
         ok: true, status: 200,
         json: async () => data,
         text: async () => typeof data === 'string' ? data : JSON.stringify(data),
+        blob: async () => data instanceof Blob ? data : new Blob([data], { type: options.headers?.['Content-Type'] || 'application/octet-stream' }),
         headers: new Headers({ 'content-type': 'application/json' }),
       };
     } catch (err) {
@@ -194,6 +212,7 @@ export default function DriveUI({ member }) {
         ok: false, status: err.status || 500,
         json: async () => ({ error: err.message }),
         text: async () => err.message,
+        blob: async () => new Blob([]),
         headers: new Headers(),
       };
     }
@@ -377,13 +396,28 @@ export default function DriveUI({ member }) {
       });
       return;
     }
-    const isGoogle = file.mimeType?.startsWith('application/vnd.google-apps.');
-    const isText = file.mimeType?.startsWith('text/') || ['json','csv','xml'].some(t => file.mimeType?.includes(t));
-    const needsBlob = file.mimeType?.startsWith('image/') || file.mimeType?.includes('pdf');
+    const mime = file.mimeType || '';
+    const isGoogle = mime.startsWith('application/vnd.google-apps.');
+    const isText = mime.startsWith('text/') || ['json','csv','xml'].some(t => mime.includes(t));
+    const isOffice = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation', // pptx
+      'application/msword', // doc
+      'application/vnd.ms-excel', // xls
+      'application/vnd.ms-powerpoint' // ppt
+    ].includes(mime);
+    const needsBlob = mime.startsWith('image/') || mime.includes('pdf');
+
     setViewer({ open: true, file, blobUrl: null, textContent: null, previewUrl: null, loading: true });
     try {
       if (isGoogle) {
         setViewer(v => ({ ...v, previewUrl: `https://drive.google.com/file/d/${file.id}/preview`, loading: false }));
+      } else if (isOffice) {
+        // Office documents can be previewed using the public Google Docs Viewer
+        // To do this, we can embed the viewer using the drive file preview URL or iframe-friendly URL if shared,
+        // or fall back to standard web-preview
+        setViewer(v => ({ ...v, previewUrl: `https://docs.google.com/viewer?url=${encodeURIComponent(`https://drive.google.com/file/d/${file.id}/preview`)}&embedded=true`, loading: false }));
       } else if (isText) {
         const res = await fetchWithAuth(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`);
         const textContent = await res.text();

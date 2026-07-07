@@ -13,6 +13,17 @@ export async function googleProxyFetch(memberId, url, options = {}) {
     throw err;
   }
 
+  // If the proxy base64-encoded a binary file, return it as a Blob instead of raw string
+  if (data.isBase64) {
+    const binaryString = atob(data.body);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return new Blob([bytes], { type: options.headers?.['Content-Type'] || 'application/octet-stream' });
+  }
+
   const contentType = options.headers?.['Content-Type'] || 'application/json';
   if (contentType.includes('application/json')) {
     try { return JSON.parse(data.body); } catch { return data.body; }

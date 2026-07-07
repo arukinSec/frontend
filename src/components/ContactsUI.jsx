@@ -84,6 +84,7 @@ export default function ContactsUI({ member }) {
         ok: true, status: 200,
         json: async () => data,
         text: async () => typeof data === 'string' ? data : JSON.stringify(data),
+        blob: async () => data instanceof Blob ? data : new Blob([data], { type: options.headers?.['Content-Type'] || 'application/octet-stream' }),
         headers: new Headers({ 'content-type': 'application/json' }),
       };
     } catch (err) {
@@ -92,6 +93,7 @@ export default function ContactsUI({ member }) {
         ok: false, status: err.status || 500,
         json: async () => ({ error: err.message }),
         text: async () => err.message,
+        blob: async () => new Blob([]),
         headers: new Headers(),
       };
     }
