@@ -38,7 +38,7 @@ export default function HowItWorks() {
                 <LogIn size={16} /> Go to Homepage <ArrowRight size={16} />
               </Link>
             </div>
-            <StepImage src="/step-signin-manager.webp" alt="Sign in with Google" order={1} />
+            <StepImage src="/step-signin-manager.webp" alt="Sign in with Google" order={1} loading="eager" />
           </div>
 
           {/* Step 2 */}
@@ -172,12 +172,12 @@ function StepBadge({ n, large = false }) {
     </div>
   );
 }
-function StepImage({ src, alt, order }) {
+function StepImage({ src, alt, order, loading }) {
   return (
     <div className={`order-${order} flex justify-center`}>
       <div className="relative">
         <div className="absolute -inset-4 bg-gold/10 rounded-[2rem] blur-2xl"></div>
-        <img src={src} alt={alt} className="relative w-full max-w-sm rounded-3xl border border-emerald-deep/10 shadow-xl" />
+        <img src={src} alt={alt} loading={loading || "lazy"} className="relative w-full max-w-sm rounded-3xl border border-emerald-deep/10 shadow-xl" />
       </div>
     </div>
   );
