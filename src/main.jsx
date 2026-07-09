@@ -12,6 +12,12 @@ import '@fontsource/manrope/600.css'
 import '@fontsource/manrope/700.css'
 import './index.css'
 
+// Initialize Google Analytics securely (bypassing CSP inline-script restrictions)
+window.dataLayer = window.dataLayer || [];
+window.gtag = function(){window.dataLayer.push(arguments);}
+window.gtag('js', new Date());
+window.gtag('config', 'G-0SKT4RS50E');
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
