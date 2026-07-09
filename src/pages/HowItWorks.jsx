@@ -38,12 +38,12 @@ export default function HowItWorks() {
                 <LogIn size={16} /> Go to Homepage <ArrowRight size={16} />
               </Link>
             </div>
-            <StepImage src="/step-signin-manager.webp" alt="Sign in with Google" order={1} loading="eager" />
+            <StepImage src="/step-1-illustration.webp" alt="Sign in with Google" order={1} />
           </div>
 
           {/* Step 2 */}
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <StepImage src="/step-connection-id.webp" alt="Connection ID" order={1} />
+            <StepImage src="/step-2-illustration.webp" alt="Connection ID" order={1} />
             <div className="order-2">
               <StepBadge n={2} />
               <h2 className="font-display text-2xl md:text-3xl font-bold text-emerald-deep tracking-tight mb-3">Get your Connection ID</h2>
@@ -82,7 +82,7 @@ export default function HowItWorks() {
                 ))}
               </ul>
             </div>
-            <StepImage src="/step-member-auth.webp" alt="Member authenticates" order={2} />
+            <StepImage src="/step-3-illustration.webp" alt="Member authenticates" order={2} />
           </div>
 
           {/* Deep-Dive: Security & Consent Safeguards */}
@@ -172,12 +172,12 @@ function StepBadge({ n, large = false }) {
     </div>
   );
 }
-function StepImage({ src, alt, order, loading }) {
+function StepImage({ src, alt, order }) {
   return (
     <div className={`order-${order} flex justify-center`}>
       <div className="relative">
         <div className="absolute -inset-4 bg-gold/10 rounded-[2rem] blur-2xl"></div>
-        <img src={src} alt={alt} loading={loading || "lazy"} className="relative w-full max-w-sm rounded-3xl border border-emerald-deep/10 shadow-xl" />
+        <img src={src} alt={alt} className="relative w-full max-w-sm rounded-3xl border border-emerald-deep/10 shadow-xl" />
       </div>
     </div>
   );
