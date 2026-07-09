@@ -64,7 +64,7 @@ export default function MarketingNavbar() {
         </div>
 
         <div className="md:hidden">
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-emerald-deep">
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-emerald-deep" aria-label="Toggle menu">
             {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
