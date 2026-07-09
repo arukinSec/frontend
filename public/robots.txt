@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /client
+Disallow: /dashboard
+Disallow: /manager
+
+Sitemap: https://arukinsec.web.app/sitemap.xml
