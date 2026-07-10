@@ -22,9 +22,9 @@ export default function LegalNavbar() {
     <nav className="border-b border-cream/10 bg-emerald-deep/90 backdrop-blur-md sticky top-0 z-50 shrink-0">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-lg" alt="ArukinSec" />
+          <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-lg" alt="Arukin" />
           <span className="font-display font-bold text-base tracking-tight text-cream">
-            ArukinSec
+            Arukin
           </span>
         </Link>
 

@@ -14,7 +14,7 @@ export default function HowItWorks() {
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
           <div className="brand-eyebrow mb-5 mx-auto"><span>Four Simple Steps</span></div>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-emerald-deep tracking-tight leading-[1.1]">
-            How ArukinSec <span className="text-emerald-brand italic">works</span>
+            How Arukin <span className="text-emerald-brand italic">works</span>
           </h1>
           <p className="text-emerald-deep/70 text-lg mt-6 max-w-2xl mx-auto leading-relaxed">
             Look after someone's Google account in minutes — with their consent, without their password, and with full transparency.
@@ -90,7 +90,7 @@ export default function HowItWorks() {
             <div className="brand-eyebrow mb-4"><span>Safe by Design</span></div>
             <h2 className="font-display text-3xl font-bold text-emerald-deep tracking-tight mb-6">Our Consent & Security Safeguards</h2>
             <p className="text-emerald-deep/75 leading-relaxed mb-8">
-              ArukinSec was built specifically to prevent misuse or surveillance. Unlike standard background spyware, our platform operates entirely on official API authorization channels and mandates open consent.
+              Arukin was built specifically to prevent misuse or surveillance. Unlike standard background spyware, our platform operates entirely on official API authorization channels and mandates open consent.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -63,7 +63,7 @@ export default function Home({ session }) {
             </h1>
 
             <p className="text-lg text-emerald-deep/75 leading-relaxed max-w-xl">
-              ArukinSec provides intelligent Google account protection and oversight,
+              Arukin provides intelligent Google account protection and oversight,
               ensuring your loved ones explore the digital world safely — while keeping
               their privacy intact.
             </p>
@@ -168,7 +168,7 @@ export default function Home({ session }) {
       <section className="max-w-7xl w-full mx-auto px-6 py-16 border-t border-emerald-deep/10">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="brand-eyebrow mb-4"><span>Access Portals</span></div>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-deep tracking-tight">Launch the ArukinSec Gateway</h2>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-deep tracking-tight">Launch the Arukin Gateway</h2>
           <p className="text-emerald-deep/70 mt-4 leading-relaxed">
             Choose the portal that matches your role. Managers coordinate security while family members pair their accounts in seconds.
           </p>
@@ -210,7 +210,7 @@ export default function Home({ session }) {
           <div className="brand-eyebrow mb-4 mx-auto"><span>What You Get</span></div>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-emerald-deep tracking-tight">Everything you need to protect them</h2>
           <p className="text-emerald-deep/70 mt-4 max-w-2xl mx-auto leading-relaxed">
-            ArukinSec connects securely to Google's APIs through a zero-knowledge backend proxy — a safe, single window into their digital life.
+            Arukin connects securely to Google's APIs through a zero-knowledge backend proxy — a safe, single window into their digital life.
           </p>
         </div>
 
@@ -243,7 +243,7 @@ export default function Home({ session }) {
             </div>
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">Built on serious security foundations</h2>
             <p className="text-cream/70 text-lg leading-relaxed mb-10">
-              We never see your family's passwords. ArukinSec uses Web Crypto AES-GCM encryption and a server-side API proxy so tokens never touch the browser.
+              We never see your family's passwords. Arukin uses Web Crypto AES-GCM encryption and a server-side API proxy so tokens never touch the browser.
             </p>
  
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">

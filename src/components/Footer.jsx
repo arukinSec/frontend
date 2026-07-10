@@ -9,14 +9,14 @@ export default function Footer() {
 
         <div className="md:col-span-5 space-y-4">
           <div className="flex items-center gap-2">
-            <img src="/arukin-logo.webp" className="h-7 w-7 object-contain rounded-md" alt="ArukinSec" />
-            <span className="font-display font-bold text-base tracking-tight text-emerald-deep">ArukinSec</span>
+            <img src="/arukin-logo.webp" className="h-7 w-7 object-contain rounded-md" alt="Arukin" />
+            <span className="font-display font-bold text-base tracking-tight text-emerald-deep">Arukin</span>
           </div>
           <p className="text-emerald-deep/70 text-sm leading-relaxed max-w-sm">
             A calm layer of Google account oversight for families, caregivers, and professionals.
           </p>
           <div className="font-mono text-[11px] text-emerald-brand font-semibold select-all bg-emerald-brand/5 border border-emerald-brand/15 rounded-md px-2 py-1 inline-block">
-            arukinsec.web.app
+            arukin.pages.dev
           </div>
           <div>
             <a href="https://github.com/arukinSec" target="_blank" rel="noreferrer" className="text-emerald-deep/50 hover:text-emerald-deep transition-colors inline-flex" title="GitHub">
@@ -50,7 +50,7 @@ export default function Footer() {
             <span className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-brand bg-emerald-brand/5 border border-emerald-brand/20 px-2 py-0.5 rounded-md">
               <ShieldCheck size={10} /> DPDP ALIGNED
             </span>
-            <span className="inline-flex items-center gap-1 text-[9px] font-bold text-gold bg-gold/5 border border-gold/20 px-2 py-0.5 rounded-md">
+            <span className="inline-flex items-center gap-1 text-[9px] font-bold text-amber-700 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
               <ShieldCheck size={10} /> GDPR FRAMEWORK
             </span>
           </div>
@@ -59,7 +59,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 pb-8 pt-6 border-t border-emerald-deep/10 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] text-emerald-deep/50">
-        <p>&copy; {new Date().getFullYear()} ArukinSec. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Arukin. All rights reserved.</p>
         <p>Not affiliated with Google LLC. Gmail, Drive, and Workspace are trademarks of Google LLC.</p>
       </div>
     </footer>

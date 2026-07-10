@@ -6,7 +6,7 @@ export default function BetaNotice() {
   return (
     <LegalPage eyebrow="Development Status" title="Beta Notice" updated="July 1, 2026" icon={Bug}>
       <LegalSection icon={Info} title='1. What "beta" means for you'>
-        <p>ArukinSec is in active development. Features are provided for personal and family evaluation and are subject to change without notice.</p>
+        <p>Arukin is in active development. Features are provided for personal and family evaluation and are subject to change without notice.</p>
         <p>During beta, you may encounter:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>Occasional UI or layout inconsistencies across devices.</li>
@@ -17,7 +17,7 @@ export default function BetaNotice() {
       </LegalSection>
 
       <LegalSection icon={Users} title="2. Account & Connection Limits">
-        <p>Because ArukinSec operates as a Google Developer Sandbox application:</p>
+        <p>Because Arukin operates as a Google Developer Sandbox application:</p>
         
         {/* Beta Status & Account Limits Callout Card */}
         <div className="bg-emerald-deep text-cream border border-emerald-deep/20 rounded-3xl p-6 shadow-lg space-y-4 mt-4">
@@ -33,7 +33,7 @@ export default function BetaNotice() {
                   <Users size={16} className="text-gold" /> 100 Connection Cap
                 </h4>
                 <p className="text-cream/70 text-xxs leading-relaxed">
-                  Google enforces a hard cap of 100 sensitive-scope user connections for sandbox testing applications, until ArukinSec completes a formal CASA Tier 2 assessment.
+                  Google enforces a hard cap of 100 sensitive-scope user connections for sandbox testing applications, until Arukin completes a formal CASA Tier 2 assessment.
                 </p>
               </div>
 
@@ -42,7 +42,7 @@ export default function BetaNotice() {
                   <ShieldAlert size={16} className="text-gold" /> No Uptime SLA
                 </h4>
                 <p className="text-cream/70 text-xxs leading-relaxed">
-                  As a beta sandbox service, ArukinSec does not provide uptime SLA agreements. API updates or infrastructure checks may cause temporary scans delay.
+                  As a beta sandbox service, Arukin does not provide uptime SLA agreements. API updates or infrastructure checks may cause temporary scans delay.
                 </p>
               </div>
             </div>

@@ -26,7 +26,7 @@ export default function LegalPage({ eyebrow, title, updated, icon: Icon, childre
       </main>
 
       <footer className="border-t border-white/10 py-8 text-center text-xs text-slate-400 mt-12">
-        <p>© {new Date().getFullYear()} ArukinSec. Built for Google account oversight and digital caregiving.</p>
+        <p>© {new Date().getFullYear()} Arukin. Built for Google account oversight and digital caregiving.</p>
       </footer>
     </div>
   );

@@ -354,7 +354,7 @@ export default function DriveUI({ member }) {
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         order_id: data.id,
-        name: 'ArukinSec Security',
+        name: 'Arukin Security',
         description: 'Yearly Premium Security Audit Console',
         prefill: {
           email: localStorage.getItem('manager_email') || '',

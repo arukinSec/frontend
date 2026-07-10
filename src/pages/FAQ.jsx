@@ -31,7 +31,7 @@ export default function FAQ() {
           <div className="brand-eyebrow mb-5 mx-auto"><span>Help Center</span></div>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-emerald-deep tracking-tight mb-4">How can we help?</h1>
           <p className="text-emerald-deep/70 text-lg max-w-2xl mx-auto leading-relaxed">
-            Choose a category to find detailed answers about ArukinSec's features, pricing, security, and open-source model.
+            Choose a category to find detailed answers about Arukin's features, pricing, security, and open-source model.
           </p>
         </div>
 

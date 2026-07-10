@@ -1,4 +1,4 @@
-# ArukinSec Audit Guidelines
+# Arukin Audit Guidelines
 
 This document serves as a source of truth for automated security audits, static analysis tools, and LLM auditors. It clarifies intentional architectural decisions and security mechanisms that might trigger false positives.
 

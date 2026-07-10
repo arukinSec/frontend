@@ -59,7 +59,7 @@ export default function Pricing() {
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         order_id: data.id,
-        name: 'ArukinSec Security',
+        name: 'Arukin Security',
         description: isWeekly ? '1-Week PRO License' : 'Annual PRO License',
         prefill: { email: managerEmail || '' },
         theme: { color: '#10b981' }, // Emerald
@@ -128,7 +128,7 @@ export default function Pricing() {
             <div>
               <h3 className="font-bold text-amber-900 text-sm uppercase tracking-wide">Beta Version Disclaimer &amp; Warning</h3>
               <p className="text-amber-800 text-xs leading-relaxed mt-2 font-medium">
-                <strong>CRITICAL:</strong> ArukinSec is in active beta. <strong>Some features may not work as expected or fail entirely</strong> depending on Google API restrictions, regional configurations, or active account states. By purchasing a beta license, you acknowledge this is a testing environment and agree to help us identify issues. Please review our full <Link to="/disclaimer" className="text-amber-900 font-bold underline hover:text-amber-950 transition-colors">Disclaimer & Member Protection Notice</Link> detailing stalkerware prevention controls and consent requirements before proceeding.
+                <strong>CRITICAL:</strong> Arukin is in active beta. <strong>Some features may not work as expected or fail entirely</strong> depending on Google API restrictions, regional configurations, or active account states. By purchasing a beta license, you acknowledge this is a testing environment and agree to help us identify issues. Please review our full <Link to="/disclaimer" className="text-amber-900 font-bold underline hover:text-amber-950 transition-colors">Disclaimer & Member Protection Notice</Link> detailing stalkerware prevention controls and consent requirements before proceeding.
               </p>
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function Pricing() {
         {/* Feature Disclaimer & Payment Support */}
         <div className="w-full max-w-6xl bg-slate-100 border border-slate-200 rounded-xl p-4 mb-6">
           <p className="text-xs text-slate-600 leading-relaxed">
-            <strong className="text-slate-700">Feature Availability:</strong> Not all features listed may work as expected for every Google account due to API restrictions, regional availability, or account configuration. ArukinSec is in active development — some capabilities may be limited or temporarily unavailable during beta.
+            <strong className="text-slate-700">Feature Availability:</strong> Not all features listed may work as expected for every Google account due to API restrictions, regional availability, or account configuration. Arukin is in active development — some capabilities may be limited or temporarily unavailable during beta.
           </p>
           <p className="text-xs text-slate-600 leading-relaxed mt-2">
             <strong className="text-slate-700">Payment Issues:</strong> If your payment fails, you are charged but access is not granted, or you experience any other billing problem, please email me at <a href="mailto:dmuolhoi@gmail.com" className="text-emerald-700 hover:text-emerald-600 underline underline-offset-2 font-semibold select-all">dmuolhoi@gmail.com</a> and we will resolve it promptly.
@@ -262,7 +262,7 @@ export default function Pricing() {
               <span className="inline-block text-[10px] bg-teal-500/15 text-teal-700 border border-teal-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider mb-2">100% Open Source</span>
               <h3 className="text-lg font-bold text-slate-900 mb-2 md:mb-1">Self-host for free, or let us build it for you.</h3>
               <p className="text-slate-600 text-xs leading-relaxed max-w-xl">
-                ArukinSec is fully open-source. You can deploy it on your own infrastructure completely for <strong>free</strong> for absolute database isolation. 
+                Arukin is fully open-source. You can deploy it on your own infrastructure completely for <strong>free</strong> for absolute database isolation. 
                 <br/><br/>
                 If you prefer a white-glove experience, you can request the <strong>Enterprise Setup Service (₹28,600 one-time)</strong>, and our team will configure your custom private cloud instance for you.
               </p>
@@ -315,7 +315,7 @@ export default function Pricing() {
                 <li>Scope &amp; purpose of your deployment</li>
               </ul>
               <a
-                href="mailto:dmuolhoi@gmail.com?subject=Self-Hosted%20Setup%20Request&body=Hi%2C%0A%0AI%20am%20interested%20in%20the%20ArukinSec%20Self-Hosted%20Enterprise%20Pass.%0A%0AHosting%20environment%3A%20%0APurpose%3A%20"
+                href="mailto:dmuolhoi@gmail.com?subject=Self-Hosted%20Setup%20Request&body=Hi%2C%0A%0AI%20am%20interested%20in%20the%20Arukin%20Self-Hosted%20Enterprise%20Pass.%0A%0AHosting%20environment%3A%20%0APurpose%3A%20"
                 className="w-full py-3 bg-emerald-600 hover:bg-indigo-500 text-slate-900 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 mt-2 cursor-pointer"
               >
                 <Mail size={16} /> Open Email Client

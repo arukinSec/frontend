@@ -1,6 +1,6 @@
-# ArukinSec Agent Behavior Guidelines
+# Arukin Agent Behavior Guidelines
 
-This document serves as a source of truth for future autonomous agents and developers working on the ArukinSec codebase to ensure they respect the established workspace architecture.
+This document serves as a source of truth for future autonomous agents and developers working on the Arukin codebase to ensure they respect the established workspace architecture.
 
 If you are conducting a security audit, please read `audit/AUDIT_GUIDELINES.md` instead to understand intentional security designs and mitigate false positives.
 

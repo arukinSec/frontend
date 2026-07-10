@@ -72,8 +72,8 @@ export default function Login() {
         
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="ArukinSec Logo" />
-          <h1 className="text-2xl font-bold text-white tracking-wide">ArukinSec <span className="text-slate-500 font-medium">Admin Portal</span></h1>
+          <img src="/arukin-logo.webp" className="h-8 w-8 object-contain rounded-md shadow-sm" alt="Arukin Logo" />
+          <h1 className="text-2xl font-bold text-white tracking-wide">Arukin <span className="text-slate-500 font-medium">Admin Portal</span></h1>
           <p className="text-slate-400 text-sm mt-2">Restricted Access. Authorized Managers only.</p>
         </div>
 

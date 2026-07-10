@@ -11,7 +11,7 @@ export default function About() {
       <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-20 animate-fade-rise">
 
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="brand-eyebrow mb-5 mx-auto"><Sparkles size={12} className="text-gold" /><span>About ArukinSec</span></div>
+          <div className="brand-eyebrow mb-5 mx-auto"><Sparkles size={12} className="text-gold" /><span>About Arukin</span></div>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-emerald-deep tracking-tight mb-6 leading-[1.1]">
             Helping you care for<br/><span className="text-emerald-brand italic">someone's digital world</span>
           </h1>
@@ -21,7 +21,7 @@ export default function About() {
             <div>
               <h4 className="text-emerald-deep font-bold text-xs mb-1 uppercase tracking-[0.15em]">Beta Release Notice</h4>
               <p className="text-emerald-deep/75 text-xs leading-relaxed">
-                ArukinSec is in an experimental R&D beta for personal and family use. Features evolve rapidly through threat-intelligence testing; the roadmap is fluid.
+                Arukin is in an experimental R&D beta for personal and family use. Features evolve rapidly through threat-intelligence testing; the roadmap is fluid.
               </p>
             </div>
           </div>
@@ -34,7 +34,7 @@ export default function About() {
             <h3 className="font-display text-2xl font-bold mb-6">Why we built this</h3>
             <div className="space-y-4 text-cream/80 text-lg leading-relaxed max-w-3xl">
               <p>Almost everyone has a Google account — for email, school, work, photos, and banking. But not everyone can spot a sophisticated phishing attack, a malicious file, or an account takeover in progress.</p>
-              <p>Children, elderly parents, and less tech-savvy family members are especially vulnerable. Meanwhile, politicians, executives, and public figures face targeted attacks that can destroy careers overnight. ArukinSec gives someone you trust a window into your digital life — without giving them your password.</p>
+              <p>Children, elderly parents, and less tech-savvy family members are especially vulnerable. Meanwhile, politicians, executives, and public figures face targeted attacks that can destroy careers overnight. Arukin gives someone you trust a window into your digital life — without giving them your password.</p>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function About() {
             ['Self-Hosted Privacy', "For organizations that need complete data isolation, we offer a self-hosted deployment option. Your data stays on your infrastructure, and you retain full control over API connections."],
             ['24-Hour Consent Cooldown', "Future updates enforce a 24-hour waiting period on new connections — giving the person being helped time to verify and confirm they want oversight."],
             ['Secure OTP Relay', "To assist vulnerable relatives, upcoming updates allow Managers to securely intercept and relay time-sensitive OTP codes straight to their dashboard."],
-            ['Automated Threat Reports', "ArukinSec will run automated background queries to compile PDF threat reports — including connected social accounts and suspicious password resets."],
+            ['Automated Threat Reports', "Arukin will run automated background queries to compile PDF threat reports — including connected social accounts and suspicious password resets."],
             ['Expanded Google Ecosystem', "Roadmap includes YouTube watch histories, Blogger posts, and Google Photos. These APIs are intentionally left out today to keep the current prototype simple, focused, and secure."],
           ].map(([title, text], i, arr) => (
             <div key={i} className={`bg-white/70 border border-emerald-deep/10 rounded-3xl p-7 hover:border-gold/40 transition-colors ${i === arr.length - 1 ? 'md:col-span-2 lg:col-span-1' : ''}`}>

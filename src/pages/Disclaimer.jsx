@@ -7,7 +7,7 @@ export default function Disclaimer() {
   return (
     <LegalPage eyebrow="Legal Notice" title="Disclaimer" updated="July 1, 2026" icon={Info}>
       <BetaCallout>
-        ArukinSec is currently in beta. See our <Link to="/beta-notice" className="text-emerald-brand font-semibold underline underline-offset-2 hover:text-emerald-deep transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
+        Arukin is currently in beta. See our <Link to="/beta-notice" className="text-emerald-brand font-semibold underline underline-offset-2 hover:text-emerald-deep transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
       </BetaCallout>
 
       <LegalSection icon={AlertTriangle} title={'1. Google "Unverified App" Warning'}>
@@ -17,11 +17,11 @@ export default function Disclaimer() {
       </LegalSection>
 
       <LegalSection icon={Info} title={'2. "As Is" Warranty Disclaimer'}>
-        <p>All services, utilities, and components on ArukinSec are provided on an "as is" and "as available" basis. We make no warranties regarding system uptime, performance reliability, or the absolute prevention of digital security threats.</p>
+        <p>All services, utilities, and components on Arukin are provided on an "as is" and "as available" basis. We make no warranties regarding system uptime, performance reliability, or the absolute prevention of digital security threats.</p>
       </LegalSection>
 
       <LegalSection icon={ShieldAlert} title="3. Google API & Third-Party Actions">
-        <p>ArukinSec interacts with Google APIs. We have no control over, and assume no liability for:</p>
+        <p>Arukin interacts with Google APIs. We have no control over, and assume no liability for:</p>
         <ul className="list-disc pl-5 space-y-2">
           <li>API deprecation, rate-limiting, or service blackouts initiated by Google.</li>
           <li>Accidental file deletion, label modifications, or contact adjustments during console operations.</li>
@@ -30,11 +30,11 @@ export default function Disclaimer() {
       </LegalSection>
 
       <LegalSection icon={Info} title="4. Limitation of Liability">
-        <p>To the maximum extent permitted by applicable law, in no event shall ArukinSec, its developers, or affiliates be held liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the compliance gateways.</p>
+        <p>To the maximum extent permitted by applicable law, in no event shall Arukin, its developers, or affiliates be held liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the compliance gateways.</p>
       </LegalSection>
 
       <LegalSection icon={ShieldAlert} title="5. Member Protection & Consent (Anti-Stalkerware)">
-        <p>ArukinSec is designed strictly for parental oversight, caregiver assistance, or corporate safety monitoring. It must <strong>never</strong> be used to monitor adults without their active, continuous consent.</p>
+        <p>Arukin is designed strictly for parental oversight, caregiver assistance, or corporate safety monitoring. It must <strong>never</strong> be used to monitor adults without their active, continuous consent.</p>
         <p><strong>Current limitations:</strong> we don't yet have dedicated internal real-time warning systems for monitored members, relying entirely on Google's native authorization warnings during API pairing.</p>
         <p><strong>Planned mitigations:</strong></p>
         <ul className="list-disc pl-5 space-y-2">
@@ -44,7 +44,7 @@ export default function Disclaimer() {
           <li><strong>Member-side billing:</strong> transitioning subscription purchases to the member's portal.</li>
           <li><strong>Strict login OTP verification:</strong> member-authorized OTP challenge every time the manager signs in.</li>
         </ul>
-        <p className="text-slate-400 text-xs italic pt-1">These roadmap measures aim to prevent ArukinSec from functioning as stalkerware. Their ultimate efficacy remains to be seen in production.</p>
+        <p className="text-slate-400 text-xs italic pt-1">These roadmap measures aim to prevent Arukin from functioning as stalkerware. Their ultimate efficacy remains to be seen in production.</p>
       </LegalSection>
     </LegalPage>
   );

@@ -12,7 +12,7 @@ For a comprehensive breakdown of how Arukin operates securely under the hood, pl
 
 The documentation has been completely restructured into an enterprise knowledge base containing Architecture Decision Records (ADRs) and rigorous security models.
 
-👉 **[ArukinSec Documentation Hub](https://github.com/arukinSec/docs)**
+👉 **[Arukin Documentation Hub](https://github.com/arukinSec/docs)**
 
 ---
 

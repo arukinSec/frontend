@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://arukinsec.web.app/</loc>
+    <loc>https://arukin.pages.dev/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/how-it-works</loc>
+    <loc>https://arukin.pages.dev/how-it-works</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/use-cases</loc>
+    <loc>https://arukin.pages.dev/use-cases</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/about</loc>
+    <loc>https://arukin.pages.dev/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/pricing</loc>
+    <loc>https://arukin.pages.dev/pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/faq</loc>
+    <loc>https://arukin.pages.dev/faq</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/privacy</loc>
+    <loc>https://arukin.pages.dev/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/terms</loc>
+    <loc>https://arukin.pages.dev/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/disclaimer</loc>
+    <loc>https://arukin.pages.dev/disclaimer</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://arukinsec.web.app/beta-notice</loc>
+    <loc>https://arukin.pages.dev/beta-notice</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>

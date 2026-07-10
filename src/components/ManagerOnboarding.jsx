@@ -18,7 +18,7 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const inviteMessage = `Hello! I am setting up our family safety workspace on ArukinSec. Please open this link: ${window.location.origin}/client and enter my Manager Auth ID: ${formattedId} to link your account so I can check for security alerts.`;
+  const inviteMessage = `Hello! I am setting up our family safety workspace on Arukin. Please open this link: ${window.location.origin}/client and enter my Manager Auth ID: ${formattedId} to link your account so I can check for security alerts.`;
 
   const handleShare = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(inviteMessage)}`;
@@ -65,7 +65,7 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Welcome to ArukinSec</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Welcome to Arukin</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
                   Thank you for signing up. This security console helps you protect your family members and loved ones from online scams, phishing, and account takeover attempts.
                 </p>
@@ -85,9 +85,9 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
                 </div>
               </div>
               <div className="md:col-span-9 space-y-2">
-                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">What ArukinSec Does</h2>
+                <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">What Arukin Does</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
-                  ArukinSec acts as a remote view-and-cleanup link to help you verify security and directory settings on your member's Google account:
+                  Arukin acts as a remote view-and-cleanup link to help you verify security and directory settings on your member's Google account:
                 </p>
                 <div className="grid grid-cols-3 gap-2.5 mt-2">
                   <div className="p-2.5 bg-white/[0.02] border border-white/5 rounded-xl text-center">
@@ -118,7 +118,7 @@ export default function ManagerOnboarding({ managerAuthId, onClose }) {
               <div className="md:col-span-9 space-y-2">
                 <h2 className="font-display text-xl font-bold text-white tracking-tight leading-tight">Understanding Roles</h2>
                 <p className="text-slate-400 text-xs leading-relaxed">
-                  To isolate privileges, ArukinSec keeps roles separated:
+                  To isolate privileges, Arukin keeps roles separated:
                 </p>
                 <div className="grid grid-cols-2 gap-3 mt-1.5">
                   <div className="p-3 bg-white/[0.02] border border-white/5 rounded-xl flex gap-2 items-center">

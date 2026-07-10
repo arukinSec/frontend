@@ -7,16 +7,16 @@ export default function Privacy() {
   return (
     <LegalPage eyebrow="Compliance Guidelines" title="Privacy Policy" updated="July 1, 2026" icon={ShieldCheck}>
       <BetaCallout>
-        ArukinSec is currently in beta. See our <Link to="/beta-notice" className="text-emerald-brand font-semibold underline underline-offset-2 hover:text-emerald-deep transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
+        Arukin is currently in beta. See our <Link to="/beta-notice" className="text-emerald-brand font-semibold underline underline-offset-2 hover:text-emerald-deep transition-colors">Beta Release Notice</Link> for details on development status, account limits, and security measures.
       </BetaCallout>
 
-      <LegalSection icon={Eye} title="1. ArukinSec's Privacy Policy">
-        <p>ArukinSec is built on complete data minimization. Under both <strong>India's Digital Personal Data Protection Act, 2023 (DPDP)</strong> and the <strong>EU GDPR</strong>, we process data strictly to provide security telemetry.</p>
+      <LegalSection icon={Eye} title="1. Arukin's Privacy Policy">
+        <p>Arukin is built on complete data minimization. Under both <strong>India's Digital Personal Data Protection Act, 2023 (DPDP)</strong> and the <strong>EU GDPR</strong>, we process data strictly to provide security telemetry.</p>
         <p><strong>Our commitment:</strong> we never copy, cache, or store the contents of your emails, files, calendar entries, or contacts in our databases. All reads occur ephemerally in memory via our edge functions and are discarded once the session terminates. Data fetched to your dashboard is cached locally on your device using Web Crypto AES-GCM encryption.</p>
       </LegalSection>
 
       <LegalSection icon={Lock} title="2. Manager Guidelines & Responsibilities">
-        <p>Managers logging into the ArukinSec console must comply with the following privacy boundaries:</p>
+        <p>Managers logging into the Arukin console must comply with the following privacy boundaries:</p>
         <ul className="list-disc pl-5 space-y-2">
           <li><strong>Prior consent required:</strong> Managers must obtain explicit consent from the member before requesting an account connection.</li>
           <li><strong>Purpose limitation:</strong> Reviewed email subjects, file catalogs, and contact lists must be reviewed strictly for threat detection.</li>
@@ -34,10 +34,10 @@ export default function Privacy() {
       </LegalSection>
 
       <LegalSection icon={ShieldCheck} title="4. Revoking Authorization">
-        <p>You retain absolute control over your data. You can revoke ArukinSec's access at any time:</p>
+        <p>You retain absolute control over your data. You can revoke Arukin's access at any time:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>By selecting "Disconnect" in your client portal.</li>
-          <li>By removing ArukinSec's app permissions at <a href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer" className="text-emerald-brand underline hover:text-emerald-deep">myaccount.google.com/connections</a>.</li>
+          <li>By removing Arukin's app permissions at <a href="https://myaccount.google.com/connections" target="_blank" rel="noreferrer" className="text-emerald-brand underline hover:text-emerald-deep">myaccount.google.com/connections</a>.</li>
         </ul>
       </LegalSection>
     </LegalPage>
